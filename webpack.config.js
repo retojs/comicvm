@@ -1,17 +1,18 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     mode: 'development', // 'production' | 'development' | 'none'
     entry: __dirname + '/src/app/index.ts',
-    devtool: 'inline-source-map',
-    resolve: {
-        extensions: [ '.tsx', '.ts', '.js' ]
-    },
     output: {
         path: __dirname + '/dist',
         filename: 'bundle.js',
         publicPath: '/'
     },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js']
+    },
+    devtool: 'inline-source-map',
     module: {
         rules: [
             {
@@ -33,12 +34,21 @@ module.exports = {
             {
                 test: /\.(sass|scss)$/,
                 use: [{
-                    loader: "style-loader" // creates style nodes from JS strings
+                    loader: 'style-loader' // creates style nodes from JS strings
                 }, {
-                    loader: "css-loader" // translates CSS into CommonJS
+                    loader: 'css-loader' // translates CSS into CommonJS
                 }, {
-                    loader: "sass-loader" // compiles Sass to CSS
+                    loader: 'sass-loader' // compiles Sass to CSS
                 }]
+            },
+            {
+                test: /\.css$/,
+                use: [{
+                    loader: MiniCssExtractPlugin.loader,
+                    options: {publicPath: '../'}
+                },
+                    'css-loader'
+                ]
             }
         ]
     },
@@ -46,6 +56,10 @@ module.exports = {
         new HtmlWebpackPlugin({
             inject: 'body',
             template: __dirname + '/src/public/index.html'
+        }),
+        new MiniCssExtractPlugin({
+            filename: '[name].css',
+            chunkFilename: '[id].css'
         })
     ],
     devServer: {

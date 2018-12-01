@@ -1,17 +1,38 @@
 import '../style/app.scss';
+import {Plot} from "./plot/Plot";
 
-import * as _ from 'lodash';
+const plot = new Plot(`
+Title: Kick Off
 
-class TestClass {
-    constructor() {
-        let msg = 'Using ES2015+ syntax';
-        console.log(msg);
+Characters: Mariel, Basil, Silas
 
-        _.each([1, 2, 3], (i) => {
-            console.log(i);
-        })
-    }
-}
+Place: main-beach
+_____
+Plot:
 
-let test: TestClass = new TestClass();
+Mariel neben Silas:
+(Silas:waiting)
+    Bequem so?
 
+Basil:
+    Yup, sitzt perfekt.
+
+(waiting)
+    Also dann...
+    Achtung!
+    Fertig?
+Basil und Silas:
+(jump, Silas:jump)
+    Los!
+
+Mariel, Basil und Silas:
+(Basil:swim, Silas:swim)
+    Quiek!
+
+Basil und Silas springen mit Mariel ins Wasser
+  
+`);
+
+plot.plotItems.forEach(item => {
+    console.log(item.toString());
+});
