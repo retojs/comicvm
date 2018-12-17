@@ -1,9 +1,9 @@
 export class Rectangle {
 
-    width: number;
-    height: number;
     x: number;
     y: number;
+    width: number;
+    height: number;
 
     get dim(): { w: number, h: number } {
         return {

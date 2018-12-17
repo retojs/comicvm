@@ -16,7 +16,7 @@ export class PlotParser {
     constructor(private plot: Plot) {}
 
     addPlotItem(plotItem: PlotItem) {
-        plotItem._id = this.plotItems.length + 1;
+        plotItem._index = this.plotItems.length + 1;
         this.plotItems.push(plotItem);
         this.currentPlotItem = plotItem;
     }

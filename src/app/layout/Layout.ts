@@ -1,23 +1,35 @@
-import {LayoutParser} from "./LayoutParser";
-import {Scene} from "../model/Scene";
+import { Position } from "../trigo/Position";
+import { CharacterLayoutProperties, PanelLayoutPropertyName } from "./LayoutProperties";
 
-export class Layout {
+export type LayoutProperty = number | number[] | string | string | Position
 
-    input: string;
-    object: any;
+export type PanelLayout = LayoutProperty[]
 
-    layoutParser: LayoutParser;
+export type StripLayout = {
+    panelWidths?: number[],
+    panels: PanelLayout[]
+}
 
-    scene: Scene;
+export type PageLayout = {
+    stripHeights: number[],
+    strips: StripLayout[]
+}
 
-//scene: Scene;
+export type NamedCharacterLayout = { [key: string]: CharacterLayoutProperties[] }
 
-    constructor(input: string) {
-        this.input = input;
-        this.object = JSON.parse(input);
-        this.layoutParser = new LayoutParser(this);
-//        this.scene =
-        this.scene = this.layoutParser.parseInput();
-    }
+export type BackgroundLayout = {
+    zoom: number,
+    pan: number[]
+}
 
+export type CharacterLayout = {
+    how: string[],
+    pos: Position
+}
+
+export type Layout = {
+    panelProperties: PanelLayoutPropertyName[],
+    pages: PageLayout[],
+    backgrounds: BackgroundLayout,
+    scene: BackgroundLayout
 }

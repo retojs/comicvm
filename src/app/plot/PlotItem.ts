@@ -7,9 +7,15 @@ export enum PlotItemType {
     DESC = "desc"
 }
 
-export interface Qualifier {
-    who: string;
+export class Qualifier {
+
+    who?: string;
     how: string;
+
+    constructor(how: string, who?: string) {
+        this.who = who;
+        this.how = how;
+    }
 }
 
 export interface PlotItemSpec {
@@ -27,7 +33,7 @@ export interface PlotItemSpec {
 
 export class PlotItem {
 
-    _id: number;
+    _index: number;
     _type: PlotItemType;
 
     _actors: string[] = [];
@@ -135,7 +141,7 @@ export class PlotItem {
     }
 
     toString(): string {
-        return `PlotItem: ${this._id}:
+        return `PlotItem: ${this._index}:
         who: ${this.who},
         does: ${this.does || ''},
         says: ${this.says || ''},

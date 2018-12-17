@@ -17,13 +17,13 @@ describe("PlotParser", () => {
 
     describe("method addPlotItem", () => {
 
-        test("adds a plot item and assigns it a unique ID", () => {
+        test("adds plot items with an ascending index number", () => {
             plotParser.addPlotItem(new PlotItem({}));
             expect(plotParser.plotItems.length).toBe(1);
-            expect(plotParser.plotItems[0]._id).toBe(1);
+            expect(plotParser.plotItems[0]._index).toBe(1);
             plotParser.addPlotItem(new PlotItem({}));
             expect(plotParser.plotItems.length).toBe(2);
-            expect(plotParser.plotItems[1]._id).toBe(2);
+            expect(plotParser.plotItems[1]._index).toBe(2);
         });
     });
 
