@@ -1,5 +1,3 @@
-import { Qualifier } from "../plot/PlotItem";
-
 /**
  * Motivation:
  *  Die Bildkomposition eines Panels kann konfiguriert werden über 6 Layout Properties.
@@ -10,6 +8,8 @@ import { Qualifier } from "../plot/PlotItem";
  *  Die Reihenfolge der Layout Properties kann für jedes Layout individuell definiert werden,
  *   so dass die Arrays möglichst wenig leere Positionen enthalten.
  */
+
+import { Qualifier } from "../model/Qualifier";
 
 export enum PanelLayoutPropertyName {
     PlotItemCount = 'plotItemCount',
@@ -47,7 +47,6 @@ export class CharacterLayoutProperties {
         this.pos = pos;
     }
 }
-
 
 export class SceneLayoutProperties {
 

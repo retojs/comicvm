@@ -1,3 +1,5 @@
+import { Qualifier } from "../model/Qualifier";
+
 export const STORY_TELLER = "STORYTELLER";
 
 export enum PlotItemType {
@@ -5,17 +7,6 @@ export enum PlotItemType {
     DOES = "does",
     TOLD = "told",
     DESC = "desc"
-}
-
-export class Qualifier {
-
-    who?: string;
-    how: string;
-
-    constructor(how: string, who?: string) {
-        this.who = who;
-        this.how = how;
-    }
 }
 
 export interface PlotItemSpec {
@@ -107,6 +98,22 @@ export class PlotItem {
     set how(how: Qualifier[]) {
         this._qualifiers = how || [];
         this.normalize();
+    }
+
+    get isDescription(): boolean {
+        return this._type === PlotItemType.DESC;
+    }
+
+    get isTold(): boolean {
+        return this._type === PlotItemType.TOLD;
+    }
+
+    get isDoes(): boolean {
+        return this._type === PlotItemType.DOES;
+    }
+
+    get isSays(): boolean {
+        return this._type === PlotItemType.SAYS;
     }
 
     normalize() {

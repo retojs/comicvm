@@ -10,10 +10,9 @@ import { Page } from "../model/Page";
 import { Strip } from "../model/Strip";
 import { Panel } from "../model/Panel";
 import { Background } from "../model/Background";
-import { Qualifier } from "../plot/PlotItem";
 import { Scene } from "../model/Scene";
+import { Qualifier } from "../model/Qualifier";
 import * as YAML from "yaml";
-
 
 export class LayoutSerializer {
 
@@ -57,11 +56,10 @@ export class LayoutSerializer {
 
     stringifyBackgrounds(backgrounds: Background[], indent: string) {
         let str = "";
-        debugger;
         str += backgrounds.map(bgr => {
             let bgStr = "";
             if (bgr.layoutProperties) {
-                bgStr += indent + (bgr.id ? bgr.id : "''") + ":" + this.NL;
+                bgStr += indent + bgr.id + ":" + this.NL;
                 bgStr += this.stringifySceneLayoutProperties(bgr.layoutProperties, indent + this.INDENT);
             }
             return bgStr;
@@ -106,8 +104,8 @@ export class LayoutSerializer {
         let str = "";
         let _indent = "";
         indent = indent + this.INDENT;
-        if (page.stripHeights) {
-            str += _indent + "stripHeights: [" + page.stripHeights.join(", ") + "]" + this.NL;
+        if (page.stripConfig) {
+            str += _indent + "stripHeights: [" + page.stripConfig.proportions.join(", ") + "]" + this.NL;
             _indent = indent;
         }
         str += _indent + "strips:" + this.NL
@@ -123,8 +121,8 @@ export class LayoutSerializer {
         let str = "";
         let _indent = "";
         indent = indent + this.INDENT;
-        if (strip.panelWidths) {
-            str += _indent + "panelWidths: [" + strip.panelWidths.join(", ") + "]" + this.NL;
+        if (strip.panelConfig) {
+            str += _indent + "panelWidths: [" + strip.panelConfig.proportions.join(", ") + "]" + this.NL;
             _indent = indent;
         }
         str += _indent + "panels:" + this.NL
@@ -152,7 +150,7 @@ export class LayoutSerializer {
             case PanelLayoutPropertyName.PlotItemCount:
                 return "" + properties.plotItemCount;
             case PanelLayoutPropertyName.backgroundId:
-                return properties.backgroundId ? properties.backgroundId : null;
+                return properties.backgroundId === Background.defaultId ? null : properties.backgroundId;
             case PanelLayoutPropertyName.CharacterQualifier:
                 if (properties.characterQualifier && properties.characterQualifier.length > 0) {
                     return this.stringifyQualifier(properties.characterQualifier);
@@ -181,7 +179,6 @@ export class LayoutSerializer {
     stringifyQualifier(qualifier: Qualifier[]): string {
         return qualifier.map(q => q.who + "=" + q.how).join("; ");
     }
-
 
     stringifyCharacterPosition(pos: CharacterPosition, printCharacterName: boolean): string {
         const positionProps = [];

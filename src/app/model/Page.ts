@@ -2,6 +2,7 @@ import { Scene } from "./Scene";
 import { Strip } from "./Strip";
 import { Panel } from "./Panel";
 import { Rectangle } from "../trigo/Rectangle";
+import { StripConfig } from "../layout/LayoutConfig";
 
 export class Page {
 
@@ -9,7 +10,7 @@ export class Page {
 
     scene: Scene;
 
-    stripHeights: number[];
+    stripConfig: StripConfig;
     strips: Strip[] = [];
     panels: Panel[] = [];
 

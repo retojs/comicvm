@@ -11,6 +11,8 @@ export class Scene {
 
     layoutProperties: SceneLayoutProperties;
 
+    characters: string[];
+
     constructor() {}
 
     addPage(page: Page) {
@@ -23,7 +25,7 @@ export class Scene {
         bgr.scene = this;
     }
 
-    addPanel(panel: Panel){
+    addPanel(panel: Panel) {
         this.panels.push(panel);
         panel.scene = this;
     }

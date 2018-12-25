@@ -4,6 +4,8 @@ import { BackgroundLayoutProperties } from "../layout/LayoutProperties";
 
 export class Background {
 
+    static defaultId = "default";
+
     id: string;
 
     scene: Scene;

@@ -8,10 +8,10 @@ panelProperties:
   - pan
 pages:
   # page 1
-  - stripHeights: [0.666, 0.333]
+  - stripHeights: [0.4, 0.6]
     strips:
       # upper strip
-      - panelWidths: [0.333, 0.444, 0.222]
+      - panelWidths: [0.3, 0.4, 0.3]
         panels:
           - - 2
             - bgr-1
@@ -29,14 +29,16 @@ pages:
       # lower strip
       - panels:
           - - 3
-            - bgr-beach
+            - bgr-3
   # page 2
   - strips:
       # upper strip
       - panels:
           - - 1
+          - - 2
+            - sunset-beach
 backgrounds:
-  '':
+  'default':
     zoom: 1
     pan: [0.5, 1.5]
     Mariel:

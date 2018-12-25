@@ -1,15 +1,20 @@
 import { LayoutParser } from "./LayoutParser";
 import { BackgroundLayoutProperties, CharacterLayoutProperties, CharacterPosition, PanelLayoutProperties } from "./LayoutProperties";
+import { Background } from "../model/Background";
+import { Qualifier } from "../model/Qualifier";
 import { Panel } from "../model/Panel";
 import * as fs from "fs";
-import { Qualifier } from "../plot/PlotItem";
 
 describe("LayoutParser", () => {
 
-    let input: string;
+    let input = fs.readFileSync("src/app/layout/sample-layout.yml", "utf8");
 
-    beforeEach(() => {
-        input = fs.readFileSync("src/app/layout/sample-layout.yml", "utf8");
+    beforeEach(() => {});
+
+    test("can parse a XAML file to JSON", () => {
+        const layoutFromJson = require("./sample-layout.json");
+        let parser = new LayoutParser(input);
+        expect(parser.layout).toEqual(layoutFromJson);
     });
 
     test("creates page, strip and panel layout models from a YAML input", () => {
@@ -27,8 +32,8 @@ describe("LayoutParser", () => {
                 2,
                 "bgr-1",
                 [
-                    new Qualifier("surprised", "Mariel"),
-                    new Qualifier("smiling", "Dad")
+                    new Qualifier("Mariel", "surprised"),
+                    new Qualifier("Dad", "smiling")
                 ]
             )
         );
@@ -37,7 +42,7 @@ describe("LayoutParser", () => {
                 1,
                 "bgr-2",
                 [
-                    new Qualifier("happy", "all")
+                    new Qualifier("all", "happy")
                 ],
                 [
                     new CharacterPosition("Mariel", 1.4, undefined, 1.5)
@@ -57,7 +62,19 @@ describe("LayoutParser", () => {
         checkPanelProps(parser.scene.pages[0].strips[1].panels[0],
             new PanelLayoutProperties(
                 3,
-                "bgr-beach"
+                "bgr-3"
+            )
+        );
+        checkPanelProps(parser.scene.pages[1].strips[0].panels[0],
+            new PanelLayoutProperties(
+                1,
+                Background.defaultId
+            )
+        );
+        checkPanelProps(parser.scene.pages[1].strips[0].panels[1],
+            new PanelLayoutProperties(
+                2,
+                "sunset-beach"
             )
         );
     });
@@ -76,33 +93,37 @@ describe("LayoutParser", () => {
 
         let parser = new LayoutParser(input);
         expect(parser.scene.backgrounds).toBeDefined();
-        debugger;
-        expect(parser.scene.backgrounds.length).toBe(6);
-        expect(parser.scene.backgrounds[0].id).toBe("");
+        expect(parser.scene.backgrounds.length).toBe(5);
+        expect(parser.scene.backgrounds[0].id).toBe(Background.defaultId);
         expect(parser.scene.backgrounds[1].id).toBe("sunset-beach");
         expect(parser.scene.backgrounds[2].id).toBe("bgr-1");
         expect(parser.scene.backgrounds[3].id).toBe("bgr-2");
         expect(parser.scene.backgrounds[4].id).toBe("bgr-3");
-        expect(parser.scene.backgrounds[5].id).toBe("bgr-beach");
+
+        expect(parser.scene.backgrounds[0].panels.length).toBe(1);
+        expect(parser.scene.backgrounds[1].panels.length).toBe(1);
+        expect(parser.scene.backgrounds[2].panels.length).toBe(1);
+        expect(parser.scene.backgrounds[3].panels.length).toBe(1);
+        expect(parser.scene.backgrounds[4].panels.length).toBe(2);
 
         expect(parser.scene.backgrounds[0].layoutProperties).toEqual(
             new BackgroundLayoutProperties(
-                "",
+                Background.defaultId,
                 1,
                 [0.5, 1.5],
                 [
                     new CharacterLayoutProperties(
                         "Mariel",
                         [
-                            new Qualifier("sad", "Mariel"),
-                            new Qualifier("happy", "Mariel")
+                            new Qualifier("Mariel", "sad"),
+                            new Qualifier("Mariel", "happy")
                         ],
                         new CharacterPosition("Mariel", 2.3, 1.2, 1.5)
                     ),
                     new CharacterLayoutProperties(
                         "All",
                         [
-                            new Qualifier("fluffy", "All")
+                            new Qualifier("All", "fluffy")
                         ],
                         new CharacterPosition("All", 2.5)
                     )
@@ -118,7 +139,7 @@ describe("LayoutParser", () => {
                     new CharacterLayoutProperties(
                         "Papa",
                         [
-                            new Qualifier("old", "Papa")
+                            new Qualifier("Papa", "old")
                         ],
                         new CharacterPosition("Papa", 5, 4, 2)
                     )
@@ -134,7 +155,7 @@ describe("LayoutParser", () => {
         expect(parser.scene.layoutProperties.character).toEqual([
             new CharacterLayoutProperties(
                 "Mariel",
-                [new Qualifier("wet", "Mariel")],
+                [new Qualifier("Mariel", "wet")],
                 new CharacterPosition("Mariel", -1.2, undefined, 0.95)
             )]
         );

@@ -7,13 +7,16 @@ import {
     SceneLayoutProperties
 } from "./LayoutProperties";
 import { BackgroundLayout, CharacterLayout, Layout, LayoutProperty, PageLayout, PanelLayout, StripLayout } from "./Layout";
-import { PlotItem, Qualifier } from "../plot/PlotItem";
+import { PanelConfig, StripConfig } from "./LayoutConfig";
+import { PlotItem } from "../plot/PlotItem";
 import { Scene } from "../model/Scene";
 import { Page } from "../model/Page";
 import { Strip } from "../model/Strip";
 import { Panel } from "../model/Panel";
+import { Qualifier } from "../model/Qualifier";
 import { Background } from "../model/Background";
 import * as YAML from "yaml";
+
 
 export class LayoutParser {
 
@@ -44,9 +47,12 @@ export class LayoutParser {
 
         // connect panels with their background
         scene.panels.forEach(panel => {
-            let background: Background = scene.backgrounds.find(bgr => bgr.id === (panel.layoutProperties.backgroundId || ""));
+            if (!panel.layoutProperties.backgroundId) {
+                panel.layoutProperties.backgroundId = Background.defaultId;
+            }
+            let background: Background = scene.backgrounds.find(bgr => bgr.id === panel.layoutProperties.backgroundId);
             if (!background) {
-                background = new Background(panel.layoutProperties.backgroundId || "");
+                background = new Background(panel.layoutProperties.backgroundId);
                 scene.addBackground(background);
             }
             background.addPanel(panel);
@@ -74,9 +80,9 @@ export class LayoutParser {
                 chProps.push(prop);
                 if (chLayout.how) {
                     if (typeof chLayout.how === 'string') {
-                        prop.how.push(new Qualifier(chLayout.how, name));
+                        prop.how.push(new Qualifier(name, chLayout.how));
                     } else {
-                        prop.how = chLayout.how.map(how => new Qualifier(how, name));
+                        prop.how = chLayout.how.map(how => new Qualifier(name, how));
                     }
                 }
                 if (chLayout.pos) {
@@ -91,7 +97,7 @@ export class LayoutParser {
         scene.addPage(page);
 
         if (pageLayout.stripHeights) {
-            page.stripHeights = pageLayout.stripHeights;
+            page.stripConfig = new StripConfig(pageLayout.stripHeights);
         }
         pageLayout.strips.forEach((stripLayout: StripLayout, index) => {
             this.createStrip(stripLayout, index, page);
@@ -104,7 +110,7 @@ export class LayoutParser {
         page.addStrip(strip);
 
         if (stripLayout.panelWidths) {
-            strip.panelWidths = stripLayout.panelWidths;
+            strip.panelConfig = new PanelConfig(stripLayout.panelWidths);
         }
         stripLayout.panels.forEach((panelLayout: PanelLayout, index) => {
             this.createPanel(panelLayout, index, strip);
@@ -154,9 +160,9 @@ export class LayoutParser {
                     if (colonPos > 0) {
                         const who = q.substr(0, colonPos);
                         const how = q.substr(colonPos + 1);
-                        return new Qualifier(how.trim(), who.trim());
+                        return new Qualifier(who.trim(), how.trim());
                     } else {
-                        return new Qualifier(q.trim());
+                        throw new Error("qualifier without character name")
                     }
                 });
             }

@@ -9,10 +9,10 @@
   ],
   "pages": [
     {
-      "stripHeights": [0.666, 0.333],
+      "stripHeights": [0.4, 0.6],
       "strips": [
         {
-          "panelWidths": [0.333, 0.444, 0.222],
+          "panelWidths": [0.3, 0.4, 0.3],
           "panels": [
             [2, "bgr-1", "Mariel=surprised; Dad=smiling"],
             [1, "bgr-2", "all=happy", {"Mariel": {"x": 1.4, "size": 1.5}}],
@@ -21,7 +21,7 @@
         },
         {
           "panels": [
-            [3, "bgr-beach"]
+            [3, "bgr-3"]
           ]
         }
       ]
@@ -30,14 +30,15 @@
       "strips": [
         {
           "panels": [
-            [1]
+            [1],
+            [2, "sunset-beach"]
           ]
         }
       ]
     }
   ],
   "backgrounds": {
-    "": {
+    "default": {
       "zoom": 1,
       "pan": [0.5, 1.5],
       "Mariel": {
