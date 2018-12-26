@@ -1,14 +1,13 @@
 import {
     BackgroundLayoutProperties,
     CharacterLayoutProperties,
-    CharacterPosition,
+    CharacterPositionChange,
     PanelLayoutProperties,
     PanelLayoutPropertyName,
     SceneLayoutProperties
 } from "./LayoutProperties";
 import { BackgroundLayout, CharacterLayout, Layout, LayoutProperty, PageLayout, PanelLayout, StripLayout } from "./Layout";
 import { PanelConfig, StripConfig } from "./LayoutConfig";
-import { PlotItem } from "../plot/PlotItem";
 import { Scene } from "../model/Scene";
 import { Page } from "../model/Page";
 import { Strip } from "../model/Strip";
@@ -16,6 +15,7 @@ import { Panel } from "../model/Panel";
 import { Qualifier } from "../model/Qualifier";
 import { Background } from "../model/Background";
 import * as YAML from "yaml";
+import { Square } from "../trigo/Square";
 
 
 export class LayoutParser {
@@ -33,13 +33,17 @@ export class LayoutParser {
     createScene(sceneLayout: Layout): Scene {
         const scene = new Scene();
 
-        scene.layoutProperties = new SceneLayoutProperties(sceneLayout.scene.zoom, sceneLayout.scene.pan);
-        scene.layoutProperties.character = this.parseCharacterLayoutProperties(sceneLayout.scene);
+        if (sceneLayout.scene) {
+            scene.layoutProperties = new SceneLayoutProperties(sceneLayout.scene.zoom, sceneLayout.scene.pan);
+            scene.layoutProperties.character = this.parseCharacterLayoutProperties(sceneLayout.scene);
+        }
 
-        Object.keys(sceneLayout.backgrounds).forEach(key => {
-            const background = sceneLayout.backgrounds[key];
-            this.createBackground(key, background, scene);
-        });
+        if (sceneLayout.backgrounds) {
+            Object.keys(sceneLayout.backgrounds).forEach(key => {
+                const background = sceneLayout.backgrounds[key];
+                this.createBackground(key, background, scene);
+            });
+        }
 
         sceneLayout.pages.forEach((pageLayout: PageLayout, index) => {
             this.createPage(pageLayout, index, scene);
@@ -86,7 +90,7 @@ export class LayoutParser {
                     }
                 }
                 if (chLayout.pos) {
-                    prop.pos = new CharacterPosition(name, chLayout.pos.x, chLayout.pos.y, chLayout.pos.size);
+                    prop.pos = new CharacterPositionChange(name, chLayout.pos.x, chLayout.pos.y, chLayout.pos.size);
                 }
             });
         return chProps;
@@ -144,7 +148,7 @@ export class LayoutParser {
             case PanelLayoutPropertyName.CharacterQualifier:
                 return this.createQualifiers(input as string);
             case PanelLayoutPropertyName.CharacterPositions:
-                return this.createCharacterPositions(input as any);
+                return this.createPositionChanges(input as any);
 
         }
     }
@@ -170,21 +174,17 @@ export class LayoutParser {
         return qualifiers;
     }
 
-    createCharacterPositions(input: { [key: string]: CharacterPosition }): CharacterPosition[] {
-        let positions: CharacterPosition[] = [];
+    createPositionChanges(input: { [key: string]: Square }): CharacterPositionChange[] {
+        let positionChanges: CharacterPositionChange[] = [];
         if (input) {
             const characterNames = Object.keys(input);
             if (characterNames && characterNames.length > 0) {
-                positions = characterNames.map(name => {
-                    const pos = input[name];
-                    return new CharacterPosition(name, pos.x, pos.y, pos.size);
+                positionChanges = characterNames.map(name => {
+                    const pos: Square = input[name];
+                    return new CharacterPositionChange(name, pos.x, pos.y, pos.size);
                 });
             }
         }
-        return positions;
-    }
-
-    setPlotItems(plotItems: PlotItem[]) {
-        // distribute plot items to panels
+        return positionChanges;
     }
 }

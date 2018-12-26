@@ -30,6 +30,8 @@ pages:
       - panels:
           - - 3
             - bgr-3
+            -
+            - Silas: {y: 1.7, size: 1.5}
   # page 2
   - strips:
       # upper strip
@@ -38,14 +40,14 @@ pages:
           - - 2
             - sunset-beach
 backgrounds:
-  'default':
+  default:
     zoom: 1
     pan: [0.5, 1.5]
     Mariel:
       how:
         - sad
         - happy
-      pos: {x: 2.3, y: 1.2, size: 1.5}
+      pos: {x: 2.3, y: 1.5, size: 1.5}
     All:
       how:
         - fluffy
@@ -53,14 +55,14 @@ backgrounds:
   sunset-beach:
     zoom: 1
     pan: [1, 1]
-    Papa:
+    Basil:
       how:
-        - old
-      pos: {x: 5, y: 4, size: 2}
+        - screaming
+      pos: {x: 1.5, y: -0.5, size: 2}
 scene:
   zoom: 1
   pan: [1, 1]
   Mariel:
     how:
       - wet
-    pos: {x: -1.2, size: 0.95}
+    pos: {x: -1.2, size: 0.75}

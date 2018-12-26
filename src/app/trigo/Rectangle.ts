@@ -1,38 +1,121 @@
+import { Point } from "./Point";
+
 export class Rectangle {
 
-    x: number;
-    y: number;
-    width: number;
-    height: number;
+    _x: number;
+    _y: number;
+    _width: number;
+    _height: number;
 
     constructor(x: number, y: number, width: number, height: number) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        this._x = x;
+        this._y = y;
+        this._width = width;
+        this._height = height;
     }
 
-    get dim(): { w: number, h: number } {
-        return {
-            w: this.width,
-            h: this.height
-        };
+    get x() {
+        return this._x || 0;
     }
 
-    set dim(dim: { w: number, h: number }) {
-        this.width = dim.w;
-        this.height = dim.h;
+    set x(x: number) {
+        this._x = x;
     }
 
-    get pos(): { x: number, y: number } {
-        return {
-            x: this.x,
-            y: this.y
-        };
+    get y() {
+        return this._y || 0;
     }
 
-    set pos(pos: { x: number, y: number }) {
-        this.x = pos.x;
-        this.y = pos.y;
+    set y(y: number) {
+        this._y = y;
+    }
+
+    get width() {
+        return this._width || 0;
+    }
+
+    set width(width: number) {
+        this._width = width;
+    }
+
+    get height() {
+        return this._height || 0;
+    }
+
+    set height(height: number) {
+        this._height = height;
+    }
+
+    get center(): Point {
+        return new Point(this.x + this.width / 2, this.y + this.height / 2);
+    }
+
+    static getBoundingBox(rectangles: Rectangle[]): Rectangle {
+        let left = Number.MAX_VALUE,
+            top = Number.MAX_VALUE,
+            right = 0,
+            bottom = 0;
+
+        rectangles.forEach(rect => {
+            left = rect.x < left ? rect.x : left;
+            top = rect.y < top ? rect.y : top;
+            right = rect.x + rect.width > right ? rect.x + rect.width : right;
+            bottom = rect.y + rect.height > bottom ? rect.y + rect.height : bottom;
+        });
+
+        return new Rectangle(left, top, right - left, bottom - top);
+    }
+
+    static fitToBounds(fitMe: Rectangle, container: Rectangle) {
+        const scale = Math.min(container.width / fitMe.width, container.height / fitMe.height);
+        fitMe.width *= scale;
+        fitMe.height *= scale;
+        return Rectangle.alignCentered(fitMe, container);
+    }
+
+    static alignCentered(alignMe: Rectangle, container: Rectangle): Rectangle {
+        const offsetX = (container.width - alignMe.width) / 2,
+            offsetY = (container.height - alignMe.height) / 2;
+        alignMe.x = container.x + offsetX;
+        alignMe.y = container.y + offsetY;
+        return alignMe;
+    }
+
+
+    clone(): Rectangle {
+        return new Rectangle(this._x, this._y, this._width, this._height);
+    }
+
+    translate(dx?: number, dy?: number): Rectangle {
+        this.x = dx ? this.x + dx : this.x;
+        this.y = dy ? this.y + dy : this.y;
+
+        return this;
+    }
+
+    scale(scale: number, origin?: Point): Rectangle {
+        origin = origin || new Point(this.x, this.y);
+
+        let dx = this.x - origin.x,
+            dy = this.y - origin.y;
+        this.x = origin.x + dx * scale;
+        this.y = origin.y + dy * scale;
+        this.width *= scale;
+        this.height *= scale;
+
+        return this;
+    }
+
+    expand(margin: number): Rectangle {
+        this.x -= margin;
+        this.y -= margin;
+        this.width += margin * 2;
+        this.height += margin * 2;
+
+        return this;
+    }
+
+    shrink(margin: number): Rectangle {
+        return this.expand(-margin);
     }
 }

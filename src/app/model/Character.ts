@@ -1,8 +1,13 @@
+import { Square } from "../trigo/Square";
+
 export class Character {
 
     name: string;
     how: string[] = [];
-    pos?: Position;
+
+    defaultPosition?: Square;
+    backgroundPosition?: Square;
+    panelPosition?: Square;
 
     constructor(name: string, how?: string[]) {
         this.name = name;

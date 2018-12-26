@@ -2,6 +2,7 @@ import * as fs from "fs";
 import { LayoutEngine } from "./LayoutEngine";
 import { LayoutParser } from "./LayoutParser";
 import { Plot } from "../plot/Plot";
+import { STORY_TELLER } from "../plot/PlotItem";
 
 describe("LayoutEngine", () => {
 
@@ -18,7 +19,7 @@ describe("LayoutEngine", () => {
     });
 
     test("the constructor assigns the list of characters from the plot to the scene", () => {
-        expect(layoutParser.scene.characters).toEqual(plot.characters);
+        expect(layoutParser.scene.characters).toEqual(plot.characters.filter(ch => ch !== STORY_TELLER));
     });
 
     test("method assignPlotItems distributes the plot items among the panels", () => {
@@ -38,6 +39,16 @@ describe("LayoutEngine", () => {
                     expect(panel.shape).toBeDefined();
                 })
             })
+        });
+    });
+
+    test("method layoutCharacters assigns default positions to all characters", () => {
+        layoutEngine.scene.panels.forEach(panel => {
+            if (panel.actors && panel.actors.length > 0) {
+                panel.characters.forEach(chr => {
+                    expect(chr.defaultPosition).toBeDefined();
+                });
+            }
         });
     });
 

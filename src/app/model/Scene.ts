@@ -20,13 +20,13 @@ export class Scene {
         page.scene = this;
     }
 
-    addBackground(bgr: Background) {
-        this.backgrounds.push(bgr);
-        bgr.scene = this;
-    }
-
     addPanel(panel: Panel) {
         this.panels.push(panel);
         panel.scene = this;
+    }
+
+    addBackground(bgr: Background) {
+        this.backgrounds.push(bgr);
+        bgr.scene = this;
     }
 }

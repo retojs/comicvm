@@ -1,5 +1,18 @@
 $primary-color: #2e878a;
 
 body {
-    color: $primary-color;
+  color: $primary-color;
+}
+
+#buttons {
+  position: absolute;
+  right: 50%;
+  top: 80px;
+
+  button {
+    display: block;
+    padding: 10px;
+    margin: 15px;
+    width: 200px;
+  }
 }

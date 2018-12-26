@@ -4,12 +4,13 @@
  *  Das Layout-Datenformat soll es erlauben, Layouts in möglichst knapper Form auszudrücken.
  *  Es soll daher nicht nötig sein, die Properties jedesmal zu benennen, wenn man ihnen einen Wert zuweist.
  *  Stattdessen werden die Werte für jedes Panel in ein Array geschrieben,
- *   und jede Index-Position entspricht einem bestimmten PanelProperty.
+ *   und jede Index-Transformation entspricht einem bestimmten PanelProperty.
  *  Die Reihenfolge der Layout Properties kann für jedes Layout individuell definiert werden,
  *   so dass die Arrays möglichst wenig leere Positionen enthalten.
  */
 
 import { Qualifier } from "../model/Qualifier";
+import { PositionChange } from "../trigo/PositionChange";
 
 export enum PanelLayoutPropertyName {
     PlotItemCount = 'plotItemCount',
@@ -20,18 +21,15 @@ export enum PanelLayoutPropertyName {
     Pan = "pan"
 }
 
-export class CharacterPosition {
+export const AllCharacters = "All";
+
+export class CharacterPositionChange extends PositionChange {
 
     who?: string;
-    x?: number;
-    y?: number;
-    size?: number;
 
-    constructor(who?: string, x?: number, y?: number, size?: number) {
+    constructor(who?: string, dx?: number, dy?: number, scale?: number) {
+        super(dx, dy, scale);
         this.who = who;
-        this.x = x;
-        this.y = y;
-        this.size = size;
     }
 }
 
@@ -39,9 +37,9 @@ export class CharacterLayoutProperties {
 
     who: string;
     how: Qualifier[] = [];
-    pos?: CharacterPosition;
+    pos?: CharacterPositionChange;
 
-    constructor(who: string, how?: Qualifier[], pos?: CharacterPosition) {
+    constructor(who: string, how?: Qualifier[], pos?: CharacterPositionChange) {
         this.who = who;
         this.how = how || [];
         this.pos = pos;
@@ -77,14 +75,14 @@ export class PanelLayoutProperties {
     plotItemCount?: number;
     backgroundId?: string;
     characterQualifier: Qualifier[] = [];
-    characterPositions: CharacterPosition[] = [];
+    characterPositions: CharacterPositionChange[] = [];
     zoom?: number;
     pan: number[];
 
     constructor(plotItemCount?: number,
                 backgroundId?: string,
                 characterQualifier?: Qualifier[],
-                characterPositions?: CharacterPosition[],
+                characterPositions?: CharacterPositionChange[],
                 zoom?: number,
                 pan?: number[]) {
         this.plotItemCount = plotItemCount;

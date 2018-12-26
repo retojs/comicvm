@@ -1,35 +1,36 @@
-import { Position } from "../trigo/Position";
-import { CharacterLayoutProperties, PanelLayoutPropertyName } from "./LayoutProperties";
+import { PositionChange } from "../trigo/PositionChange";
+import { PanelLayoutPropertyName } from "./LayoutProperties";
+import { Square } from "../trigo/Square";
 
-export type LayoutProperty = number | number[] | string | string | Position
+export type LayoutProperty = number | number[] | string | string | PositionChange
 
 export type PanelLayout = LayoutProperty[]
 
 export type StripLayout = {
-    panelWidths?: number[],
-    panels: PanelLayout[]
+    panelWidths?: number[];
+    panels: PanelLayout[];
 }
 
 export type PageLayout = {
-    stripHeights: number[],
-    strips: StripLayout[]
+    stripHeights?: number[];
+    strips: StripLayout[];
 }
 
-export type NamedCharacterLayout = { [key: string]: CharacterLayoutProperties[] }
-
 export type BackgroundLayout = {
-    zoom: number,
-    pan: number[]
+    [characterName: string]: CharacterLayout;
+} & {
+    zoom?: number;
+    pan?: number[];
 }
 
 export type CharacterLayout = {
-    how: string[],
-    pos: Position
+    how?: string[];
+    pos?: Square;
 }
 
 export type Layout = {
-    panelProperties: PanelLayoutPropertyName[],
-    pages: PageLayout[],
-    backgrounds: BackgroundLayout,
-    scene: BackgroundLayout
+    panelProperties: PanelLayoutPropertyName[];
+    pages: PageLayout[];
+    backgrounds?: { [backgroundId: string]: BackgroundLayout };
+    scene?: BackgroundLayout;
 }

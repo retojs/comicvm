@@ -21,6 +21,7 @@ export class Panel {
     charactersByName: { [key: string]: Character } = {};
     actors: Character[] = [];
     actorsByName: { [key: string]: Character } = {};
+    actorSlice: Character[] = [];
 
     bubbles: any[] = [];
 
@@ -62,26 +63,28 @@ export class Panel {
 
         plotItems
             .filter(plotItem => plotItem.who && plotItem.who.length > 0)
-            .forEach(plotItem => {
+            .forEach(plotItem =>
                 plotItem.who.forEach(name =>
                     this.addActor(name)
-                );
-            });
+                )
+            );
 
         plotItems
             .filter(plotItem => plotItem.whoWith && plotItem.whoWith.length > 0)
-            .forEach(plotItem => {
+            .forEach(plotItem =>
                 plotItem.whoWith.forEach(name => {
                     this.addActor(name);
                 })
-            });
+            );
 
         plotItems
             .filter(plotItem => plotItem.how && plotItem.how.length > 0)
             .forEach(plotItem =>
                 plotItem.how.forEach(qualifier =>
                     this.addCharacterQualifier(qualifier))
-            )
+            );
+
+        this.actorSlice = this.getCharacterSlice(this.actors);
     }
 
     getCharacter(name: string): Character {
@@ -90,6 +93,10 @@ export class Panel {
 
     getActor(name: string): Character {
         return this.actorsByName[name];
+    }
+
+    get hasActors(): boolean {
+        return this.actors && this.actors.length > 0;
     }
 
     addActor(name: string): void {
@@ -132,6 +139,21 @@ export class Panel {
             }
         });
         return slice;
+    }
+
+    /**
+     * Returns the first actor's element index in this panel's characters array.
+     * or:
+     * Returns the answer to the question: At what index is the first actor in this panel's characters array?
+     * It matters for positioning the characters in the panel you know...
+     */
+    getFirstActorIndex() {
+        if (!this.actors) { return -1;}
+
+        return this.actors.reduce((mostLeftIndex, character) => {
+            const index = this.characters.indexOf(character);
+            return mostLeftIndex > index ? index : mostLeftIndex;
+        }, this.characters.length);
     }
 
     resetCharacters(): void {

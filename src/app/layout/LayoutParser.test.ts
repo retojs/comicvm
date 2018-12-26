@@ -1,5 +1,5 @@
 import { LayoutParser } from "./LayoutParser";
-import { BackgroundLayoutProperties, CharacterLayoutProperties, CharacterPosition, PanelLayoutProperties } from "./LayoutProperties";
+import { BackgroundLayoutProperties, CharacterLayoutProperties, CharacterPositionChange, PanelLayoutProperties } from "./LayoutProperties";
 import { Background } from "../model/Background";
 import { Qualifier } from "../model/Qualifier";
 import { Panel } from "../model/Panel";
@@ -45,7 +45,7 @@ describe("LayoutParser", () => {
                     new Qualifier("all", "happy")
                 ],
                 [
-                    new CharacterPosition("Mariel", 1.4, undefined, 1.5)
+                    new CharacterPositionChange("Mariel", 1.4, undefined, 1.5)
                 ]
             )
         );
@@ -62,7 +62,11 @@ describe("LayoutParser", () => {
         checkPanelProps(parser.scene.pages[0].strips[1].panels[0],
             new PanelLayoutProperties(
                 3,
-                "bgr-3"
+                "bgr-3",
+                null,
+                [
+                    new CharacterPositionChange("Silas", undefined, 1.7, 1.5)
+                ]
             )
         );
         checkPanelProps(parser.scene.pages[1].strips[0].panels[0],
@@ -118,14 +122,14 @@ describe("LayoutParser", () => {
                             new Qualifier("Mariel", "sad"),
                             new Qualifier("Mariel", "happy")
                         ],
-                        new CharacterPosition("Mariel", 2.3, 1.2, 1.5)
+                        new CharacterPositionChange("Mariel", 2.3, 1.5, 1.5)
                     ),
                     new CharacterLayoutProperties(
                         "All",
                         [
                             new Qualifier("All", "fluffy")
                         ],
-                        new CharacterPosition("All", 2.5)
+                        new CharacterPositionChange("All", 2.5)
                     )
                 ]
             )
@@ -137,11 +141,11 @@ describe("LayoutParser", () => {
                 [1, 1],
                 [
                     new CharacterLayoutProperties(
-                        "Papa",
+                        "Basil",
                         [
-                            new Qualifier("Papa", "old")
+                            new Qualifier("Basil", "screaming")
                         ],
-                        new CharacterPosition("Papa", 5, 4, 2)
+                        new CharacterPositionChange("Basil", 1.5, -0.5, 2)
                     )
                 ]));
 
@@ -156,7 +160,7 @@ describe("LayoutParser", () => {
             new CharacterLayoutProperties(
                 "Mariel",
                 [new Qualifier("Mariel", "wet")],
-                new CharacterPosition("Mariel", -1.2, undefined, 0.95)
+                new CharacterPositionChange("Mariel", -1.2, undefined, 0.75)
             )]
         );
 
