@@ -1,4 +1,5 @@
 import { Square } from "../trigo/Square";
+import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/LayoutConfig";
 
 export class Character {
 
@@ -24,5 +25,22 @@ export class Character {
 
     hasQualifier(qualifier: string): boolean {
         return this.how.indexOf(qualifier) > -1;
+    }
+
+    getPosition(): Square {
+        let position: Square;
+        if (CharacterPositionLayoutLevel.DEFAULT === LayoutConfig.characterPositionLayoutLevel
+            && this.defaultPosition) {
+            position = this.defaultPosition;
+        }
+        if (CharacterPositionLayoutLevel.DEFAULT < LayoutConfig.characterPositionLayoutLevel
+            && this.backgroundPosition) {
+            position = this.backgroundPosition;
+        }
+        if (CharacterPositionLayoutLevel.PANEL === LayoutConfig.characterPositionLayoutLevel
+            && this.panelPosition) {
+            position = this.panelPosition;
+        }
+        return position;
     }
 }

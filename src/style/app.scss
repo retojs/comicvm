@@ -1,12 +1,21 @@
+@import "./font/Roboto.css";
+
 $primary-color: #2e878a;
 
 body {
   color: $primary-color;
+  font-family: 'Roboto';
+}
+
+#comic-vm-canvas {
+  canvas {
+    display: block;
+  }
 }
 
 #buttons {
   position: absolute;
-  right: 50%;
+  right: 30%;
   top: 80px;
 
   button {

@@ -1,35 +1,26 @@
 import { Canvas } from "./Canvas";
 import { LayoutParser } from "../layout/LayoutParser";
-import { LayoutEngine } from "../layout/LayoutEngine";
+import { LayoutEngine } from "../layout/engine/LayoutEngine";
 import { PagePainter } from "./PagePainter";
 import { Plot } from "../plot/Plot";
-import { LayoutConfig } from "../layout/LayoutConfig";
 import { Scene } from "../model/Scene";
+import { PaintConfig } from "./PaintConfig";
 
 export class ScenePainter {
 
-    plot: Plot;
-    layoutParser: LayoutParser;
-    layoutEngine: LayoutEngine;
-
-
+    scene: Scene;
     canvas: Canvas;
+    layoutEngine: LayoutEngine;
     pagePainter: PagePainter;
 
-    constructor(layout: string, plot: string) {
-        this.plot = new Plot(plot);
-        this.layoutParser = new LayoutParser(layout);
-        this.layoutEngine = new LayoutEngine(this.layoutParser, this.plot);
-
-        this.canvas = new Canvas(LayoutConfig.canvas.id, LayoutConfig.canvas.width, LayoutConfig.canvas.height);
+    constructor(plot: string, layout: string) {
+        this.scene = new LayoutParser(layout).scene;
+        this.canvas = new Canvas(PaintConfig.canvas.id, PaintConfig.canvas.width, PaintConfig.canvas.height);
+        this.layoutEngine = new LayoutEngine(new Plot(plot), this.scene, this.canvas);
         this.pagePainter = new PagePainter(this.canvas);
 
         this.paintScene();
     }
-
-    get scene(): Scene {
-        return this.layoutParser.scene;
-    };
 
     paintScene() {
         this.canvas.clear();

@@ -1,12 +1,11 @@
-import * as fs from "fs";
 import { LayoutSerializer } from "./LayoutSerializer";
 import { LayoutParser } from "./LayoutParser";
+import { SAMPLE_LAYOUT } from "./sample.layout";
 
 describe("LayoutSerializer", () => {
 
-    const outputFile = "src/app/layout/serialized-layout.yml";
+    let yamlInput = SAMPLE_LAYOUT;
 
-    let yamlInput = fs.readFileSync("src/app/layout/sample-layout.yml", "utf8");
     let parser: LayoutParser;
     let serializer: LayoutSerializer;
 
@@ -15,17 +14,15 @@ describe("LayoutSerializer", () => {
         serializer = new LayoutSerializer(parser);
     });
 
-    test("serializes layout", () => {
+    it("serializes layout", () => {
         const str = serializer.stringify();
-        fs.writeFileSync(outputFile, str, "utf8");
 
-        const reReadOutput = fs.readFileSync(outputFile, "utf8");
-        const reReadOutputParser = new LayoutParser(reReadOutput);
+        // fs.writeFileSync("src/app/layout/serialized.layout.yml", str, "utf8");
 
-        expect(reReadOutputParser.layout).toEqual(parser.layout);
-
-        // expect(yamlInput.trim()).toEqual(reReadOutput.trim());
-        // sadly this is never true. You need to manually open a diff view between input and output file to verify equality.
-
+        expect(removeWhitespace(str)).toEqual(removeWhitespace(yamlInput));
     });
+
+    function removeWhitespace(str: string): string {
+        return str.replace(/\s+/g, '');
+    }
 });

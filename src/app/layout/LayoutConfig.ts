@@ -1,3 +1,14 @@
+export enum TextAlign {
+    Left, Center, Right
+}
+
+export enum CharacterPositionLayoutLevel {
+    DEFAULT = 0,
+    SCENE = 1,
+    BACKGROUND = 2,
+    PANEL = 3
+}
+
 export class MarginConfig {
 
     top: number;
@@ -18,22 +29,6 @@ export class MarginConfig {
 
     get vertical() {
         return this.top + this.bottom;
-    }
-}
-
-export class PageConfig {
-
-    width = 210;
-    height = 297;
-
-    padding = new MarginConfig(5, 4, 5, 4);
-
-    get innerWidth() {
-        return this.width - this.padding.horizontal;
-    }
-
-    get innerHeight() {
-        return this.height - this.padding.vertical;
     }
 }
 
@@ -63,6 +58,22 @@ abstract class ProportionsConfig {
     }
 }
 
+export class PageConfig {
+
+    width = 2100;
+    height = 2970;
+
+    padding = new MarginConfig(50, 40, 50, 40);
+
+    get innerWidth() {
+        return this.width - this.padding.horizontal;
+    }
+
+    get innerHeight() {
+        return this.height - this.padding.vertical;
+    }
+}
+
 export class StripConfig extends ProportionsConfig {
 
     constructor(heights: number[]) {
@@ -76,7 +87,7 @@ export class StripConfig extends ProportionsConfig {
 
 export class PanelConfig extends ProportionsConfig {
 
-    margin = new MarginConfig(3, 3, 3, 3,);
+    margin = new MarginConfig(30, 30, 30, 30,);
 
     constructor(panelWidths: number[]) {
         super(panelWidths);
@@ -87,87 +98,24 @@ export class PanelConfig extends ProportionsConfig {
     }
 }
 
-export class PaintConfig {
-
-    strokeStyle: string;
-    fillStyle: string;
-    lineWidth: number;
-    enabled: boolean;
-
-    constructor(strokeStyle?: string, fillStyle?: string, lineWidth?: number, enabled?: boolean) {
-        this.strokeStyle = strokeStyle;
-        this.fillStyle = fillStyle;
-        this.lineWidth = lineWidth;
-        this.enabled = enabled === undefined ? true : enabled;
-    }
-
-    static stroke(color: string, lineWidth?: number, enabled?: boolean) {
-        return new PaintConfig(color, null, lineWidth, enabled);
-    }
-
-    static fill(color: string, enabled?: boolean) {
-        return new PaintConfig(null, color, null, enabled);
-    }
-}
-
-export class FeaturePaintConfig {
-
-    page = {
-        background: PaintConfig.fill("rgba(250, 200, 0, 0.05)", true),
-        separator: PaintConfig.stroke("rgba(0, 0, 0, 0.2)", 0.2, true)
-    };
-
-    strip = {
-        border: PaintConfig.stroke("rgba(100, 200, 180, 0.4)", 0.5)
-    };
-
-    panel = {
-        border: PaintConfig.stroke("#000", 0.75, true),
-        grid: PaintConfig.stroke("#880", 0.1, true)
-    };
-
-    character = {
-        box: PaintConfig.stroke("#66f", 0.6, true),
-        bbox: PaintConfig.fill("rgba(00, 00, 250, 0.1)", true),
-        actor: {
-            box: PaintConfig.stroke("#f00", 0.6, true),
-            bbox: PaintConfig.fill("rgba(250, 0,0, 0.1)", true)
-        }
-    }
-}
-
-export class CanvasConfig {
-
-    id: string;
-    width: number;
-    height: number;
-
-    constructor(id: string,
-                width: number,
-                height: number) {
-        this.id = id;
-        this.width = width;
-        this.height = height;
-    }
-}
-
-export enum CharacterPositionLayoutLevel {
-    DEFAULT = 0,
-    SCENE = 1,
-    BACKGROUND = 2,
-    PANEL = 3
+export class BubbleConfig {
+    margin = new MarginConfig(15, 16, 15, 16);
+    padding = new MarginConfig(20, 30, 20, 30);
+    radius = new MarginConfig(25, 25, 25, 25);
+    maxWithPerHeight =12;
+    verticalAlign = 0.8;
+    pointerVerticalDistanceFromCharacter = 0.5;
+    pointerHorizontalDistanceFromBubbleCenter = 0.5;
 }
 
 export class LayoutConfig {
 
-    static canvas = new CanvasConfig("comic-vm-canvas", 700, 2800);
-
     static page: PageConfig = new PageConfig();
 
-    static characterPositionLayoutLevel = CharacterPositionLayoutLevel.DEFAULT;
-
-    static feature: FeaturePaintConfig = new FeaturePaintConfig();
+    static characterPositionLayoutLevel = CharacterPositionLayoutLevel.PANEL;
 
     static applyZoom = true;
     static applyPanning = true;
+
+    static bubbles = new BubbleConfig();
 }

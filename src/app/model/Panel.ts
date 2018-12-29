@@ -7,6 +7,8 @@ import { PlotItem } from "../plot/PlotItem";
 import { PanelLayoutProperties } from "../layout/LayoutProperties";
 import { Character } from "./Character";
 import { Qualifier } from "./Qualifier";
+import { Bubble } from "./Bubble";
+import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/LayoutConfig";
 
 export class Panel {
 
@@ -23,7 +25,7 @@ export class Panel {
     actorsByName: { [key: string]: Character } = {};
     actorSlice: Character[] = [];
 
-    bubbles: any[] = [];
+    bubbles: Bubble[] = [];
 
     shape: Rectangle;
 
@@ -51,9 +53,22 @@ export class Panel {
         return this.plotItems.filter(p => p.isSays);
     }
 
+    get hasActors(): boolean {
+        return this.actors && this.actors.length > 0;
+    }
+
+    getActor(name: string): Character {
+        return this.actorsByName[name];
+    }
+
+    getCharacter(name: string): Character {
+        return this.charactersByName[name];
+    }
+
     setPlotItems(plotItems: PlotItem[]): void {
         this.plotItems = plotItems || [];
         this.extractCharacters(this.plotItems);
+        this.extractBubbles(this.plotItems);
     }
 
     extractCharacters(plotItems: PlotItem[]): void {
@@ -87,16 +102,9 @@ export class Panel {
         this.actorSlice = this.getCharacterSlice(this.actors);
     }
 
-    getCharacter(name: string): Character {
-        return this.charactersByName[name];
-    }
-
-    getActor(name: string): Character {
-        return this.actorsByName[name];
-    }
-
-    get hasActors(): boolean {
-        return this.actors && this.actors.length > 0;
+    extractBubbles(plotItems: PlotItem[]) {
+        plotItems.filter(plotItem => !!plotItem.says)
+            .forEach(plotItem => this.addBubble(plotItem));
     }
 
     addActor(name: string): void {
@@ -124,6 +132,15 @@ export class Panel {
             throw new Error("unknown character '" + qualifier.who + "'");
         }
         character.addQualifier(qualifier.how);
+    }
+
+    addBubble(plotItem: PlotItem) {
+        const lastBubble = this.bubbles[this.bubbles.length - 1];
+        if (lastBubble && lastBubble.whoEquals(plotItem.who)) {
+            lastBubble.sayMore(plotItem.says);
+        } else {
+            this.bubbles.push(new Bubble(plotItem.who, plotItem.says));
+        }
     }
 
     getCharacterSlice(characters: Character[]): Character[] {
@@ -161,5 +178,50 @@ export class Panel {
         this.charactersByName = {};
         this.actors = [];
         this.actorsByName = {};
+    }
+
+    getZoom(): number {
+
+        let zoom = 1.0;
+
+        if (CharacterPositionLayoutLevel.DEFAULT < LayoutConfig.characterPositionLayoutLevel
+            && this.scene.layoutProperties) {
+            zoom *= this.scene.layoutProperties.zoom || 1;
+        }
+        if (CharacterPositionLayoutLevel.BACKGROUND <= LayoutConfig.characterPositionLayoutLevel
+            && this.background.layoutProperties) {
+            zoom *= this.background.layoutProperties.zoom || 1;
+        }
+        if (CharacterPositionLayoutLevel.PANEL === LayoutConfig.characterPositionLayoutLevel
+            && this.layoutProperties) {
+            zoom *= this.layoutProperties.zoom || 1;
+        }
+        return zoom;
+    }
+
+    getPanning(): number[] {
+
+        let panning = {x: 0, y: 0};
+
+        if (CharacterPositionLayoutLevel.DEFAULT < LayoutConfig.characterPositionLayoutLevel
+            && hasPanning(this.scene.layoutProperties)) {
+            panning.x += (this.scene.layoutProperties.pan)[0];
+            panning.y += (this.scene.layoutProperties.pan)[1];
+        }
+        if (CharacterPositionLayoutLevel.BACKGROUND <= LayoutConfig.characterPositionLayoutLevel
+            && hasPanning(this.background.layoutProperties)) {
+            panning.x += (this.background.layoutProperties.pan)[0];
+            panning.y += (this.background.layoutProperties.pan)[1];
+        }
+        if (CharacterPositionLayoutLevel.PANEL === LayoutConfig.characterPositionLayoutLevel
+            && hasPanning(this.layoutProperties)) {
+            panning.x += (this.layoutProperties.pan)[0];
+            panning.y += (this.layoutProperties.pan)[1];
+        }
+        return [panning.x, panning.y];
+
+        function hasPanning(layoutProperties: any) {
+            return layoutProperties && layoutProperties.pan && layoutProperties.pan.length > 0;
+        }
     }
 }

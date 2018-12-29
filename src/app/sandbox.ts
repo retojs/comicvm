@@ -1,9 +1,10 @@
 import { Plot } from "./plot/Plot";
 import { Canvas } from "./paint/Canvas";
 import { PanelPainter } from "./paint/PanelPainter";
-import { LayoutEngine } from "./layout/LayoutEngine";
+import { LayoutEngine } from "./layout/engine/LayoutEngine";
 import { LayoutParser } from "./layout/LayoutParser";
-import { PaintConfig } from "./layout/LayoutConfig";
+import { Point } from "./trigo/Point";
+import { PaintStyleConfig } from "./paint/PaintConfig";
 
 const plot = new Plot(`
 Title: Kick Off
@@ -92,7 +93,7 @@ backgrounds:
         - sad
         - happy
       pos: {x: 0.5, y: -0.5, size: 2}
-    All:
+    all:
       how:
         - fluffy
       pos: {x: 2.5}
@@ -116,40 +117,30 @@ scene:
     pos: {x: -0.25, y: 0.5, size: 1.7}
 `;
 
-const layoutParser = new LayoutParser(sampleLayout);
-const layoutEngine = new LayoutEngine(layoutParser, plot);
 const canvas = new Canvas('comic-vm-canvas', 600, 2000);
+const layoutParser = new LayoutParser(sampleLayout);
+const layoutEngine = new LayoutEngine(plot, layoutParser.scene, canvas);
 const panelPainter = new PanelPainter(canvas);
 
 export function paint() {
     layoutParser.scene.pages.forEach(page => {
-        canvas.rect(page.shape, PaintConfig.fill("rgba(0, 0, 0, 0.1)"));
+        canvas.rect(page.shape, PaintStyleConfig.fill("rgba(0, 0, 0, 0.1)"));
         canvas.line(
-            {
-                x: page.shape.x,
-                y: page.shape.y + page.shape.height
-            },
-            {
-                x: page.shape.x + page.shape.width,
-                y: page.shape.y + page.shape.height
-            },
-            PaintConfig.stroke("rgba(0, 0, 0, 0.2)", 0.5)
+            new Point(
+                page.shape.x,
+                page.shape.y + page.shape.height
+            ),
+            new Point(
+                page.shape.x + page.shape.width,
+                page.shape.y + page.shape.height
+            ),
+            PaintStyleConfig.stroke("rgba(0, 0, 0, 0.2)", 0.5)
         );
 
         page.strips.forEach(strip => {
-            canvas.rect(strip.shape, PaintConfig.stroke("rgba(100, 200, 180, 0.4)", 0.5));
+            canvas.rect(strip.shape, PaintStyleConfig.stroke("rgba(100, 200, 180, 0.4)", 0.5));
         });
 
         page.panels.forEach(panel => panelPainter.paintPanel(panel));
     });
-
-    // const button = new Button(getZoomButtonLabel(), "buttons", function () {
-    //     LayoutConfig.applyZoom = !LayoutConfig.applyZoom;
-    //     button.setLabel(getZoomButtonLabel());
-    // });
-    //
-    // function getZoomButtonLabel() {
-    //     return "apply zoom (" + (LayoutConfig.applyZoom ? "ON" : "OFF") + ")";
-    // }
-
 }

@@ -1,3 +1,4 @@
+export const SAMPLE_LAYOUT = `
 ---
 panelProperties:
   - plotItemCount
@@ -48,7 +49,7 @@ backgrounds:
         - sad
         - happy
       pos: {x: 2.3, y: 1.5, size: 1.5}
-    All:
+    all:
       how:
         - fluffy
       pos: {x: 2.5}
@@ -66,3 +67,5 @@ scene:
     how:
       - wet
     pos: {x: -1.2, size: 0.75}
+
+`;

@@ -34,7 +34,7 @@ describe("Panel", () => {
         ];
     });
 
-    test("method setPlotItems", () => {
+    it("method setPlotItems", () => {
         panel.setPlotItems(plotItems);
 
         expect(panel.actors).toEqual([
@@ -50,7 +50,7 @@ describe("Panel", () => {
         ]);
     });
 
-    test("method getCharacterSlice", () => {
+    it("method getCharacterSlice", () => {
         panel.setPlotItems(plotItems);
 
         expect(panel.characters).toEqual([
@@ -65,5 +65,26 @@ describe("Panel", () => {
             new Character("Minnie"),
             new Character("Goofy", ["laughing"])
         ]);
+    });
+
+    it("method extractBubbles", () => {
+        const plotItems = [];
+        plotItems.push(new PlotItem({who: ["Mickey"], says: "Hey Goofy!"}));
+        plotItems.push(new PlotItem({who: ["Mickey"], says: "Have you met Minnie?"}));
+        plotItems.push(new PlotItem({who: ["Minnie"], says: "Hi Goofy!"}));
+        plotItems.push(new PlotItem({who: ["Goofy"], says: "Nice to meet you, Minnie."}));
+        plotItems.push(new PlotItem({who: ["Minnie"], says: "My pleasure, Goofy."}));
+
+        panel.extractBubbles(plotItems);
+
+        expect(panel.bubbles.length).toBe(4);
+        expect(panel.bubbles[0].who).toEqual(["Mickey"]);
+        expect(panel.bubbles[1].who).toEqual(["Minnie"]);
+        expect(panel.bubbles[2].who).toEqual(["Goofy"]);
+        expect(panel.bubbles[3].who).toEqual(["Minnie"]);
+        expect(panel.bubbles[0].says).toBe("Hey Goofy! Have you met Minnie?");
+        expect(panel.bubbles[1].says).toBe("Hi Goofy!");
+        expect(panel.bubbles[2].says).toBe("Nice to meet you, Minnie.");
+        expect(panel.bubbles[3].says).toBe("My pleasure, Goofy.");
     });
 });

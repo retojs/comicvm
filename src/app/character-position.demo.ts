@@ -1,7 +1,5 @@
 import { ScenePainter } from "./paint/ScenePainter";
-import { Button } from "./dom";
-import { CharacterPositionLayoutLevel, LayoutConfig } from "./layout/LayoutConfig";
-
+import * as layoutConfigButtons from "./layout-config-buttons";
 
 const plot = `
 Title: Character Position Test
@@ -76,68 +74,21 @@ pages:
               Goofy: {y: 1.0, size: 0.5}
             - 0.75
             - [1, 0]
+backgrounds: 
+  default:
+     zoom: 1
+     pan: [0.5, 0.5]
+     all:
+       pos: {y: 0.5}
+     Minnie:
+       pos: {size: 0.8}
+scene:
+  pan: [0, 1]
 `;
 
 let scenePainter: ScenePainter;
 
-export function paint() {
-    scenePainter = new ScenePainter(layout, plot);
+export function create() {
+    scenePainter = new ScenePainter(plot, layout);
+    layoutConfigButtons.create(scenePainter);
 }
-
-export function repaint() {
-    scenePainter.repaintScene();
-}
-
-(function createToggleZoomButton() {
-    const toggleZoomButton = new Button(getToggleZoomButtonLabel(), "buttons", toggleZoom);
-
-    function toggleZoom() {
-        LayoutConfig.applyZoom = !LayoutConfig.applyZoom;
-        repaint();
-        toggleZoomButton.setLabel(getToggleZoomButtonLabel());
-    }
-
-    function getToggleZoomButtonLabel() {
-        return "Apply Zoom (" + (LayoutConfig.applyZoom ? "On" : "Off") + ")";
-    }
-})();
-
-(function createTogglePanningButton() {
-    const togglePanningButton = new Button(getTogglePanningButtonLabel(), "buttons", togglePanning);
-
-    function togglePanning() {
-        LayoutConfig.applyPanning = !LayoutConfig.applyPanning;
-        repaint();
-        togglePanningButton.setLabel(getTogglePanningButtonLabel());
-    }
-
-    function getTogglePanningButtonLabel() {
-        return "Apply Panning (" + (LayoutConfig.applyPanning ? "On" : "Off") + ")";
-    }
-})();
-
-function createLayoutLevelButton(level: CharacterPositionLayoutLevel) {
-
-    const levelLabels = {};
-    levelLabels[CharacterPositionLayoutLevel.PANEL] = "Panel";
-    levelLabels[CharacterPositionLayoutLevel.BACKGROUND] = "Background";
-    levelLabels[CharacterPositionLayoutLevel.SCENE] = "Scene";
-    levelLabels[CharacterPositionLayoutLevel.DEFAULT] = "Default";
-
-    const layoutLevelButton = new Button(getLayoutLevelButtonLabel(), "buttons", setLayoutLevel);
-
-    function setLayoutLevel() {
-        LayoutConfig.characterPositionLayoutLevel = level;
-        repaint();
-        layoutLevelButton.setLabel(getLayoutLevelButtonLabel());
-    }
-
-    function getLayoutLevelButtonLabel() {
-        return "Layout Level " + levelLabels[level];
-    }
-}
-
-createLayoutLevelButton(CharacterPositionLayoutLevel.PANEL);
-createLayoutLevelButton(CharacterPositionLayoutLevel.BACKGROUND);
-createLayoutLevelButton(CharacterPositionLayoutLevel.SCENE);
-createLayoutLevelButton(CharacterPositionLayoutLevel.DEFAULT);

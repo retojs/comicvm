@@ -1,7 +1,8 @@
 import { Canvas } from "./Canvas";
-import { LayoutConfig } from "../layout/LayoutConfig";
 import { PanelPainter } from "./PanelPainter";
 import { Page } from "../model/Page";
+import { Point } from "../trigo/Point";
+import { PaintConfig } from "./PaintConfig";
 
 export class PagePainter {
 
@@ -15,20 +16,20 @@ export class PagePainter {
     }
 
     paintPage(page: Page) {
-        this.canvas.rect(page.shape, LayoutConfig.feature.page.background);
+        this.canvas.rect(page.shape, PaintConfig.of.page.background);
         this.canvas.line(
-            {
-                x: page.shape.x,
-                y: page.shape.y + page.shape.height
-            },
-            {
-                x: page.shape.x + page.shape.width,
-                y: page.shape.y + page.shape.height
-            },
-            LayoutConfig.feature.page.separator
+            new Point(
+                page.shape.x,
+                page.shape.y + page.shape.height
+            ),
+            new Point(
+                page.shape.x + page.shape.width,
+                page.shape.y + page.shape.height
+            ),
+            PaintConfig.of.page.separator
         );
 
-        page.strips.forEach(strip => this.canvas.rect(strip.shape, LayoutConfig.feature.strip.border));
+        page.strips.forEach(strip => this.canvas.rect(strip.shape, PaintConfig.of.strip.border));
 
         page.panels.forEach(panel => this.panelPainter.paintPanel(panel));
     }

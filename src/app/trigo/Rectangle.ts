@@ -1,4 +1,5 @@
 import { Point } from "./Point";
+import { MarginConfig } from "../layout/LayoutConfig";
 
 export class Rectangle {
 
@@ -81,7 +82,6 @@ export class Rectangle {
         return alignMe;
     }
 
-
     clone(): Rectangle {
         return new Rectangle(this._x, this._y, this._width, this._height);
     }
@@ -117,5 +117,23 @@ export class Rectangle {
 
     shrink(margin: number): Rectangle {
         return this.expand(-margin);
+    }
+
+    addMargin(margin: MarginConfig): Rectangle {
+        this.x -= margin.left;
+        this.y -= margin.top;
+        this.width += margin.horizontal;
+        this.height += margin.vertical;
+
+        return this;
+    }
+
+    cutMargin(margin: MarginConfig): Rectangle {
+        this.x += margin.left;
+        this.y += margin.top;
+        this.width -= margin.horizontal;
+        this.height -= margin.vertical;
+
+        return this;
     }
 }

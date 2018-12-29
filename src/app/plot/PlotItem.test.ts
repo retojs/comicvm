@@ -16,7 +16,7 @@ describe("PlotItem", () => {
 
     describe("PlotItem.normalize()", () => {
 
-        test("removes duplicates from who and whoWith properties", () => {
+        it("removes duplicates from who and whoWith properties", () => {
             plotItem = new PlotItem({
                 who: ["Hero", "Hero"],
                 whoWith: ["Sidekick", "Sidekick", "Hero"]
@@ -25,7 +25,7 @@ describe("PlotItem", () => {
             expect(plotItem.whoWith).toEqual(["Sidekick"]);
         });
 
-        test("assigns stuff the story teller says to the _told property", () => {
+        it("assigns stuff the story teller says to the _told property", () => {
             plotItem = new PlotItem({
                 who: [STORY_TELLER],
                 says: "Once upon a time...   "

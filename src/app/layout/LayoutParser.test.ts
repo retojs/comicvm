@@ -3,23 +3,24 @@ import { BackgroundLayoutProperties, CharacterLayoutProperties, CharacterPositio
 import { Background } from "../model/Background";
 import { Qualifier } from "../model/Qualifier";
 import { Panel } from "../model/Panel";
-import * as fs from "fs";
+import { SAMPLE_LAYOUT } from "./sample.layout";
 
 describe("LayoutParser", () => {
 
-    let input = fs.readFileSync("src/app/layout/sample-layout.yml", "utf8");
+    const sampleLayout = SAMPLE_LAYOUT;
+    const layoutFromJson = require("./sample.layout.json");
 
-    beforeEach(() => {});
+    let parser: LayoutParser;
 
-    test("can parse a XAML file to JSON", () => {
-        const layoutFromJson = require("./sample-layout.json");
-        let parser = new LayoutParser(input);
+    beforeEach(() => {
+        parser = new LayoutParser(sampleLayout);
+    });
+
+    it("can parse a XAML file to JSON", () => {
         expect(parser.layout).toEqual(layoutFromJson);
     });
 
-    test("creates page, strip and panel layout models from a YAML input", () => {
-
-        let parser = new LayoutParser(input);
+    it("creates page, strip and panel layout models from a YAML input", () => {
 
         expect(parser.scene).toBeDefined();
         expect(parser.scene.pages.length).toBe(2);
@@ -93,9 +94,7 @@ describe("LayoutParser", () => {
         expect(panel.layoutProperties.pan).toEqual(expectedProps.pan);
     }
 
-    test("creates a background layout model from a YAML input", () => {
-
-        let parser = new LayoutParser(input);
+    it("creates a background layout model from a YAML input", () => {
         expect(parser.scene.backgrounds).toBeDefined();
         expect(parser.scene.backgrounds.length).toBe(5);
         expect(parser.scene.backgrounds[0].id).toBe(Background.defaultId);
@@ -125,11 +124,11 @@ describe("LayoutParser", () => {
                         new CharacterPositionChange("Mariel", 2.3, 1.5, 1.5)
                     ),
                     new CharacterLayoutProperties(
-                        "All",
+                        "all",
                         [
-                            new Qualifier("All", "fluffy")
+                            new Qualifier("all", "fluffy")
                         ],
-                        new CharacterPositionChange("All", 2.5)
+                        new CharacterPositionChange("all", 2.5)
                     )
                 ]
             )
@@ -151,8 +150,7 @@ describe("LayoutParser", () => {
 
     });
 
-    test("creates a scene model from a YAML input", () => {
-        let parser = new LayoutParser(input);
+    it("creates a scene model from a YAML input", () => {
         expect(parser.scene.layoutProperties).toBeDefined();
         expect(parser.scene.layoutProperties.zoom).toBe(1);
         expect(parser.scene.layoutProperties.pan).toEqual([1, 1]);
@@ -166,8 +164,7 @@ describe("LayoutParser", () => {
 
     });
 
-    test("connects all panels to a scene, a page, a trip and a background", () => {
-        let parser = new LayoutParser(input);
+    it("connects all panels to a scene, a page, a trip and a background", () => {
         parser.scene.panels.forEach(panel => {
             expect(panel.index).toBeDefined();
             expect(panel.scene).toBeDefined();
@@ -177,8 +174,7 @@ describe("LayoutParser", () => {
         });
     });
 
-    test("connects all pages to a scene and it's panels", () => {
-        let parser = new LayoutParser(input);
+    it("connects all pages to a scene and it's panels", () => {
         parser.scene.pages.forEach(page => {
             expect(page.index).toBeDefined();
             expect(page.scene).toBeDefined();
@@ -187,8 +183,7 @@ describe("LayoutParser", () => {
         });
     });
 
-    test("connects all backgrounds to a scene and it's panels", () => {
-        let parser = new LayoutParser(input);
+    it("connects all backgrounds to a scene and it's panels", () => {
         parser.scene.backgrounds.forEach(bgr => {
             expect(bgr.id).toBeDefined();
             expect(bgr.scene).toBeDefined();

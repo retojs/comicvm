@@ -9,7 +9,7 @@ describe("Plot", () => {
         plot = new Plot('');
     });
 
-    test("has a getter 'place' returning the string after the keyword 'place:' in the parsed input", () => {
+    it("has a getter 'place' returning the string after the keyword 'place:' in the parsed input", () => {
         const place = "The Place";
         plot = new Plot(`
             This is a test plot.
@@ -21,7 +21,7 @@ describe("Plot", () => {
         expect(plot.place).toBe('Somewhere');
     });
 
-    test("has a getter 'content' returning the text after the keyword 'plot:' in the parsed input", () => {
+    it("has a getter 'content' returning the text after the keyword 'plot:' in the parsed input", () => {
         const content = "This plot has no content";
         plot = new Plot(`
             This is a test plot.
@@ -34,7 +34,7 @@ describe("Plot", () => {
         expect(plot.content).toBe('');
     });
 
-    test("has a getter 'characters' returning the names after the keyword 'characters:' in the parsed input plus the name STORYTELLER", () => {
+    it("has a getter 'characters' returning the names after the keyword 'characters:' in the parsed input plus the name STORYTELLER", () => {
         const characters = ["Doc", "Dopey", "Bashful", "Grumpy", "Sneezy", "Sleepy", "Happy"];
         plot = new Plot(`
             This is a test plot.

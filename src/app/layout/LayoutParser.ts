@@ -8,6 +8,7 @@ import {
 } from "./LayoutProperties";
 import { BackgroundLayout, CharacterLayout, Layout, LayoutProperty, PageLayout, PanelLayout, StripLayout } from "./Layout";
 import { PanelConfig, StripConfig } from "./LayoutConfig";
+import { Square } from "../trigo/Square";
 import { Scene } from "../model/Scene";
 import { Page } from "../model/Page";
 import { Strip } from "../model/Strip";
@@ -15,8 +16,6 @@ import { Panel } from "../model/Panel";
 import { Qualifier } from "../model/Qualifier";
 import { Background } from "../model/Background";
 import * as YAML from "yaml";
-import { Square } from "../trigo/Square";
-
 
 export class LayoutParser {
 

@@ -21,7 +21,7 @@ export enum PanelLayoutPropertyName {
     Pan = "pan"
 }
 
-export const AllCharacters = "All";
+export const ALL_CHARACTERS = "all";
 
 export class CharacterPositionChange extends PositionChange {
 

@@ -18,6 +18,7 @@ export interface PlotItemSpec {
 
     how?: Qualifier[];
     whoWith?: string[];
+
     description?: string;
     told?: string;
 }
@@ -32,6 +33,7 @@ export class PlotItem {
 
     _qualifiers: Qualifier[] = [];
     _characters: string[] = [];
+
     _description: string;
     _told: string;
 

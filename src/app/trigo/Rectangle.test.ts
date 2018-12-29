@@ -3,7 +3,7 @@ import { Rectangle } from "./Rectangle";
 
 describe("Rectangle", () => {
 
-    test("method scale scales a rectangle relative to an origin", () => {
+    it("method scale scales a rectangle relative to an origin", () => {
         let scaleMe = new Rectangle(100, 50, 50, 50);
         scaleMe.scale(0.5);
         expect(scaleMe.x).toBe(100);
@@ -20,7 +20,7 @@ describe("Rectangle", () => {
         expect(scaleMe.height).toBe(25);
     });
 
-    test("method fitToBounds fits a rectangle into a rectangle", () => {
+    it("method fitToBounds fits a rectangle into a rectangle", () => {
         const container = new Rectangle(0, 0, 100, 80);
         const fitMe = new Rectangle(20, 20, 80, 40);
         Rectangle.fitToBounds(fitMe, container);

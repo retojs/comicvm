@@ -49,7 +49,7 @@
           "size": 1.5
         }
       },
-      "All": {
+      "all": {
         "how": ["fluffy"],
         "pos": {
           "x": 2.5

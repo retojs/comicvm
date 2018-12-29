@@ -17,7 +17,7 @@ describe("PlotParser", () => {
 
     describe("method addPlotItem", () => {
 
-        test("adds plot items with an ascending index number", () => {
+        it("adds plot items with an ascending index number", () => {
             plotParser.addPlotItem(new PlotItem({}));
             expect(plotParser.plotItems.length).toBe(1);
             expect(plotParser.plotItems[0]._index).toBe(1);
@@ -28,13 +28,13 @@ describe("PlotParser", () => {
     });
 
     describe("method onCharacter", () => {
-        test("handles lines starting with a character's name", () => {
+        it("handles lines starting with a character's name", () => {
             const spy = spyOn(plotParser, "onCharacter");
             plotParser.parseLine("Mickey says hi");
             expect(spy).toHaveBeenCalled();
         });
 
-        test("creates new 'does' plot items where all mentioned characters are actors", () => {
+        it("creates new 'does' plot items where all mentioned characters are actors", () => {
             plotParser.parseLine("Mickey and Goofy walk down the street");
 
             expect(plotParser.currentPlotItem.who).toEqual(["Mickey", "Goofy"]);
@@ -42,14 +42,14 @@ describe("PlotParser", () => {
             expect(plotParser.currentPlotItem.does).toEqual("Mickey and Goofy walk down the street");
         });
 
-        test("creates new 'says' plot items where only the first mentioned character is the actor.", () => {
+        it("creates new 'says' plot items where only the first mentioned character is the actor.", () => {
             plotParser.parseLine("Mickey to Goofy:");
 
             expect(plotParser.currentPlotItem.who).toEqual(["Mickey"]);
             expect(plotParser.currentPlotItem.whoWith).toEqual(["Goofy"]);
         });
 
-        test("Adds characters from subsequent character declarations as actors to the same plot items.", () => {
+        it("Adds characters from subsequent character declarations as actors to the same plot items.", () => {
             plotParser.parseLine("Mickey:");
             plotParser.parseLine("Goofy:");
             plotParser.parseLine("    What are you doing here?");
@@ -62,7 +62,7 @@ describe("PlotParser", () => {
 
     describe("method onDescription", () => {
 
-        test("adds a new plot items for each descriptions", () => {
+        it("adds a new plot items for each descriptions", () => {
             plotParser.parseLine("It's a sunny day in Disneyland.");
             expect(plotParser.currentPlotItem._description).toBe("It's a sunny day in Disneyland.");
             expect(plotParser.plotItems.length).toBe(1);
@@ -81,7 +81,7 @@ describe("PlotParser", () => {
             }));
         });
 
-        test("creates a new plot item for each line of dialog.", () => {
+        it("creates a new plot item for each line of dialog.", () => {
             let line = "   Hey Goofy!";
             plotParser.parseLine(line);
             expect(plotParser.plotItems.length).toBe(1);
@@ -105,7 +105,7 @@ describe("PlotParser", () => {
             }));
         });
 
-        test("adds unnamed qualifiers to the current plot item and associates them with the current actor", () => {
+        it("adds unnamed qualifiers to the current plot item and associates them with the current actor", () => {
             const line = "(surprised, wearing a hat)";
             plotParser.parseLine(line);
             expect(plotParser.currentPlotItem.how).toEqual([
@@ -114,7 +114,7 @@ describe("PlotParser", () => {
             ]);
         });
 
-        test("adds named qualifier to the current plot item", () => {
+        it("adds named qualifier to the current plot item", () => {
             const line = "(Goofy: happy)";
             plotParser.parseLine(line);
             expect(plotParser.currentPlotItem.how).toEqual([
@@ -122,7 +122,7 @@ describe("PlotParser", () => {
             ]);
         });
 
-        test("adds named and unnamed qualifiers to the current plot item", () => {
+        it("adds named and unnamed qualifiers to the current plot item", () => {
             const line = "(surprised, Goofy: happy, wearing a hat)";
             plotParser.parseLine(line);
             expect(plotParser.currentPlotItem.how).toEqual([
@@ -132,7 +132,7 @@ describe("PlotParser", () => {
             ]);
         });
 
-        test("", () => {
+        it("", () => {
             const line = "  (Goofy: happy)";
             plotParser.parseLine(line);
             expect(plotParser.currentPlotItem.how).toEqual([

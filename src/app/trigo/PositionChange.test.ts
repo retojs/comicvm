@@ -3,7 +3,7 @@ import { PositionChange } from "./PositionChange";
 
 describe("PositionChange", () => {
 
-    test("method adjust scales squares", () => {
+    it("method adjust scales squares", () => {
         const square = new Square(10, 10, 10);
         const positionChange = new PositionChange(0, 0, 2);
         positionChange.adjust(square);
@@ -14,7 +14,7 @@ describe("PositionChange", () => {
         expect(square.y).toBe(5);
     });
 
-    test("method adjust scales and translates squares", () => {
+    it("method adjust scales and translates squares", () => {
         const square = new Square(10, 10, 10);
         const positionChange = new PositionChange(0.5, 1, 2);
         positionChange.adjust(square);
