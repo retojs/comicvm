@@ -82,7 +82,7 @@ export class LayoutParser {
                 const prop = new CharacterLayoutProperties(name);
                 chProps.push(prop);
                 if (chLayout.how) {
-                    if (typeof chLayout.how === 'string') {
+                    if (typeof chLayout.how === "string") {
                         prop.how.push(new Qualifier(name, chLayout.how));
                     } else {
                         prop.how = chLayout.how.map(how => new Qualifier(name, how));

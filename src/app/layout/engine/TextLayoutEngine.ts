@@ -181,7 +181,7 @@ export class TextLayoutEngine {
      */
     splitIntoLinesOfLength(text: string, lineWidth: number): string[] {
 
-        const words = text.split(' ');
+        const words = text.split(" ");
         const lines: string[] = [];
         let currentLine = "";
 

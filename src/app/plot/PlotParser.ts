@@ -81,7 +81,7 @@ export class PlotParser {
             this.currentPlotItem._characters.push(...whoWith);
         }
 
-        if (line.trim().indexOf(':') !== line.trim().length - 1) {
+        if (line.trim().indexOf(":") !== line.trim().length - 1) {
             // If the line is no character declaration ending with a colon then it's a 'does' action.
             this.currentPlotItem.does = line.trim();
             this.currentPlotItem.who = [...who, ...whoWith];
@@ -96,7 +96,7 @@ export class PlotParser {
 
     onDialog(line: string): void {
         if (!this.currentPlotItem) {
-            throw new Error('No current plot item. Please note that dialog lines need a preceding character declaration.')
+            throw new Error("No current plot item. Please note that dialog lines need a preceding character declaration.")
         }
         if (this.currentPlotItem.says) {
             // create a new plot item for each line of dialog

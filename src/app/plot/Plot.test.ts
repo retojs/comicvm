@@ -17,8 +17,8 @@ describe("Plot", () => {
         `);
         expect(plot.place).toBe(place);
 
-        plot = new Plot('invalid');
-        expect(plot.place).toBe('Somewhere');
+        plot = new Plot("invalid");
+        expect(plot.place).toBe("Somewhere");
     });
 
     it("has a getter 'content' returning the text after the keyword 'plot:' in the parsed input", () => {
@@ -30,7 +30,7 @@ describe("Plot", () => {
         `);
         expect(plot.content).toBe(content);
 
-        plot = new Plot('invalid');
+        plot = new Plot("invalid");
         expect(plot.content).toBe('');
     });
 
@@ -44,7 +44,7 @@ describe("Plot", () => {
         `);
         expect(plot.characters).toEqual(characters.concat([STORY_TELLER]));
 
-        plot = new Plot('invalid');
+        plot = new Plot("invalid");
         expect(plot.characters).toEqual([]);
     });
 

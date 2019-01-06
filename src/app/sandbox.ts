@@ -117,7 +117,7 @@ scene:
     pos: {x: -0.25, y: 0.5, size: 1.7}
 `;
 
-const canvas = new Canvas('comic-vm-canvas', 600, 2000);
+const canvas = new Canvas("comic-vm-canvas", 600, 2000);
 const layoutParser = new LayoutParser(sampleLayout);
 const layoutEngine = new LayoutEngine(plot, layoutParser.scene, canvas);
 const panelPainter = new PanelPainter(canvas);

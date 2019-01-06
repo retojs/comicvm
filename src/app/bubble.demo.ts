@@ -23,7 +23,7 @@ Goofy to Mickey:
 Mickey to Goofy:
     It's just...
 Minnie to Goofy: 
-    You look like shit, Goofy 
+    You look like shit, Goofy!
 Goofy to Minnie:
     I can't believe you just said that. 
 Mickey to Goofy:
@@ -36,7 +36,7 @@ Mickey to Goofy:
     What?!
     It's Friday now.
 Minnie to Goofy:
-    What the fuck happened? 
+    What the fuck happened?! 
 `;
 
 

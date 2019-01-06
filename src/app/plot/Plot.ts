@@ -20,7 +20,7 @@ export class Plot {
      */
     get place(): string {
         if (this.input.toLowerCase().indexOf("place:") < 0) {
-            return 'Somewhere';
+            return "Somewhere";
         }
         const matches = this.input.match(/place:(.*)/i);
         return matches ? matches[1].trim() : ''

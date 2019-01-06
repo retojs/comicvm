@@ -13,7 +13,7 @@ import { Qualifier } from "../model/Qualifier";
 import { PositionChange } from "../trigo/PositionChange";
 
 export enum PanelLayoutPropertyName {
-    PlotItemCount = 'plotItemCount',
+    PlotItemCount = "plotItemCount",
     backgroundId = "backgroundId",
     CharacterQualifier = "characterQualifier",
     CharacterPositions = "characterPositions",

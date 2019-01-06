@@ -28,13 +28,13 @@ export class Canvas {
 
         this.scale = this.width / LayoutConfig.page.width;
 
-        this.canvas = this.createCanvas();
+        this.canvas = this.createCanvasElement();
         this.ctx = this.canvas.getContext("2d");
         this.ctx.scale(this.scale, this.scale);
         this.ctx.font = PaintConfig.canvas.font;
 
         if (container) {
-            if (typeof container === 'string') {
+            if (typeof container === "string") {
                 container = document.getElementById(container);
             }
             this.container = container;
@@ -42,7 +42,7 @@ export class Canvas {
         }
     }
 
-    createCanvas(): HTMLCanvasElement {
+    createCanvasElement(): HTMLCanvasElement {
         const canvas = document.createElement("canvas");
         canvas.width = this.width;
         canvas.height = this.height;

@@ -8,7 +8,7 @@ export class Button {
         container: HTMLElement | string,
         private eventListener: EventListener) {
 
-        if (typeof container === 'string') {
+        if (typeof container === "string") {
             this.container = document.getElementById(container);
         }
 
