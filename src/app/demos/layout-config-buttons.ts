@@ -1,6 +1,6 @@
-import { Button } from "./dom";
-import { CharacterPositionLayoutLevel, LayoutConfig } from "./layout/LayoutConfig";
-import { ScenePainter } from "./paint/ScenePainter";
+import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/LayoutConfig";
+import { ScenePainter } from "../paint/ScenePainter";
+import { Button } from "../dom/Button";
 
 export function create(scenePainter: ScenePainter) {
 
@@ -9,7 +9,7 @@ export function create(scenePainter: ScenePainter) {
     }
 
     (function createToggleZoomButton() {
-        const toggleZoomButton = new Button(getToggleZoomButtonLabel(), "buttons", toggleZoom);
+        const toggleZoomButton = new Button("buttons", getToggleZoomButtonLabel(), toggleZoom);
 
         function toggleZoom() {
             LayoutConfig.applyZoom = !LayoutConfig.applyZoom;
@@ -23,7 +23,7 @@ export function create(scenePainter: ScenePainter) {
     })();
 
     (function createTogglePanningButton() {
-        const togglePanningButton = new Button(getTogglePanningButtonLabel(), "buttons", togglePanning);
+        const togglePanningButton = new Button("buttons", getTogglePanningButtonLabel(), togglePanning);
 
         function togglePanning() {
             LayoutConfig.applyPanning = !LayoutConfig.applyPanning;
@@ -44,7 +44,7 @@ export function create(scenePainter: ScenePainter) {
         levelLabels[CharacterPositionLayoutLevel.SCENE] = "Scene";
         levelLabels[CharacterPositionLayoutLevel.DEFAULT] = "Default";
 
-        const layoutLevelButton = new Button(getLayoutLevelButtonLabel(), "buttons", setLayoutLevel);
+        const layoutLevelButton = new Button("buttons", getLayoutLevelButtonLabel(), setLayoutLevel);
 
         function setLayoutLevel() {
             LayoutConfig.characterPositionLayoutLevel = level;

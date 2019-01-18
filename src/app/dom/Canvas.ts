@@ -1,7 +1,10 @@
 import { LayoutConfig, MarginConfig, TextAlign } from "../layout/LayoutConfig";
 import { Rectangle } from "../trigo/Rectangle";
 import { Point } from "../trigo/Point";
-import { PaintConfig, PaintStyleConfig } from "./PaintConfig";
+import { PaintConfig, PaintStyleConfig } from "../paint/PaintConfig";
+import { Line } from "../trigo/Line";
+import { getScrollOffset } from "./util";
+import { DomElement } from "./DomElement";
 
 export const enum LineCap {
     Butt = "butt",
@@ -9,44 +12,37 @@ export const enum LineCap {
     Square = "square"
 }
 
-export class Canvas {
+export class Canvas extends DomElement<HTMLCanvasElement> {
+
+    domElement: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
 
     width: number;
     height: number;
     scale: number;
 
-    canvas: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D;
-    container: HTMLElement;
-
     // a cache for line heights per font
     private lineHeights: number[] = [];
 
     constructor(container: HTMLElement | string, width?: number, height?: number) {
+        super(container);
+
         this.width = width;
         this.height = height;
-
         this.scale = this.width / LayoutConfig.page.width;
 
-        this.canvas = this.createCanvasElement();
-        this.ctx = this.canvas.getContext("2d");
+        this.domElement = this.append(this.createCanvasElement());
+
+        this.ctx = this.domElement.getContext("2d");
         this.ctx.scale(this.scale, this.scale);
         this.ctx.font = PaintConfig.canvas.font;
-
-        if (container) {
-            if (typeof container === "string") {
-                container = document.getElementById(container);
-            }
-            this.container = container;
-            container.appendChild(this.canvas);
-        }
     }
 
     createCanvasElement(): HTMLCanvasElement {
-        const canvas = document.createElement("canvas");
-        canvas.width = this.width;
-        canvas.height = this.height;
-        return canvas;
+        this.domElement = document.createElement("canvas");
+        this.domElement.width = this.width;
+        this.domElement.height = this.height;
+        return this.domElement;
     }
 
     begin() {
@@ -70,7 +66,21 @@ export class Canvas {
         this.ctx.clip();
     }
 
-    line(from: Point, to: Point, config: PaintStyleConfig) {
+    circle(origin: Point, radius: number, config: PaintStyleConfig) {
+        if (!config.enabled) { return; }
+
+        this.begin();
+        this.ctx.beginPath();
+        this.ctx.arc(origin.x, origin.y, radius, 0, 2 * Math.PI);
+        this.strokeOrFill(config);
+        this.end();
+    }
+
+    line(line: Line, config: PaintStyleConfig) {
+        return this.lineFromTo(line.from, line.to, config);
+    }
+
+    lineFromTo(from: Point, to: Point, config: PaintStyleConfig) {
         if (!config.enabled) { return; }
 
         this.begin();
@@ -218,5 +228,19 @@ export class Canvas {
         this.end();
 
         return this.lineHeights[currentFont];
+    }
+
+
+    /**
+     * Returns the canvas coordinates to draw a point at the current mouse position
+     *
+     * @param clientX
+     * @param clientY
+     */
+    getMousePosition(clientX, clientY): Point {
+        const x = clientX - this.domElement.offsetLeft;
+        const y = clientY - this.domElement.offsetTop + getScrollOffset().top;
+
+        return new Point(x / this.scale, y / this.scale);
     }
 }

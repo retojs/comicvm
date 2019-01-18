@@ -1,5 +1,5 @@
 import { Panel } from "../model/Panel";
-import { Canvas } from "./Canvas";
+import { Canvas } from "../dom/Canvas";
 import { LayoutConfig } from "../layout/LayoutConfig";
 import { Rectangle } from "../trigo/Rectangle";
 import { Point } from "../trigo/Point";
@@ -57,7 +57,7 @@ export class PanelPainter {
         this.canvas.setClip(panel.shape);
 
         for (let i = 0; i < lineCount.x; i++) {
-            this.canvas.line(
+            this.canvas.lineFromTo(
                 new Point(
                     zoomedPanel.x + offset.x + i * characterSize,
                     zoomedPanel.y
@@ -69,7 +69,7 @@ export class PanelPainter {
                 PaintConfig.of.panel.grid);
         }
         for (let i = 0; i <= lineCount.y; i++) {
-            this.canvas.line(
+            this.canvas.lineFromTo(
                 new Point(
                     zoomedPanel.x,
                     zoomedPanel.y + offset.y + i * characterSize

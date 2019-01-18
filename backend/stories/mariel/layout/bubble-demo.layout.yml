@@ -1,0 +1,22 @@
+panelProperties:
+  - plotItemCount
+pages:
+  # page 1
+  - strips:
+      # upper strip
+      - panels:
+          - - 2
+          - - 4
+          - - 2
+      # middle strip
+      - panels:
+          - - 4
+          - - 1
+          - - 1
+      # lower strip
+      - panels:
+          - - 1
+          - - 1
+          - - 1
+scene:
+  pan: [0, 2]

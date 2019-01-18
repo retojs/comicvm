@@ -1,10 +1,11 @@
 import "../style/app.scss";
 
-import * as characterPositonDemo from "./character-position.demo";
-import * as bubblesDemo from "./bubble.demo";
-import { HTMLImage } from "./images/HTMLImage";
+import * as backendDemo from "./demos/backend.demo";
+import * as characterPositonDemo from "./demos/character-position.demo";
+import * as bubblesDemo from "./demos/bubble.demo";
+import * as intersectionDemo from "./demos/intersection.demo";
 
 characterPositonDemo.create();
 bubblesDemo.create();
-
-const marielImage = new HTMLImage("sample-images/characters/main-beach.mariel.backpack.png", "images");
+intersectionDemo;//.create();
+backendDemo.create();

@@ -1,4 +1,4 @@
 .idea
-!.idea\runConfigurations
+!.idea/runConfigurations
 node_modules
 dist

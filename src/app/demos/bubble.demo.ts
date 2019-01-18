@@ -1,6 +1,4 @@
-import { ScenePainter } from "./paint/ScenePainter";
-import { Button } from "./dom";
-import { CharacterPositionLayoutLevel, LayoutConfig } from "./layout/LayoutConfig";
+import { ComicVM } from "../ComicVM";
 
 
 const plot = `
@@ -66,8 +64,7 @@ scene:
   pan: [0, 2]
 `;
 
-let scenePainter: ScenePainter;
 
 export function create() {
-    scenePainter = new ScenePainter(plot, layout);
+    ComicVM.create(plot, layout);
 }

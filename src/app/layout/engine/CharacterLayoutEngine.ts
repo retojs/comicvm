@@ -10,14 +10,14 @@ export class CharacterLayoutEngine {
     constructor() {}
 
     layoutCharacters(panel: Panel) {
-        this.setCharactersDefaultPositions(panel);
-        this.setCharactersBackgroundPositions(panel);
+        this.setCharacterDefaultPositions(panel);
+        this.setCharacterBackgroundPositions(panel);
         this.setCharacterPanelPositions(panel);
         this.applyZoom(panel);
         this.applyPanning(panel);
     }
 
-    setCharactersDefaultPositions(panel: Panel) {
+    setCharacterDefaultPositions(panel: Panel) {
 
         // By default all characters are positioned on a line in the order specified in the plot (after the keyword 'Characters:')
         // with gaps as wide as a character between each other and gaps half as wide as a character to the left and right panel borders.
@@ -41,7 +41,7 @@ export class CharacterLayoutEngine {
         })
     }
 
-    setCharactersBackgroundPositions(panel: Panel) {
+    setCharacterBackgroundPositions(panel: Panel) {
 
         // Character's positions can be configured for the whole scene or for a background
         // After these configurations have been applied, the bounding box of all acting characters is fit into each panel.

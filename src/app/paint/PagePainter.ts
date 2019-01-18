@@ -1,4 +1,4 @@
-import { Canvas } from "./Canvas";
+import { Canvas } from "../dom/Canvas";
 import { PanelPainter } from "./PanelPainter";
 import { Page } from "../model/Page";
 import { Point } from "../trigo/Point";
@@ -17,7 +17,7 @@ export class PagePainter {
 
     paintPage(page: Page) {
         this.canvas.rect(page.shape, PaintConfig.of.page.background);
-        this.canvas.line(
+        this.canvas.lineFromTo(
             new Point(
                 page.shape.x,
                 page.shape.y + page.shape.height

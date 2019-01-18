@@ -1,4 +1,4 @@
-import { Canvas } from "../../paint/Canvas";
+import { Canvas } from "../../dom/Canvas";
 import { Panel } from "../../model/Panel";
 import { LayoutConfig } from "../LayoutConfig";
 import { Rectangle } from "../../trigo/Rectangle";

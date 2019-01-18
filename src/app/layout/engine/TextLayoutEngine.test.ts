@@ -1,5 +1,5 @@
 import { TextLayoutEngine } from "./TextLayoutEngine";
-import { Canvas } from "../../paint/Canvas";
+import { Canvas } from "../../dom/Canvas";
 import { Plot } from "../../plot/Plot";
 import { LayoutParser } from "../LayoutParser";
 import { LayoutEngine } from "./LayoutEngine";

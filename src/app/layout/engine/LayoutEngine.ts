@@ -6,7 +6,7 @@ import { Page } from "../../model/Page";
 import { Strip } from "../../model/Strip";
 import { Panel } from "../../model/Panel";
 import { Rectangle } from "../../trigo/Rectangle";
-import { Canvas } from "../../paint/Canvas";
+import { Canvas } from "../../dom/Canvas";
 import { TextLayoutEngine } from "./TextLayoutEngine";
 import { CharacterLayoutEngine } from "./CharacterLayoutEngine";
 

@@ -12,7 +12,7 @@ export class Square extends Rectangle {
     }
 
     get size() {
-        return this._width || 1.0;
+        return this._size || 1.0;
     }
 
     set size(size: number) {

@@ -1,5 +1,5 @@
 import { TextAlign } from "../layout/LayoutConfig";
-import { LineCap } from "./Canvas";
+import { LineCap } from "../dom/Canvas";
 
 export class CanvasConfig {
     id = "comic-vm-canvas";
@@ -19,7 +19,7 @@ export class PaintStyleConfig {
     font: string;
     textAlign: TextAlign;
 
-    private constructor(strokeStyle?: string, fillStyle?: string, lineWidth?: number, lineCap?: LineCap, font?: string, textAlign?: TextAlign, enabled?: boolean) {
+    private constructor(fillStyle?: string, strokeStyle?: string, lineWidth?: number, lineCap?: LineCap, font?: string, textAlign?: TextAlign, enabled?: boolean) {
         this.strokeStyle = strokeStyle;
         this.fillStyle = fillStyle;
         this.lineWidth = lineWidth;
@@ -30,27 +30,19 @@ export class PaintStyleConfig {
     }
 
     static stroke(color: string, lineWidth?: number, lineCap?: LineCap, enabled?: boolean): PaintStyleConfig {
-        return new PaintStyleConfig(color, null, lineWidth, lineCap, null, null, enabled);
+        return new PaintStyleConfig(null, color, lineWidth, lineCap, null, null, enabled);
     }
 
     static fill(color: string, enabled?: boolean): PaintStyleConfig {
-        return new PaintStyleConfig(null, color, null, null, null, null, enabled);
+        return new PaintStyleConfig(color, null, null, null, null, null, enabled);
     }
 
     static text(color: string, textAlign?: TextAlign, font?: string, enabled?: boolean): PaintStyleConfig {
-        return new PaintStyleConfig(null, color, null, null, font, textAlign, enabled);
+        return new PaintStyleConfig(color, null, null, null, font, textAlign, enabled);
     }
 
-    combine(otherConfig: PaintStyleConfig) {
-        return new PaintStyleConfig(
-            this.strokeStyle || otherConfig.strokeStyle,
-            this.fillStyle || otherConfig.fillStyle,
-            this.lineWidth || otherConfig.lineWidth,
-            this.lineCap || otherConfig.lineCap,
-            this.font || otherConfig.font,
-            this.textAlign || otherConfig.textAlign,
-            this.enabled || otherConfig.enabled
-        );
+    static fillAndStroke(fillStyle: string, strokeStyle: string, lineWidth?: number, lineCap?: LineCap, enabled?: boolean) {
+        return new PaintStyleConfig(fillStyle, strokeStyle, lineWidth, lineCap, null, null, enabled);
     }
 }
 
@@ -82,7 +74,7 @@ export class FeaturePaintStyleConfig {
     };
 
     bubble = {
-        border: PaintStyleConfig.stroke("#444", 5).combine(PaintStyleConfig.fill("#fff")),
+        border: PaintStyleConfig.fillAndStroke("#fff", "#444", 5),
         text: PaintStyleConfig.text("#000", TextAlign.Center),
         pointer: PaintStyleConfig.stroke("#000", 5, LineCap.Round),
         pointerHalo: PaintStyleConfig.stroke("rgba(255, 255, 255, 0.7)", 12, LineCap.Round)

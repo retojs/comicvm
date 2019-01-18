@@ -4,7 +4,7 @@ import { LayoutEngine } from "./LayoutEngine";
 import { STORY_TELLER } from "../../plot/PlotItem";
 import { SAMPLE_PLOT } from "../../plot/sample.plot";
 import { SAMPLE_LAYOUT } from "../sample.layout";
-import { Canvas } from "../../paint/Canvas";
+import { Canvas } from "../../dom/Canvas";
 
 describe("LayoutEngine", () => {
 
