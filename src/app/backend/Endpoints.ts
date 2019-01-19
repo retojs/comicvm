@@ -1,4 +1,8 @@
+import { BackendConfig } from "./BackendConfig";
+
 export class Endpoints {
+
+    baseUrl: string;
 
     private urls = {
         scenes: "/:story/scenes",
@@ -28,21 +32,18 @@ export class Endpoints {
             headers: {
                 "Content-Type": "application/json"
             }
-        },
-        formData: {
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
         }
     };
 
-    constructor(private baseUrl: string) {}
+    constructor(baseUrl?: string) {
+        this.baseUrl = baseUrl || BackendConfig.baseURL;
+    }
 
-    getScenes(story: string): Promise<any> {
+    getScenes(story: string): Promise<string[]> {
         return this.getJson(this.getSceneUrl(this.urls.scenes, story));
     }
 
-    getImages(story: string): Promise<any> {
+    getImages(story: string): Promise<string[]> {
         return this.getJson(this.getSceneUrl(this.urls.images, story));
     }
 

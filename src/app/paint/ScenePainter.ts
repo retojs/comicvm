@@ -1,8 +1,6 @@
 import { Canvas } from "../dom/Canvas";
-import { LayoutParser } from "../layout/LayoutParser";
 import { LayoutEngine } from "../layout/engine/LayoutEngine";
 import { PagePainter } from "./PagePainter";
-import { Plot } from "../plot/Plot";
 import { Scene } from "../model/Scene";
 
 export class ScenePainter {
@@ -12,18 +10,21 @@ export class ScenePainter {
     layoutEngine: LayoutEngine;
     pagePainter: PagePainter;
 
-    constructor(plot: string, layout: string, canvas: Canvas) {
+    constructor(scene: Scene, canvas: Canvas) {
+        this.scene = scene;
         this.canvas = canvas;
-        this.scene = new LayoutParser(layout).scene;
-        this.layoutEngine = new LayoutEngine(new Plot(plot), this.scene, this.canvas);
+        this.layoutEngine = new LayoutEngine(this.scene, this.canvas);
         this.pagePainter = new PagePainter(this.canvas);
-
-        this.paintScene();
     }
 
-    paintScene() {
+    static paintScene(scene: Scene, canvas: Canvas): ScenePainter {
+        return new ScenePainter(scene, canvas).paintScene();
+    }
+
+    paintScene(): ScenePainter {
         this.canvas.clear();
         this.scene.pages.forEach(page => this.pagePainter.paintPage(page));
+        return this;
     }
 
     repaintScene() {

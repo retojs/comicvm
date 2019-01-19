@@ -1,17 +1,17 @@
 import { LayoutSerializer } from "./LayoutSerializer";
-import { LayoutParser } from "./LayoutParser";
 import { SAMPLE_LAYOUT } from "./sample.layout";
+import { Scene } from "../model/Scene";
 
 describe("LayoutSerializer", () => {
 
-    let yamlInput = SAMPLE_LAYOUT;
+    const yamlInput = SAMPLE_LAYOUT;
 
-    let parser: LayoutParser;
+    let scene: Scene;
     let serializer: LayoutSerializer;
 
     beforeEach(() => {
-        parser = new LayoutParser(yamlInput);
-        serializer = new LayoutSerializer(parser);
+        scene = new Scene("", yamlInput, "").parseLayout();
+        serializer = new LayoutSerializer(scene);
     });
 
     it("serializes layout", () => {

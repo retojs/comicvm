@@ -1,4 +1,7 @@
-import { ComicVM } from "../ComicVM";
+import { ScenePainter } from "../paint/ScenePainter";
+import { Canvas } from "../dom/Canvas";
+import { PaintConfig } from "../paint/PaintConfig";
+import { Scene } from "../model/Scene";
 
 
 const plot = `
@@ -66,5 +69,12 @@ scene:
 
 
 export function create() {
-    ComicVM.create(plot, layout);
+    ScenePainter.paintScene(
+        new Scene("Scene", layout, plot),
+        new Canvas(
+            PaintConfig.canvas.id,
+            PaintConfig.canvas.width,
+            PaintConfig.canvas.height
+        )
+    );
 }

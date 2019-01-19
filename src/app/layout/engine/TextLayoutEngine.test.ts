@@ -1,11 +1,10 @@
 import { TextLayoutEngine } from "./TextLayoutEngine";
 import { Canvas } from "../../dom/Canvas";
-import { Plot } from "../../plot/Plot";
-import { LayoutParser } from "../LayoutParser";
 import { LayoutEngine } from "./LayoutEngine";
 import { SAMPLE_PLOT } from "../../plot/sample.plot";
 import { SAMPLE_LAYOUT } from "../sample.layout";
 import { Bubble } from "../../model/Bubble";
+import { Scene } from "../../model/Scene";
 
 // Note: This test needs to be run with the karma test runner since it involves canvas.
 
@@ -14,19 +13,15 @@ describe("TextLayoutEngine", () => {
     const samplePlot = SAMPLE_PLOT;
     const sampleLayout = SAMPLE_LAYOUT;
 
-    let plot: Plot;
-    let layoutParser: LayoutParser;
-    let layoutEngine: LayoutEngine;
+    let scene: Scene;
     let canvas: Canvas;
+    let layoutEngine: LayoutEngine;
     let textLayoutEngine: TextLayoutEngine;
 
     beforeEach(() => {
-
-        plot = new Plot(samplePlot);
-        layoutParser = new LayoutParser(sampleLayout);
-        layoutEngine = new LayoutEngine(plot, layoutParser.scene, new Canvas(null, 800, 1200));
-
+        scene = new Scene("", sampleLayout, samplePlot).parseLayout();
         canvas = new Canvas(null, 600, 1800);
+        layoutEngine = new LayoutEngine(scene, canvas);
         textLayoutEngine = new TextLayoutEngine(canvas);
     });
 

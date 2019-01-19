@@ -1,6 +1,5 @@
 import { LayoutConfig, PanelConfig, StripConfig } from "../LayoutConfig";
 import { PlotItem, STORY_TELLER } from "../../plot/PlotItem";
-import { Plot } from "../../plot/Plot";
 import { Scene } from "../../model/Scene";
 import { Page } from "../../model/Page";
 import { Strip } from "../../model/Strip";
@@ -17,35 +16,40 @@ export class LayoutEngine {
     textLayoutEngine: TextLayoutEngine;
     characterLayoutEngine: CharacterLayoutEngine;
 
-    constructor(plot: Plot, scene: Scene, canvas: Canvas) {
+    constructor(scene: Scene, canvas: Canvas) {
         this.scene = scene;
-        this.scene.characters = plot.characters.filter(ch => ch !== STORY_TELLER);
+        this.scene.characters = scene.plot.characters.filter(ch => ch !== STORY_TELLER);
 
         this.textLayoutEngine = new TextLayoutEngine(canvas);
         this.characterLayoutEngine = new CharacterLayoutEngine();
+    }
 
-        this.assignPlotItems(plot.plotItems);
-        this.layout();
+    static layoutScene(scene: Scene, canvas: Canvas): LayoutEngine {
+        return new LayoutEngine(scene, canvas).assignPlotItems(scene.plot.plotItems).layout();
     }
 
     /**
      * Distributes the plot items into the panels
      */
-    assignPlotItems(plotItems: PlotItem[]) {
+    assignPlotItems(plotItems: PlotItem[]): LayoutEngine {
 
         let plotItemIndex = 0;
         this.scene.panels.forEach(panel => {
             panel.setPlotItems(plotItems.slice(plotItemIndex, plotItemIndex + panel.layoutProperties.plotItemCount));
             plotItemIndex += panel.layoutProperties.plotItemCount;
-        })
+        });
+
+        return this;
     }
 
-    layout() {
+    layout(): LayoutEngine {
 
         if (this.scene && this.scene.pages) {
             this.scene.pages.forEach(page => this.layoutPage(page));
         }
         this.textLayoutEngine.layout(this.scene.panels);
+
+        return this;
     }
 
     layoutPage(page: Page) {

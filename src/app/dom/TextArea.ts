@@ -2,6 +2,11 @@ import { DomElement } from "./DomElement";
 
 export class TextArea extends DomElement<HTMLTextAreaElement> {
 
+    static style: any = {
+        padding: "12px 24px",
+        font: "16px Roboto"
+    };
+
     domElement: HTMLTextAreaElement;
 
     cols: number;
@@ -20,6 +25,10 @@ export class TextArea extends DomElement<HTMLTextAreaElement> {
         this.domElement = document.createElement("textarea");
         this.domElement.cols = this.cols;
         this.domElement.rows = this.rows;
+
+        this.domElement.style.padding = TextArea.style.padding;
+        this.domElement.style.font = TextArea.style.font;
+
         return this.domElement;
     }
 

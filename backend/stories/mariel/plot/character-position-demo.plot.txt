@@ -1,31 +1,18 @@
+Title: Character Position Test
 
-Title: Kick Off
+Characters: Mickey, Minnie, Goofy
 
-Characters: Mariel, Basil, Silas
-
-Place: main-beach
+Place: Duckburgh
 _____
 Plot:
 
-Mariel neben Silas:
-(Silas:waiting)
-    Bequem so?
+Mickey to Goofy:
+(happy)
+    Hey Goofy
+    How are you?
 
-Basil:
-    Yup, sitzt perfekt.
-
-(waiting)
-    Also dann...
-    Achtung!
-    Fertig?
-Basil und Silas:
-(jump, Silas:jump)
-    Los!
-
-Mariel, Basil und Silas:
-(Basil:swim, Silas:swim)
-    Quiek!
-
-Basil und Silas springen mit Mariel ins Wasser.
-Silas schwimmt voraus.
-Mariel reitet auf Basil.
+Goofy to Mickey:
+    Hey Mickey!
+    Long time no see.
+    And hello Minnie
+    Always a pleasure to see you.

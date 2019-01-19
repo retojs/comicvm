@@ -4,31 +4,26 @@ import { Background } from "../model/Background";
 import { Qualifier } from "../model/Qualifier";
 import { Panel } from "../model/Panel";
 import { SAMPLE_LAYOUT } from "./sample.layout";
+import { Scene } from "../model/Scene";
 
 describe("LayoutParser", () => {
 
     const sampleLayout = SAMPLE_LAYOUT;
-    const layoutFromJson = require("./sample.layout.json");
 
-    let parser: LayoutParser;
+    let scene: Scene;
 
     beforeEach(() => {
-        parser = new LayoutParser(sampleLayout);
-    });
-
-    it("can parse a XAML file to JSON", () => {
-        expect(parser.layout).toEqual(layoutFromJson);
+        scene = new Scene("", sampleLayout, "").parseLayout();
     });
 
     it("creates page, strip and panel layout models from a YAML input", () => {
 
-        expect(parser.scene).toBeDefined();
-        expect(parser.scene.pages.length).toBe(2);
-        expect(parser.scene.pages[0].strips.length).toBe(2);
-        expect(parser.scene.pages[0].strips[0].panels.length).toBe(3);
-        expect(parser.scene.pages[0].strips[1].panels.length).toBe(1);
+        expect(scene.pages.length).toBe(2);
+        expect(scene.pages[0].strips.length).toBe(2);
+        expect(scene.pages[0].strips[0].panels.length).toBe(3);
+        expect(scene.pages[0].strips[1].panels.length).toBe(1);
 
-        checkPanelProps(parser.scene.pages[0].strips[0].panels[0],
+        checkPanelProps(scene.pages[0].strips[0].panels[0],
             new PanelLayoutProperties(
                 2,
                 "bgr-1",
@@ -38,7 +33,7 @@ describe("LayoutParser", () => {
                 ]
             )
         );
-        checkPanelProps(parser.scene.pages[0].strips[0].panels[1],
+        checkPanelProps(scene.pages[0].strips[0].panels[1],
             new PanelLayoutProperties(
                 1,
                 "bgr-2",
@@ -50,7 +45,7 @@ describe("LayoutParser", () => {
                 ]
             )
         );
-        checkPanelProps(parser.scene.pages[0].strips[0].panels[2],
+        checkPanelProps(scene.pages[0].strips[0].panels[2],
             new PanelLayoutProperties(
                 0,
                 "bgr-3",
@@ -60,7 +55,7 @@ describe("LayoutParser", () => {
                 [1.3, 1.0]
             )
         );
-        checkPanelProps(parser.scene.pages[0].strips[1].panels[0],
+        checkPanelProps(scene.pages[0].strips[1].panels[0],
             new PanelLayoutProperties(
                 3,
                 "bgr-3",
@@ -70,13 +65,13 @@ describe("LayoutParser", () => {
                 ]
             )
         );
-        checkPanelProps(parser.scene.pages[1].strips[0].panels[0],
+        checkPanelProps(scene.pages[1].strips[0].panels[0],
             new PanelLayoutProperties(
                 1,
                 Background.defaultId
             )
         );
-        checkPanelProps(parser.scene.pages[1].strips[0].panels[1],
+        checkPanelProps(scene.pages[1].strips[0].panels[1],
             new PanelLayoutProperties(
                 2,
                 "sunset-beach"
@@ -95,21 +90,21 @@ describe("LayoutParser", () => {
     }
 
     it("creates a background layout model from a YAML input", () => {
-        expect(parser.scene.backgrounds).toBeDefined();
-        expect(parser.scene.backgrounds.length).toBe(5);
-        expect(parser.scene.backgrounds[0].id).toBe(Background.defaultId);
-        expect(parser.scene.backgrounds[1].id).toBe("sunset-beach");
-        expect(parser.scene.backgrounds[2].id).toBe("bgr-1");
-        expect(parser.scene.backgrounds[3].id).toBe("bgr-2");
-        expect(parser.scene.backgrounds[4].id).toBe("bgr-3");
+        expect(scene.backgrounds).toBeDefined();
+        expect(scene.backgrounds.length).toBe(5);
+        expect(scene.backgrounds[0].id).toBe(Background.defaultId);
+        expect(scene.backgrounds[1].id).toBe("sunset-beach");
+        expect(scene.backgrounds[2].id).toBe("bgr-1");
+        expect(scene.backgrounds[3].id).toBe("bgr-2");
+        expect(scene.backgrounds[4].id).toBe("bgr-3");
 
-        expect(parser.scene.backgrounds[0].panels.length).toBe(1);
-        expect(parser.scene.backgrounds[1].panels.length).toBe(1);
-        expect(parser.scene.backgrounds[2].panels.length).toBe(1);
-        expect(parser.scene.backgrounds[3].panels.length).toBe(1);
-        expect(parser.scene.backgrounds[4].panels.length).toBe(2);
+        expect(scene.backgrounds[0].panels.length).toBe(1);
+        expect(scene.backgrounds[1].panels.length).toBe(1);
+        expect(scene.backgrounds[2].panels.length).toBe(1);
+        expect(scene.backgrounds[3].panels.length).toBe(1);
+        expect(scene.backgrounds[4].panels.length).toBe(2);
 
-        expect(parser.scene.backgrounds[0].layoutProperties).toEqual(
+        expect(scene.backgrounds[0].layoutProperties).toEqual(
             new BackgroundLayoutProperties(
                 Background.defaultId,
                 1,
@@ -133,7 +128,7 @@ describe("LayoutParser", () => {
                 ]
             )
         );
-        expect(parser.scene.backgrounds[1].layoutProperties).toEqual(
+        expect(scene.backgrounds[1].layoutProperties).toEqual(
             new BackgroundLayoutProperties(
                 "sunset-beach",
                 1,
@@ -151,10 +146,10 @@ describe("LayoutParser", () => {
     });
 
     it("creates a scene model from a YAML input", () => {
-        expect(parser.scene.layoutProperties).toBeDefined();
-        expect(parser.scene.layoutProperties.zoom).toBe(1);
-        expect(parser.scene.layoutProperties.pan).toEqual([1, 1]);
-        expect(parser.scene.layoutProperties.character).toEqual([
+        expect(scene.layoutProperties).toBeDefined();
+        expect(scene.layoutProperties.zoom).toBe(1);
+        expect(scene.layoutProperties.pan).toEqual([1, 1]);
+        expect(scene.layoutProperties.character).toEqual([
             new CharacterLayoutProperties(
                 "Mariel",
                 [new Qualifier("Mariel", "wet")],
@@ -165,7 +160,7 @@ describe("LayoutParser", () => {
     });
 
     it("connects all panels to a scene, a page, a trip and a background", () => {
-        parser.scene.panels.forEach(panel => {
+        scene.panels.forEach(panel => {
             expect(panel.index).toBeDefined();
             expect(panel.scene).toBeDefined();
             expect(panel.background).toBeDefined();
@@ -175,7 +170,7 @@ describe("LayoutParser", () => {
     });
 
     it("connects all pages to a scene and it's panels", () => {
-        parser.scene.pages.forEach(page => {
+        scene.pages.forEach(page => {
             expect(page.index).toBeDefined();
             expect(page.scene).toBeDefined();
             expect(page.strips).toBeDefined();
@@ -184,7 +179,7 @@ describe("LayoutParser", () => {
     });
 
     it("connects all backgrounds to a scene and it's panels", () => {
-        parser.scene.backgrounds.forEach(bgr => {
+        scene.backgrounds.forEach(bgr => {
             expect(bgr.id).toBeDefined();
             expect(bgr.scene).toBeDefined();
             expect(bgr.panels).toBeDefined();

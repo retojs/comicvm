@@ -19,18 +19,18 @@ import * as YAML from "yaml";
 
 export class LayoutParser {
 
-    input: string;
-    layout: Layout;
-    scene: Scene;
-
-    constructor(input: string) {
-        this.input = input;
-        this.layout = YAML.parse(input);
-        this.scene = this.createScene(this.layout);
+    static parseLayout(scene: Scene): LayoutParser {
+        return new LayoutParser(scene.layout).parseLayout(scene);
     }
 
-    createScene(sceneLayout: Layout): Scene {
-        const scene = new Scene();
+    layout: Layout;
+
+    constructor(input: string) {
+        this.layout = YAML.parse(input);
+    }
+
+    parseLayout(scene: Scene): LayoutParser {
+        const sceneLayout = YAML.parse(scene.layout);
 
         if (sceneLayout.scene) {
             scene.layoutProperties = new SceneLayoutProperties(sceneLayout.scene.zoom, sceneLayout.scene.pan);
@@ -61,7 +61,7 @@ export class LayoutParser {
             background.addPanel(panel);
         });
 
-        return scene;
+        return this;
     }
 
     createBackground(id: string, bgrLayout: BackgroundLayout, scene: Scene): Background {

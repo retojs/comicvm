@@ -1,36 +1,41 @@
-import { ScenePainter } from "./paint/ScenePainter";
 import { Canvas } from "./dom/Canvas";
 import { PaintConfig } from "./paint/PaintConfig";
+import { Story } from "./model/Story";
+import { Scene } from "./model/Scene";
+import { ScenePainter } from "./paint/ScenePainter";
 
 export class ComicVM {
 
-    plot: string;
-    layout: string;
+    story: Story;
     canvas: Canvas;
-    scenePainter: ScenePainter;
 
-    private constructor() {}
-
-    static create(plot: string, layout: string, canvas?: Canvas): ComicVM {
-
-        const instance = new ComicVM();
+    constructor(story: Story, canvas?: Canvas) {
+        this.story = story;
 
         if (canvas) {
-            instance.canvas = canvas;
+            this.canvas = canvas;
         } else {
-            instance.canvas = new Canvas(
+            this.canvas = new Canvas(
                 PaintConfig.canvas.id,
                 PaintConfig.canvas.width,
                 PaintConfig.canvas.height
             );
         }
+    }
 
-        instance.scenePainter = new ScenePainter(
-            plot,
-            layout,
-            instance.canvas
+    static loadStory(storyName: string): Promise<ComicVM> {
+        return Story.load(storyName)
+            .then(story => new ComicVM(story));
+    }
+
+    setupScene(index: number): Scene {
+        return this.story.scenes[index].setup(this.canvas);
+    }
+
+    paintScene(index: number): void {
+        ScenePainter.paintScene(
+            this.setupScene(index),
+            this.canvas
         );
-
-        return instance;
     }
 }

@@ -2,22 +2,21 @@ import { Endpoints } from "../backend/Endpoints";
 import { Img } from "../dom/Img";
 import { TextArea } from "../dom/TextArea";
 import { Div } from "../dom/Div";
-import { ImageUpload } from "./ImageUpload";
+import { ImageUpload } from "../components/ImageUpload";
+import { BackendConfig } from "../backend/BackendConfig";
 
-
-const baseUrl = "http://localhost:3000";
 
 export function create() {
 
-    const backend = new Endpoints(baseUrl);
-
     const story = "Mariel";
+
+    const backend = new Endpoints();
 
     const imageContainer = new Div("images").domElement;
     const textContainer = new Div("images").domElement;
 
-    const backgroundImageUpload = new ImageUpload(imageContainer, story, backend, true).domElement;
-    const characterImageUpload = new ImageUpload(imageContainer, story, backend, false).domElement;
+    const backgroundImageUpload = new ImageUpload(imageContainer, story, true).domElement;
+    const characterImageUpload = new ImageUpload(imageContainer, story, false).domElement;
 
     backend.getScenes(story)
         .then(scenes => {
@@ -50,9 +49,9 @@ export function create() {
             images.forEach(path => {
                 let img: Img;
                 if (path.indexOf('/background/') > -1) {
-                    img = new Img(imageContainer, baseUrl + path, 500, 300);
+                    img = new Img(imageContainer, BackendConfig.baseURL + path, 500, 300);
                 } else {
-                    img = new Img(imageContainer, baseUrl + path, 100, 120);
+                    img = new Img(imageContainer, BackendConfig.baseURL + path, 100, 120);
                 }
                 img.domElement.style.margin = "4px";
                 img.domElement.style.border = "1px solid lightgrey";

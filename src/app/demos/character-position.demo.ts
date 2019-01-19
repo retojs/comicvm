@@ -1,5 +1,8 @@
 import * as layoutConfigButtons from "./layout-config-buttons";
-import { ComicVM } from "../ComicVM";
+import { ScenePainter } from "../paint/ScenePainter";
+import { Canvas } from "../dom/Canvas";
+import { PaintConfig } from "../paint/PaintConfig";
+import { Scene } from "../model/Scene";
 
 const plot = `
 Title: Character Position Test
@@ -88,6 +91,17 @@ scene:
 
 
 export function create() {
-    const comicVm: ComicVM = ComicVM.create(plot, layout);
-    layoutConfigButtons.create(comicVm.scenePainter);
+
+    const canvas = new Canvas(
+        PaintConfig.canvas.id,
+        PaintConfig.canvas.width,
+        PaintConfig.canvas.height
+    );
+
+    const scenePainter = ScenePainter.paintScene(
+        new Scene("Scene", layout, plot).setup(canvas),
+        canvas
+    );
+
+    layoutConfigButtons.create(scenePainter);
 }

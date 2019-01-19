@@ -8,14 +8,15 @@ export class ImageUpload {
     text: Div;
 
     story: string;
-    backend: Endpoints;
     isForBackgroundImages: boolean;
 
-    constructor(container: HTMLElement | string, story: string, backend: Endpoints, isForBackgroundImages: boolean) {
+    private _backend: Endpoints;
+
+    constructor(container: HTMLElement | string, story: string, isForBackgroundImages: boolean) {
         this.rootDiv = new Div(container);
-        this.backend = backend;
         this.story = story;
         this.isForBackgroundImages = isForBackgroundImages;
+        this._backend = new Endpoints();
 
         this.domElement.style.display = "inline-block";
         this.domElement.style.width = "35%";
@@ -54,9 +55,9 @@ export class ImageUpload {
         for (let i = 0; i < event.dataTransfer.files.length; i++) {
             images[i] = event.dataTransfer.files.item(i);
             if (isBackground) {
-                uploadPromises.push(this.backend.uploadBackgroundImage(images[i], this.story));
+                uploadPromises.push(this._backend.uploadBackgroundImage(images[i], this.story));
             } else {
-                uploadPromises.push(this.backend.uploadCharacterImage(images[i], this.story));
+                uploadPromises.push(this._backend.uploadCharacterImage(images[i], this.story));
             }
         }
 
@@ -68,9 +69,9 @@ export class ImageUpload {
     insertImages(images: File[], isBackground: boolean): void {
         images.forEach(image => {
             if (isBackground) {
-                new Img(this.rootDiv.container, this.backend.getBackgroundImageUrl(this.story, image.name), 500, 300);
+                new Img(this.rootDiv.container, this._backend.getBackgroundImageUrl(this.story, image.name), 500, 300);
             } else {
-                new Img(this.rootDiv.container, this.backend.getCharacterImageUrl(this.story, image.name), 100, 120);
+                new Img(this.rootDiv.container, this._backend.getCharacterImageUrl(this.story, image.name), 100, 120);
             }
         });
     }

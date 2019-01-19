@@ -11,7 +11,7 @@ describe("Panel", () => {
 
     beforeEach(() => {
         panel = new Panel(0);
-        panel.scene = new Scene();
+        panel.scene = new Scene("", "", "");
         panel.scene.characters = ["Walt", "Mickey", "Minnie", "Goofy", "Weirdo"];
 
         plotItems = [

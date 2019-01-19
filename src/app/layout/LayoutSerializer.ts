@@ -5,7 +5,6 @@ import {
     PanelLayoutPropertyName,
     SceneLayoutProperties
 } from "./LayoutProperties";
-import { LayoutParser } from "./LayoutParser";
 import { Page } from "../model/Page";
 import { Strip } from "../model/Strip";
 import { Panel } from "../model/Panel";
@@ -19,18 +18,18 @@ export class LayoutSerializer {
     INDENT = "  ";
     NL = "\r\n";
 
-    constructor(private layoutParser: LayoutParser) {};
+    constructor(private scene: Scene) {};
 
     stringify(): string {
 
         let str = "---" + this.NL;
 
         str += this.stringifyPanelProperties({
-            panelProperties: this.layoutParser.layout.panelProperties
+            panelProperties: this.scene.layoutParser.layout.panelProperties
         });
 
         str += "pages:" + this.NL
-            + this.layoutParser.scene.pages.map((page, index) =>
+            + this.scene.pages.map((page, index) =>
                 this.INDENT + "# page " + (index + 1) + this.NL
                 + this.INDENT + "- "
                 + this.stringifyPage(page, this.INDENT)
@@ -38,10 +37,10 @@ export class LayoutSerializer {
             + this.NL;
 
         str += "backgrounds:" + this.NL
-            + this.stringifyBackgrounds(this.layoutParser.scene.backgrounds, this.INDENT);
+            + this.stringifyBackgrounds(this.scene.backgrounds, this.INDENT);
 
         str += "scene:" + this.NL
-            + this.stringifyScene(this.layoutParser.scene, this.INDENT);
+            + this.stringifyScene(this.scene, this.INDENT);
 
         return str;
     }
@@ -134,7 +133,7 @@ export class LayoutSerializer {
     }
 
     stringifyPanel(panel: Panel, indent: string): string {
-        let props = this.layoutParser.layout.panelProperties.map((propName: PanelLayoutPropertyName) =>
+        let props = this.scene.layoutParser.layout.panelProperties.map((propName: PanelLayoutPropertyName) =>
             this.stringifyPanelLayoutProperty(propName, panel.layoutProperties)
         );
         while (props[props.length - 1] === null && props.length > 1) {
