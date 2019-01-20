@@ -54,7 +54,7 @@ export class Images {
     createImage(imageName: string): Promise<Img> {
         return new Promise((resolve) => {
             const img = new Img(null, BackendConfig.baseURL + imageName);
-            img.domElement.onload = () => {
+            img.onLoad = () => {
                 resolve(img);
             };
         })

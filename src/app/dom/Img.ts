@@ -25,7 +25,10 @@ export class Img extends DomElement<HTMLImageElement> {
         this.domElement = document.createElement("img");
         this.domElement.src = this.src;
 
-        this.domElement.onload = () => {
+        this.onLoad = () => {
+            if (!this.domElement.width) {
+                console.log("Image has no size! ", this.src);
+            }
             this.bitmapShape = new Rectangle(0, 0, this.domElement.width, this.domElement.height);
             const fit = Rectangle.fitToBounds(this.bitmapShape.clone(), this.bounds);
 
@@ -35,4 +38,9 @@ export class Img extends DomElement<HTMLImageElement> {
 
         return this.domElement;
     }
+
+    set onLoad(onLoad: EventListener) {
+        this.domElement.addEventListener("load", onLoad);
+    }
+
 }

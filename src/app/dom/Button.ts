@@ -7,12 +7,9 @@ export class Button extends DomElement<HTMLButtonElement> {
     label: string;
     eventListener: EventListener;
 
-    constructor(container: HTMLElement | string, label: string, eventListener: EventListener) {
+    constructor(container: HTMLElement | string, label: string) {
         super(container);
-
         this.label = label;
-        this.eventListener = eventListener;
-
         this.append(this.createButton());
     }
 

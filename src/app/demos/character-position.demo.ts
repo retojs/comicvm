@@ -103,5 +103,5 @@ export function create() {
         canvas
     );
 
-    layoutConfigButtons.create(scenePainter);
+    layoutConfigButtons.create(scenePainter.repaintScene);
 }

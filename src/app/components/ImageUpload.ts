@@ -28,15 +28,12 @@ export class ImageUpload {
         this.domElement.style.margin = "5px";
         this.domElement.style.cursor = "pointer";
 
-        this.rootDiv.onHover(
-            () => this.domElement.style.border = "2px solid Teal",
-            () => this.domElement.style.border = "2px solid PaleTurquoise"
-        );
+        this.rootDiv.onMouseEnter = () => this.domElement.style.border = "2px solid Teal";
+        this.rootDiv.onMouseLeave = () => this.domElement.style.border = "2px solid PaleTurquoise";
 
-        this.rootDiv.onDrop((event: DragEvent) => {
+        this.rootDiv.onDrop = ((event: DragEvent) => {
             return this.uploadDroppedImages(event, this.isForBackgroundImages)
                 .then(files => this.insertImages(files, this.isForBackgroundImages));
-
         });
 
         this.text = new Div(this.domElement, `<h2>Drop more ${this.isForBackgroundImages ? 'background' : 'character'} images here</h2>`);

@@ -59,9 +59,6 @@ export class Character {
         if (!this.image) {
             return new Rectangle(0, 0, 0, 0);
         }
-        return Rectangle.fitAroundBounds(
-            new Rectangle(0, 0, this.image.domElement.width, this.image.domElement.height),
-            characterPosition
-        );
+        return Rectangle.fitAroundBounds(this.image.bitmapShape, characterPosition);
     }
 }

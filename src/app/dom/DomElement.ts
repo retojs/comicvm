@@ -21,16 +21,19 @@ export abstract class DomElement<T extends HTMLElement> {
         return element;
     }
 
-    onClick(onClick: EventListener): void {
+    set onClick(onClick: EventListener) {
         this.domElement.addEventListener("click", onClick);
     }
 
-    onHover(onMouseEnter: EventListener, onMouseLeave: EventListener): void {
+    set onMouseEnter(onMouseEnter: EventListener) {
         this.domElement.addEventListener("mouseenter", onMouseEnter);
+    }
+
+    set onMouseLeave(onMouseLeave: EventListener) {
         this.domElement.addEventListener("mouseleave", onMouseLeave);
     }
 
-    onDrop(onDrop: EventListener): void {
+    set onDrop(onDrop: EventListener) {
 
         this.domElement.ondragover = (event: DragEvent) => {
             if (isFileDragged(event)) {

@@ -1,19 +1,15 @@
 import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/LayoutConfig";
-import { ScenePainter } from "../paint/ScenePainter";
 import { Button } from "../dom/Button";
 
-export function create(scenePainter: ScenePainter) {
-
-    function repaint() {
-        scenePainter.repaintScene();
-    }
+export function create(repaintFn: () => void) {
 
     (function createToggleZoomButton() {
-        const toggleZoomButton = new Button("buttons", getToggleZoomButtonLabel(), toggleZoom);
+        const toggleZoomButton = new Button("buttons", getToggleZoomButtonLabel());
+        toggleZoomButton.onClick = toggleZoom;
 
         function toggleZoom() {
             LayoutConfig.applyZoom = !LayoutConfig.applyZoom;
-            repaint();
+            repaintFn();
             toggleZoomButton.setLabel(getToggleZoomButtonLabel());
         }
 
@@ -23,11 +19,12 @@ export function create(scenePainter: ScenePainter) {
     })();
 
     (function createTogglePanningButton() {
-        const togglePanningButton = new Button("buttons", getTogglePanningButtonLabel(), togglePanning);
+        const togglePanningButton = new Button("buttons", getTogglePanningButtonLabel());
+        togglePanningButton.onClick = togglePanning;
 
         function togglePanning() {
             LayoutConfig.applyPanning = !LayoutConfig.applyPanning;
-            repaint();
+            repaintFn();
             togglePanningButton.setLabel(getTogglePanningButtonLabel());
         }
 
@@ -44,11 +41,12 @@ export function create(scenePainter: ScenePainter) {
         levelLabels[CharacterPositionLayoutLevel.SCENE] = "Scene";
         levelLabels[CharacterPositionLayoutLevel.DEFAULT] = "Default";
 
-        const layoutLevelButton = new Button("buttons", getLayoutLevelButtonLabel(), setLayoutLevel);
+        const layoutLevelButton = new Button("buttons", getLayoutLevelButtonLabel());
+        layoutLevelButton.onClick = setLayoutLevel;
 
         function setLayoutLevel() {
             LayoutConfig.characterPositionLayoutLevel = level;
-            repaint();
+            repaintFn();
             layoutLevelButton.setLabel(getLayoutLevelButtonLabel());
         }
 

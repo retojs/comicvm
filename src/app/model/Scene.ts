@@ -32,7 +32,15 @@ export class Scene {
         return this.parseLayout().executeLayout(canvas).assignImages(images);
     }
 
+    reset() {
+        this.pages = [];
+        this.panels = [];
+        this.backgrounds = [];
+        this.characters = [];
+    }
+
     parseLayout(): Scene {
+        this.reset();
         this.layoutParser = LayoutParser.parseLayout(this);
         return this;
     }

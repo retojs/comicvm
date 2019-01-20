@@ -19,6 +19,7 @@ export class PanelPainter {
         this.canvas.begin();
         this.canvas.setClip(panel.shape);
 
+        this.paintBackground(panel);
         this.paintGrid(panel);
         this.paintCharactersBBox(panel);
         this.paintActorsBBox(panel);
@@ -86,6 +87,10 @@ export class PanelPainter {
         }
 
         this.canvas.end();
+    }
+
+    paintBackground(panel: Panel) {
+        this.canvas.drawImage(panel.background.image, panel.background.getImageDimensions(panel));
     }
 
     paintCharacters(panel: Panel, options: { paintImage?: boolean, paintRect?: boolean, paintName?: boolean }) {

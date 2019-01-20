@@ -9,6 +9,8 @@ export class ComicVM {
     story: Story;
     canvas: Canvas;
 
+    currentScene: Scene;
+
     constructor(story: Story, canvas?: Canvas) {
         this.story = story;
 
@@ -28,14 +30,22 @@ export class ComicVM {
             .then(story => new ComicVM(story));
     }
 
-    setupScene(index: number): Scene {
-        return this.story.scenes[index].setup(this.canvas, this.story.images);
+    getScene(index: number): Scene {
+        return this.story.scenes[index];
     }
 
-    paintScene(index: number): void {
+    paintScene(scene: Scene): void {
+        this.canvas.clear();
+        this.currentScene = scene;
         ScenePainter.paintScene(
-            this.setupScene(index),
+            this.currentScene.setup(this.canvas, this.story.images),
             this.canvas
         );
+    }
+
+    repaintScene(): void {
+        if (!this.currentScene) { return; }
+        console.log("current scene ", this.currentScene);
+        this.paintScene(this.currentScene);
     }
 }
