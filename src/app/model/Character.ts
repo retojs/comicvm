@@ -1,5 +1,9 @@
 import { Square } from "../trigo/Square";
 import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/LayoutConfig";
+import { Img } from "../dom/Img";
+import { Images } from "../images/Images";
+import { ImageQuery } from "../images/ImageQuery";
+import { Rectangle } from "../trigo/Rectangle";
 
 export class Character {
 
@@ -9,6 +13,8 @@ export class Character {
     defaultPosition?: Square;
     backgroundPosition?: Square;
     panelPosition?: Square;
+
+    image: Img;
 
     constructor(name: string, how?: string[]) {
         this.name = name;
@@ -42,5 +48,20 @@ export class Character {
             position = this.panelPosition;
         }
         return position;
+    }
+
+    chooseImage(images: Images): Img {
+        this.image = images.chooseCharacterImage(new ImageQuery([this.name], this.how, []));
+        return this.image;
+    }
+
+    getImageDimensions(characterPosition: Square): Rectangle {
+        if (!this.image) {
+            return new Rectangle(0, 0, 0, 0);
+        }
+        return Rectangle.fitAroundBounds(
+            new Rectangle(0, 0, this.image.domElement.width, this.image.domElement.height),
+            characterPosition
+        );
     }
 }

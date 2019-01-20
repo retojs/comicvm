@@ -1,6 +1,9 @@
 import { Scene } from "./Scene";
 import { Panel } from "./Panel";
 import { BackgroundLayoutProperties } from "../layout/LayoutProperties";
+import { Images } from "../images/Images";
+import { Img } from "../dom/Img";
+import { ImageQuery } from "../images/ImageQuery";
 
 export class Background {
 
@@ -14,7 +17,7 @@ export class Background {
 
     layoutProperties: BackgroundLayoutProperties;
 
-    image: string; // TODO: Blob??
+    image: Img;
 
     constructor(id: string) {
         this.id = id;
@@ -23,5 +26,10 @@ export class Background {
     addPanel(panel: Panel) {
         this.panels.push(panel);
         panel.background = this;
+    }
+
+    chooseImage(images: Images): Img {
+        this.image = images.chooseBackgroundImage(new ImageQuery([this.id]));
+        return this.image;
     }
 }

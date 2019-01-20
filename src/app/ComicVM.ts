@@ -29,7 +29,7 @@ export class ComicVM {
     }
 
     setupScene(index: number): Scene {
-        return this.story.scenes[index].setup(this.canvas);
+        return this.story.scenes[index].setup(this.canvas, this.story.images);
     }
 
     paintScene(index: number): void {

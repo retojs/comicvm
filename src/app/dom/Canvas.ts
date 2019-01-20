@@ -5,6 +5,7 @@ import { PaintConfig, PaintStyleConfig } from "../paint/PaintConfig";
 import { Line } from "../trigo/Line";
 import { getScrollOffset } from "./util";
 import { DomElement } from "./DomElement";
+import { Img } from "./Img";
 
 export const enum LineCap {
     Butt = "butt",
@@ -230,6 +231,19 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
         return this.lineHeights[currentFont];
     }
 
+    drawImage(img: Img, dimensions: Rectangle) {
+        if (!img) { return; }
+
+        this.begin();
+        this.ctx.drawImage(
+            img.domElement,
+            dimensions.x,
+            dimensions.y,
+            dimensions.width,
+            dimensions.height
+        );
+        this.end();
+    }
 
     /**
      * Returns the canvas coordinates to draw a point at the current mouse position

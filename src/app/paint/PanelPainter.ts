@@ -16,13 +16,19 @@ export class PanelPainter {
     }
 
     paintPanel(panel: Panel) {
+        this.canvas.begin();
+        this.canvas.setClip(panel.shape);
+
         this.paintGrid(panel);
         this.paintCharactersBBox(panel);
         this.paintActorsBBox(panel);
+        this.paintCharacters(panel, {paintImage: true});
         this.paintCharacters(panel, {paintRect: true});
         this.paintCharacters(panel, {paintName: true});
         this.paintBubbles(panel);
         this.paintBorder(panel);
+
+        this.canvas.end();
     }
 
     paintBorder(panel: Panel) {
@@ -54,8 +60,6 @@ export class PanelPainter {
             y: (zoomedPanel.height % characterSize) / 2 + (lineCount.y % 2 === 0 ? characterSize / 2 : 0)
         };
 
-        this.canvas.setClip(panel.shape);
-
         for (let i = 0; i < lineCount.x; i++) {
             this.canvas.lineFromTo(
                 new Point(
@@ -84,11 +88,14 @@ export class PanelPainter {
         this.canvas.end();
     }
 
-    paintCharacters(panel: Panel, options: { paintRect?: boolean, paintName?: boolean }) {
+    paintCharacters(panel: Panel, options: { paintImage?: boolean, paintRect?: boolean, paintName?: boolean }) {
         if (panel.characters && panel.characters.length > 0) {
             panel.characters.forEach(chr => {
                 const position = chr.getPosition();
                 const isActor = !!panel.getActor(chr.name);
+                if (!options || options.paintImage) {
+                    this.canvas.drawImage(chr.image, chr.getImageDimensions(position));
+                }
                 if (!options || options.paintRect) {
                     this.canvas.rect(position, isActor ? PaintConfig.of.character.actor.box : PaintConfig.of.character.box);
                 }

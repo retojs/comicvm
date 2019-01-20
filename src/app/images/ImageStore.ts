@@ -34,7 +34,7 @@ export class ImageStore {
 
         // console.log("sorted matches for query " + query.toString(), sortedMatches.reduce((str, match) => str + "\n" + match.toString(), ""));
 
-        return sortedMatches ? sortedMatches[0].imageName : "none";
+        return sortedMatches && sortedMatches.length > 0 ? sortedMatches[0].imageName : "none.png";
     }
 
     addMatches(matches: string[], quality: MatchQuality, matchesByImageName: MatchesByImageName): void {

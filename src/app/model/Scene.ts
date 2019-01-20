@@ -6,6 +6,7 @@ import { LayoutParser } from "../layout/LayoutParser";
 import { Plot } from "../plot/Plot";
 import { LayoutEngine } from "../layout/engine/LayoutEngine";
 import { Canvas } from "../dom/Canvas";
+import { Images } from "../images/Images";
 
 export class Scene {
 
@@ -27,8 +28,8 @@ export class Scene {
         this.plot = new Plot(plot);
     }
 
-    setup(canvas: Canvas): Scene {
-        return this.parseLayout().executeLayout(canvas);
+    setup(canvas: Canvas, images: Images): Scene {
+        return this.parseLayout().executeLayout(canvas).assignImages(images);
     }
 
     parseLayout(): Scene {
@@ -38,6 +39,12 @@ export class Scene {
 
     executeLayout(canvas: Canvas): Scene {
         LayoutEngine.layoutScene(this, canvas);
+        return this;
+    }
+
+    assignImages(images: Images): Scene {
+        this.backgrounds.forEach(background => background.chooseImage(images));
+        this.panels.forEach(panel => panel.characters.forEach(character => character.chooseImage(images)));
         return this;
     }
 

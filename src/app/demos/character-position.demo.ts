@@ -99,7 +99,7 @@ export function create() {
     );
 
     const scenePainter = ScenePainter.paintScene(
-        new Scene("Scene", layout, plot).setup(canvas),
+        new Scene("Scene", layout, plot).parseLayout().executeLayout(canvas),
         canvas
     );
 

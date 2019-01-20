@@ -74,6 +74,13 @@ export class Rectangle {
         return Rectangle.alignCentered(fitMe, container);
     }
 
+    static fitAroundBounds(fitMe: Rectangle, contained: Rectangle) {
+        const scale = Math.max(contained.width / fitMe.width, contained.height / fitMe.height);
+        fitMe.width *= scale;
+        fitMe.height *= scale;
+        return Rectangle.alignCentered(fitMe, contained);
+    }
+
     static alignCentered(alignMe: Rectangle, container: Rectangle): Rectangle {
         const offsetX = (container.width - alignMe.width) / 2,
             offsetY = (container.height - alignMe.height) / 2;
