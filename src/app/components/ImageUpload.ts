@@ -1,6 +1,7 @@
 import { Div } from "../dom/Div";
 import { Endpoints } from "../backend/Endpoints";
 import { Img } from "../dom/Img";
+import { DomElementContainer } from "../dom/DomElement";
 
 export class ImageUpload {
 
@@ -12,7 +13,7 @@ export class ImageUpload {
 
     private _backend: Endpoints;
 
-    constructor(container: HTMLElement | string, story: string, isForBackgroundImages: boolean) {
+    constructor(container: DomElementContainer, story: string, isForBackgroundImages: boolean) {
         this.rootDiv = new Div(container);
         this.story = story;
         this.isForBackgroundImages = isForBackgroundImages;
@@ -36,7 +37,7 @@ export class ImageUpload {
                 .then(files => this.insertImages(files, this.isForBackgroundImages));
         });
 
-        this.text = new Div(this.domElement, `<h2>Drop more ${this.isForBackgroundImages ? 'background' : 'character'} images here</h2>`);
+        this.text = new Div(this.domElement, "",`<h2>Drop more ${this.isForBackgroundImages ? 'background' : 'character'} images here</h2>`);
     }
 
     get domElement(): HTMLDivElement {

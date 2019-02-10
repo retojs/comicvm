@@ -1,0 +1,68 @@
+#demos {
+  position: relative;
+}
+
+.demo-container {
+  margin-top: 15px;
+  padding: 15px;
+  border-top: 1px dotted teal;
+}
+
+.demo-header {
+  position: absolute;
+  text-align: right;
+  top: -30px;
+  right: 286px;
+}
+
+.demo-title {
+  font-weight: 600;
+  font-size: 20px;
+  margin: 5px 0 10px;
+}
+
+.demo-description {
+  max-width: 600px;
+  padding-bottom: 20px;
+}
+
+.demo-body {
+  position: relative;
+
+  textarea {
+    font: 13px monospace;
+    padding: 13px 26px;
+    margin: 5px 0 10px;
+  }
+}
+
+select {
+  margin: 5px;
+  padding: 5px;
+}
+
+#buttons {
+  position: absolute;
+  right: 0;
+  top: 80px;
+
+  button {
+    display: block;
+    padding: 10px;
+    margin: 15px;
+    width: 200px;
+  }
+}
+
+.backend-demo {
+  &_title {
+    padding: 16px 0 10px;
+  }
+
+  &_images {
+    img {
+      margin: 4px;
+      border: 1px solid lightgrey;
+    }
+  }
+}

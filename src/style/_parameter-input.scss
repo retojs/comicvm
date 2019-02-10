@@ -1,0 +1,25 @@
+.parameter-input-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+
+  .title {
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+}
+
+.parameter-input {
+  width: 245px;
+
+  input {
+    display: block;
+    margin: 5px 0 15px;
+    padding: 5px;
+  }
+
+  label {
+    font-size: 12px;
+  }
+}

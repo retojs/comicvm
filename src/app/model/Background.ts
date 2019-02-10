@@ -34,6 +34,9 @@ export class Background {
     getImageDimensions(panel: Panel) {
         const panelsBBox = this.getPanelsBBox();
         const charactersBBox = this.getCharactersBBox(panel);
+        // TODO fix that
+        //.scale(1 / panel.layoutProperties.zoom, panel.shape.center)
+        //.translate(-panel.layoutProperties.pan[0], -panel.layoutProperties.pan[1]);
         panelsBBox.translate(charactersBBox.x, charactersBBox.y);
         return panelsBBox;
     }

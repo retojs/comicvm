@@ -13,7 +13,7 @@ export class ScenePainter {
     constructor(scene: Scene, canvas: Canvas) {
         this.scene = scene;
         this.canvas = canvas;
-        this.layoutEngine = new LayoutEngine(this.scene, this.canvas);
+        this.layoutEngine = new LayoutEngine(this.scene);
         this.pagePainter = new PagePainter(this.canvas);
     }
 
@@ -23,12 +23,12 @@ export class ScenePainter {
 
     paintScene(): ScenePainter {
         this.canvas.clear();
-        this.scene.pages.forEach(page => this.pagePainter.paintPage(page));
+        this.repaintScene();
         return this;
     }
 
     repaintScene() {
-        this.layoutEngine.layout();
-        this.paintScene();
+        this.layoutEngine.layout(this.canvas);
+        this.scene.pages.forEach(page => this.pagePainter.paintPage(page));
     }
 }

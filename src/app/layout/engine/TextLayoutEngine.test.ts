@@ -21,8 +21,8 @@ describe("TextLayoutEngine", () => {
     beforeEach(() => {
         scene = new Scene("", sampleLayout, samplePlot).parseLayout();
         canvas = new Canvas(null, 600, 1800);
-        layoutEngine = new LayoutEngine(scene, canvas);
-        textLayoutEngine = new TextLayoutEngine(canvas);
+        layoutEngine = new LayoutEngine(scene);
+        textLayoutEngine = new TextLayoutEngine();
     });
 
     it("method layoutPanelBubbles defines the with and heights of all bubbles in a panel", () => {

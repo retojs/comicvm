@@ -1,4 +1,4 @@
-import { LayoutConfig, PanelConfig, StripConfig } from "../LayoutConfig";
+import { LayoutConfig, PanelWidthsConfig, StripHeightsConfig } from "../Layout.config";
 import { PlotItem, STORY_TELLER } from "../../plot/PlotItem";
 import { Scene } from "../../model/Scene";
 import { Page } from "../../model/Page";
@@ -16,16 +16,16 @@ export class LayoutEngine {
     textLayoutEngine: TextLayoutEngine;
     characterLayoutEngine: CharacterLayoutEngine;
 
-    constructor(scene: Scene, canvas: Canvas) {
+    constructor(scene: Scene) {
         this.scene = scene;
         this.scene.characters = scene.plot.characters.filter(ch => ch !== STORY_TELLER);
 
-        this.textLayoutEngine = new TextLayoutEngine(canvas);
+        this.textLayoutEngine = new TextLayoutEngine();
         this.characterLayoutEngine = new CharacterLayoutEngine();
     }
 
     static layoutScene(scene: Scene, canvas: Canvas): LayoutEngine {
-        return new LayoutEngine(scene, canvas).assignPlotItems(scene.plot.plotItems).layout();
+        return new LayoutEngine(scene).assignPlotItems(scene.plot.plotItems).layout(canvas);
     }
 
     /**
@@ -42,12 +42,12 @@ export class LayoutEngine {
         return this;
     }
 
-    layout(): LayoutEngine {
+    layout(canvas: Canvas): LayoutEngine {
 
         if (this.scene && this.scene.pages) {
             this.scene.pages.forEach(page => this.layoutPage(page));
         }
-        this.textLayoutEngine.layout(this.scene.panels);
+        this.textLayoutEngine.layout(this.scene.panels, canvas);
 
         return this;
     }
@@ -62,12 +62,12 @@ export class LayoutEngine {
         );
 
         if (!(page.stripConfig && page.stripConfig.hasProportions)) {
-            page.stripConfig = StripConfig.createDefault(page.strips.length);
+            page.stripConfig = StripHeightsConfig.createDefault(page.strips.length);
         }
         page.strips.forEach(strip => this.layoutStrip(strip, page.stripConfig));
     }
 
-    layoutStrip(strip: Strip, stripConfig: StripConfig) {
+    layoutStrip(strip: Strip, stripConfig: StripHeightsConfig) {
         let x: number = LayoutConfig.page.padding.left,
             y: number = strip.page.shape.y + LayoutConfig.page.padding.top + LayoutConfig.page.innerHeight * stripConfig.getSum(strip.index),
             width: number = LayoutConfig.page.innerWidth,
@@ -76,22 +76,22 @@ export class LayoutEngine {
         strip.shape = new Rectangle(x, y, width, height);
 
         if (!(strip.panelConfig && strip.panelConfig.hasProportions)) {
-            strip.panelConfig = PanelConfig.createDefault(strip.panels.length);
+            strip.panelConfig = PanelWidthsConfig.createDefault(strip.panels.length);
         }
         strip.panels.forEach(panel => this.layoutPanel(panel, strip.panelConfig));
     }
 
-    layoutPanel(panel: Panel, panelConfig: PanelConfig) {
+    layoutPanel(panel: Panel, panelConfig: PanelWidthsConfig) {
 
         let x: number = panel.strip.shape.x + panel.strip.shape.width * panelConfig.getSum(panel.index),
             y: number = panel.strip.shape.y,
             width: number = panel.strip.shape.width * panelConfig.proportions[panel.index],
             height: number = panel.strip.shape.height;
 
-        x += panelConfig.margin.left;
-        y += panelConfig.margin.top;
-        width -= panelConfig.margin.horizontal;
-        height -= panelConfig.margin.vertical;
+        x += LayoutConfig.panel.margin.left;
+        y += LayoutConfig.panel.margin.top;
+        width -= LayoutConfig.panel.margin.horizontal;
+        height -= LayoutConfig.panel.margin.vertical;
 
         panel.shape = new Rectangle(x, y, width, height);
 

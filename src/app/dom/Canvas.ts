@@ -1,10 +1,10 @@
-import { LayoutConfig, MarginConfig, TextAlign } from "../layout/LayoutConfig";
+import { LayoutConfig, MarginConfig, TextAlign } from "../layout/Layout.config";
 import { Rectangle } from "../trigo/Rectangle";
 import { Point } from "../trigo/Point";
-import { PaintConfig, PaintStyleConfig } from "../paint/PaintConfig";
+import { PaintConfig, PaintStyleConfig } from "../paint/Paint.config";
 import { Line } from "../trigo/Line";
 import { getScrollOffset } from "./util";
-import { DomElement } from "./DomElement";
+import { DomElement, DomElementContainer } from "./DomElement";
 import { Img } from "./Img";
 
 export const enum LineCap {
@@ -25,14 +25,14 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
     // a cache for line heights per font
     private lineHeights: number[] = [];
 
-    constructor(container: HTMLElement | string, width?: number, height?: number) {
+    constructor(container: DomElementContainer, width?: number, height?: number) {
         super(container);
 
         this.width = width;
         this.height = height;
         this.scale = this.width / LayoutConfig.page.width;
 
-        this.domElement = this.append(this.createCanvasElement());
+        this.domElement = this.add(this.createCanvasElement());
 
         this.ctx = this.domElement.getContext("2d");
         this.ctx.scale(this.scale, this.scale);
@@ -82,13 +82,17 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
     }
 
     lineFromTo(from: Point, to: Point, config: PaintStyleConfig) {
+        return this.lineXY(from.x, from.y, to.x, to.y, config);
+    }
+
+    lineXY(fromX: number, fromY: number, toX: number, toY: number, config: PaintStyleConfig) {
         if (!config.enabled) { return; }
 
         this.begin();
         this.ctx.lineWidth = config.lineWidth || this.ctx.lineWidth;
         this.ctx.beginPath();
-        this.ctx.moveTo(from.x, from.y);
-        this.ctx.lineTo(to.x, to.y);
+        this.ctx.moveTo(fromX, fromY);
+        this.ctx.lineTo(toX, toY);
         this.strokeOrFill(config);
         this.end();
     }
@@ -246,15 +250,29 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
     }
 
     /**
-     * Returns the canvas coordinates to draw a point at the current mouse position
+     * Returns the canvas coordinates to draw a point at the specified mouse position (clientX, clientY)
      *
      * @param clientX
      * @param clientY
      */
-    getMousePosition(clientX, clientY): Point {
-        const x = clientX - this.domElement.offsetLeft;
-        const y = clientY - this.domElement.offsetTop + getScrollOffset().top;
+    getCanvasPositionFromMousePosition(clientX: number, clientY: number): Point {
+        const x = clientX - this.domElement.getBoundingClientRect().left;
+        const y = clientY - this.domElement.getBoundingClientRect().top + getScrollOffset().top;
 
         return new Point(x / this.scale, y / this.scale);
+    }
+
+    /**
+     * Returns the mouse coordinates (clientX, clientY) of the point drawn on the canvas
+     * at the specified position (x, y).
+     *
+     * @param x
+     * @param y
+     */
+    getMousePositionFromCanvasPosition(x: number, y: number): Point {
+        const clientX = x * this.scale + this.domElement.getBoundingClientRect().left;
+        const clientY = y * this.scale + this.domElement.getBoundingClientRect().top + getScrollOffset().top;
+
+        return new Point(clientX, clientY);
     }
 }

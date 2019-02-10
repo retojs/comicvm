@@ -1,19 +1,23 @@
+export type DomElementContainer = HTMLElement | DomElement<HTMLElement> | string;
+
 export abstract class DomElement<T extends HTMLElement> {
 
     abstract domElement: T;
 
     container: HTMLElement;
 
-    constructor(container: HTMLElement | string) {
+    constructor(container: DomElementContainer) {
         if (container) {
             if (typeof container === "string") {
                 container = document.getElementById(container);
+            } else if (container instanceof DomElement) {
+                container = container.domElement;
             }
             this.container = container;
         }
     }
 
-    append<T extends HTMLElement>(element: T): T {
+    add<T extends HTMLElement>(element: T): T {
         if (this.container) {
             this.container.appendChild(element);
         }
@@ -21,8 +25,44 @@ export abstract class DomElement<T extends HTMLElement> {
         return element;
     }
 
+    set content(innerHTML: string) {
+        if (innerHTML) {
+            this.domElement.innerHTML = innerHTML;
+        }
+    }
+
+    clearContent() {
+        this.domElement.innerHTML = '';
+    }
+
+    set class(styleClass: string) {
+        if (styleClass) {
+            this.domElement.classList.add(styleClass);
+        }
+    }
+
+    removeClass(styleClass: string) {
+        this.domElement.classList.remove(styleClass);
+    }
+
     set onClick(onClick: EventListener) {
         this.domElement.addEventListener("click", onClick);
+    }
+
+    set onDblClick(onDblClick: EventListener) {
+        this.domElement.addEventListener("dblclick", onDblClick);
+    }
+
+    set onMouseDown(onMouseDown: EventListener) {
+        this.domElement.addEventListener("mousedown", onMouseDown);
+    }
+
+    set onMouseUp(onMouseUp: EventListener) {
+        this.domElement.addEventListener("mouseup", onMouseUp);
+    }
+
+    set onMouseMove(onMouseMove: EventListener) {
+        this.domElement.addEventListener("mousemove", onMouseMove);
     }
 
     set onMouseEnter(onMouseEnter: EventListener) {
@@ -31,6 +71,14 @@ export abstract class DomElement<T extends HTMLElement> {
 
     set onMouseLeave(onMouseLeave: EventListener) {
         this.domElement.addEventListener("mouseleave", onMouseLeave);
+    }
+
+    set onChange(onChange: EventListener) {
+        this.domElement.addEventListener("change", onChange);
+    }
+
+    set onKeyUp(onKeyUp: EventListener) {
+        this.domElement.addEventListener("keyup", onKeyUp);
     }
 
     set onDrop(onDrop: EventListener) {

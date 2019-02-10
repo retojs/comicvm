@@ -2,11 +2,13 @@ import { Images } from "../images/Images";
 import { Endpoints } from "../backend/Endpoints";
 import { Scene } from "./Scene";
 
+// TODO
+// allow offline stories without backend
 export class Story {
 
     name: string;
 
-    scenes: Scene[];
+    scenes: Scene[] = [];
     images: Images;
 
     private _backend: Endpoints;
@@ -22,6 +24,9 @@ export class Story {
     }
 
     load(): Promise<Story> {
+
+        // TODO: No errors if there is no backend?
+
         return Promise.all([
                 this.images.load(),
                 this.loadScenes()
@@ -47,4 +52,7 @@ export class Story {
         ).then(result => new Scene(sceneName, result[0], result[1]))
     }
 
+    addScene(scene: Scene) {
+        this.scenes.push(scene);
+    }
 }

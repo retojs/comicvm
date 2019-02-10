@@ -1,5 +1,5 @@
 import { Square } from "../trigo/Square";
-import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/LayoutConfig";
+import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/Layout.config";
 import { Img } from "../dom/Img";
 import { Images } from "../images/Images";
 import { ImageQuery } from "../images/ImageQuery";

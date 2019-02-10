@@ -57,6 +57,9 @@ export class Line {
 
     intersection(line: Line): Point {
 
+        // TODO refactor using line equation ax + by = c
+        //      see Line.parameters() and https://de.wikipedia.org/wiki/Koordinatenform
+
         // intersect condition: x1 = x2, y1 = y2
         //
         // line 1: y = verticalIntercept1 + gradient1 * x

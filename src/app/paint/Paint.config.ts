@@ -1,10 +1,12 @@
-import { TextAlign } from "../layout/LayoutConfig";
+import { LayoutConfig, TextAlign } from "../layout/Layout.config";
 import { LineCap } from "../dom/Canvas";
 
 export class CanvasConfig {
+
+    width = 720;
+    height = 720 * LayoutConfig.page.proportion;
+
     id = "comic-vm-canvas";
-    width = 800;
-    height = 1200;
     font = "40px Roboto";
 }
 
@@ -49,17 +51,18 @@ export class PaintStyleConfig {
 export class FeaturePaintStyleConfig {
 
     page = {
-        background: PaintStyleConfig.fill("rgba(250, 200, 0, 0.05)"),
+        background: PaintStyleConfig.fill("white"),
+        border: PaintStyleConfig.stroke("rgba(0,0, 0, 0.2)", 2),
         separator: PaintStyleConfig.stroke("rgba(0, 0, 0, 0.2)", 2)
     };
 
     strip = {
-        border: PaintStyleConfig.stroke("rgba(100, 200, 180, 0.4)", 5)
+        border: PaintStyleConfig.stroke("rgba(100, 200, 180, 0.4)", 5, LineCap.Butt, false)
     };
 
     panel = {
         border: PaintStyleConfig.stroke("#000", 7.5),
-        grid: PaintStyleConfig.stroke("#880", 1)
+        grid: PaintStyleConfig.stroke("rgba(180, 180, 0, 0.4)", 1)
     };
 
     character = {
@@ -74,10 +77,10 @@ export class FeaturePaintStyleConfig {
     };
 
     bubble = {
-        border: PaintStyleConfig.fillAndStroke("#fff", "#444", 5),
+        textBox: PaintStyleConfig.fillAndStroke("#fff", "#444", 5),
         text: PaintStyleConfig.text("#000", TextAlign.Center),
-        pointer: PaintStyleConfig.stroke("#000", 5, LineCap.Round),
-        pointerHalo: PaintStyleConfig.stroke("rgba(255, 255, 255, 0.7)", 12, LineCap.Round)
+        pointer: PaintStyleConfig.stroke("#000", 5, LineCap.Butt),
+        pointerHalo: PaintStyleConfig.stroke("rgba(255, 255, 255, 0.7)", 12, LineCap.Butt)
     }
 }
 

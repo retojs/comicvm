@@ -1,3 +1,5 @@
+import { Rectangle } from "./Rectangle";
+
 export class Point {
 
     x: number;
@@ -21,4 +23,23 @@ export class Point {
             point.y - this.y
         )
     }
+
+    constrain(bounds: Rectangle): Point {
+        return this.constrainX(bounds).constrainY(bounds);
+    }
+
+    constrainX(bounds: Rectangle): Point {
+        this.x = Math.max(bounds.x, Math.min(bounds.x + bounds.width, this.x));
+        return this;
+    }
+
+    constrainY(bounds: Rectangle): Point {
+        this.y = Math.max(bounds.y, Math.min(bounds.y + bounds.height, this.y));
+        return this;
+    }
+
+    clone(): Point {
+        return new Point(this.x, this.y);
+    }
+
 }

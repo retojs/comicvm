@@ -1,7 +1,7 @@
 import { ImageStore } from "./ImageStore";
 import { Endpoints } from "../backend/Endpoints";
 import { Img } from "../dom/Img";
-import { BackendConfig } from "../backend/BackendConfig";
+import { BackendConfig } from "../backend/Backend.config";
 import { ImageQuery } from "./ImageQuery";
 
 export class Images {

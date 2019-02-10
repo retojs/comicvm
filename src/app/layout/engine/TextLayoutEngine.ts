@@ -1,19 +1,16 @@
 import { Canvas } from "../../dom/Canvas";
 import { Panel } from "../../model/Panel";
-import { LayoutConfig } from "../LayoutConfig";
+import { LayoutConfig } from "../Layout.config";
 import { Rectangle } from "../../trigo/Rectangle";
 import { Bubble } from "../../model/Bubble";
 import { TextBox } from "../../model/TextBox";
 
 export class TextLayoutEngine {
 
-    /**
-     * @param canvas: Needed to measure text
-     * @param panels: Panels with plot items
-     */
-    constructor(private canvas: Canvas) {}
+    private canvas: Canvas;
 
-    layout(panels: Panel[]) {
+    layout(panels: Panel[], canvas: Canvas) {
+        this.canvas = canvas;
 
         panels.filter(panel => !!panel.bubbles && panel.bubbles.length > 0)
             .forEach(panel => this.layoutPanelBubbles(panel));
@@ -22,13 +19,13 @@ export class TextLayoutEngine {
     layoutPanelBubbles(panel: Panel): Bubble[][] {
 
         panel.bubbles.forEach(bubble => {
-            const availableLineWidth = panel.shape.width - LayoutConfig.bubbles.margin.horizontal - LayoutConfig.bubbles.padding.horizontal;
-            bubble.textBox = this.layoutTextBox(bubble.says, availableLineWidth, LayoutConfig.bubbles.maxWithPerHeight);
+            const availableLineWidth = panel.shape.width - LayoutConfig.panel.padding.horizontal - LayoutConfig.bubble.padding.horizontal;
+            bubble.textBox = this.layoutTextBox(bubble.says, availableLineWidth, LayoutConfig.bubble.maxWithPerHeight);
             bubble.shape = new Rectangle(
                 0,
                 0,
-                bubble.textBox.width + LayoutConfig.bubbles.padding.horizontal,
-                bubble.textBox.height + LayoutConfig.bubbles.padding.vertical);
+                bubble.textBox.width + LayoutConfig.bubble.padding.horizontal,
+                bubble.textBox.height + LayoutConfig.bubble.padding.vertical);
         });
 
         return this.layoutBubblesIntoLines(panel);
@@ -36,14 +33,14 @@ export class TextLayoutEngine {
 
     layoutBubblesIntoLines(panel: Panel): Bubble[][] {
 
-        let availableWidth = panel.shape.width - LayoutConfig.bubbles.margin.horizontal;
+        let availableWidth = panel.shape.width - LayoutConfig.panel.padding.horizontal;
         let nextLine: Bubble[] = [];
         let bubbleLines: Bubble[][] = [nextLine];
 
         panel.bubbles.forEach(bubble => {
             if (availableWidth >= bubble.shape.width) {
                 nextLine.push(bubble);
-                availableWidth -= bubble.shape.width + LayoutConfig.bubbles.margin.right;
+                availableWidth -= bubble.shape.width + LayoutConfig.bubble.margin.right;
             } else {
                 nextLine = [bubble];
                 bubbleLines.push(nextLine);
@@ -66,16 +63,17 @@ export class TextLayoutEngine {
             alignLeftRight = true;
         }
 
-        let y = 0;
+        const panelBounds = panel.shape.clone().cutMargin(LayoutConfig.panel.padding);
+        let y = -LayoutConfig.bubble.margin.top;
         bubbleLines.forEach((bubbleLine, index) => {
             if (alignLeftRight) {
                 if (index % 2) {
-                    this.allignBubblesRight(bubbleLine, panel.shape, y);
+                    this.allignBubblesRight(bubbleLine, panelBounds, y);
                 } else {
-                    this.allignBubblesLeft(bubbleLine, panel.shape, y);
+                    this.allignBubblesLeft(bubbleLine, panelBounds, y);
                 }
             } else {
-                this.allignBubblesCentered(bubbleLine, panel.shape, y);
+                this.allignBubblesCentered(bubbleLine, panelBounds, y);
             }
             y += this.getBubbleLineHeight(bubbleLine);
         });
@@ -84,13 +82,13 @@ export class TextLayoutEngine {
     }
 
     allignBubblesLeft(bubbleLine: Bubble[], container: Rectangle, verticalOffset: number) {
-        let x = container.x,
+        let x = container.x - LayoutConfig.bubble.margin.left,
             y = container.y + verticalOffset;
         this.setBubbleLinePosition(bubbleLine, x, y);
     }
 
     allignBubblesRight(bubbleLine: Bubble[], container: Rectangle, verticalOffset: number) {
-        let x = container.x + (container.width - this.getBubbleLineWidth(bubbleLine)),
+        let x = container.x + LayoutConfig.bubble.margin.left + (container.width - this.getBubbleLineWidth(bubbleLine)),
             y = container.y + verticalOffset;
         this.setBubbleLinePosition(bubbleLine, x, y);
     }
@@ -103,23 +101,23 @@ export class TextLayoutEngine {
 
     setBubbleLinePosition(bubbleLine: Bubble[], x: number, y: number) {
         bubbleLine.forEach(bubble => {
-            bubble.shape.x = x + LayoutConfig.bubbles.margin.left;
-            bubble.shape.y = y + LayoutConfig.bubbles.margin.top;
-            x += bubble.shape.width + LayoutConfig.bubbles.margin.right
+            bubble.shape.x = x + LayoutConfig.bubble.margin.left;
+            bubble.shape.y = y + LayoutConfig.bubble.margin.top;
+            x += bubble.shape.width + LayoutConfig.bubble.margin.right
         });
     }
 
     getBubbleLineWidth(bubbles: Bubble[]): number {
         return bubbles.reduce((width, bubble) => {
-            return width + bubble.shape.width + LayoutConfig.bubbles.margin.right;
-        }, LayoutConfig.bubbles.margin.left);
+            return width + bubble.shape.width + LayoutConfig.bubble.margin.right;
+        }, LayoutConfig.bubble.margin.left);
     }
 
     getBubbleLineHeight(bubbles: Bubble[]): number {
         return bubbles.reduce((height, bubble) => {
-            const h = bubble.shape.height + LayoutConfig.bubbles.margin.bottom;
+            const h = bubble.shape.height + LayoutConfig.bubble.margin.bottom;
             return height > h ? height : h;
-        }, LayoutConfig.bubbles.margin.top);
+        }, LayoutConfig.bubble.margin.top);
     }
 
     /**

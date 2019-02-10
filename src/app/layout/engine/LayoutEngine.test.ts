@@ -2,7 +2,6 @@ import { LayoutEngine } from "./LayoutEngine";
 import { STORY_TELLER } from "../../plot/PlotItem";
 import { SAMPLE_PLOT } from "../../plot/sample.plot";
 import { SAMPLE_LAYOUT } from "../sample.layout";
-import { Canvas } from "../../dom/Canvas";
 import { Scene } from "../../model/Scene";
 
 describe("LayoutEngine", () => {
@@ -15,7 +14,7 @@ describe("LayoutEngine", () => {
 
     beforeEach(() => {
         scene = new Scene("", sampleLayout, samplePlot).parseLayout();
-        layoutEngine = new LayoutEngine(scene, new Canvas(null));
+        layoutEngine = new LayoutEngine(scene);
     });
 
     it("the constructor assigns the list of characters from the plot to the scene", () => {

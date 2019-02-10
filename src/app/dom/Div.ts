@@ -1,28 +1,23 @@
-import { DomElement } from "./DomElement";
+import { DomElement, DomElementContainer } from "./DomElement";
 
 export class Div extends DomElement<HTMLDivElement> {
 
     domElement: HTMLDivElement;
 
-    innerHTML: string;
-    width: string;
-    height: string;
-
-    constructor(container: HTMLElement | string, innerHTML?: string, width?: string, height?: string) {
+    constructor(container: DomElementContainer, styleClass?: string, innerHTML?: string,) {
         super(container);
-
-        this.innerHTML = innerHTML || '';
-        this.width = width;
-        this.height = height;
-
-        this.domElement = this.append(this.createDivElement());
+        this.domElement = this.add(this.createDivElement(styleClass, innerHTML));
     }
 
-    createDivElement(): HTMLDivElement {
+    createDivElement(styleClass: string, innerHTML: string): HTMLDivElement {
         this.domElement = document.createElement("div");
-        this.domElement.innerHTML = this.innerHTML;
-        this.domElement.style.width = this.width;
-        this.domElement.style.minHeight = this.height;
+        this.class = styleClass;
+        this.content = innerHTML;
         return this.domElement;
+    }
+
+    appendDiv(styleClass?: string, innerHTML?: string): Div {
+        this.domElement.appendChild(new Div(this, styleClass, innerHTML).domElement);
+        return this;
     }
 }

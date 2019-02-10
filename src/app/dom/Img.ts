@@ -1,5 +1,5 @@
 import { Rectangle } from "../trigo/Rectangle";
-import { DomElement } from "./DomElement";
+import { DomElement, DomElementContainer } from "./DomElement";
 
 export class Img extends DomElement<HTMLImageElement> {
 
@@ -10,13 +10,13 @@ export class Img extends DomElement<HTMLImageElement> {
     bounds: Rectangle;
     bitmapShape: Rectangle;
 
-    constructor(container: HTMLElement | string, src: string, width?: number, height?: number) {
+    constructor(container: DomElementContainer, src: string, width?: number, height?: number) {
         super(container);
 
         this.src = src;
         this.bounds = new Rectangle(0, 0, width, height);
 
-        this.domElement = this.append(this.createImageElement());
+        this.domElement = this.add(this.createImageElement());
 
         this.disableDrag();
     }

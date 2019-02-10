@@ -1,7 +1,7 @@
 import { Page } from "./Page";
 import { Panel } from "./Panel";
 import { Rectangle } from "../trigo/Rectangle";
-import { PanelConfig } from "../layout/LayoutConfig";
+import { PanelWidthsConfig } from "../layout/Layout.config";
 
 export class Strip {
 
@@ -9,7 +9,7 @@ export class Strip {
 
     page: Page;
 
-    panelConfig: PanelConfig;
+    panelConfig: PanelWidthsConfig;
     panels: Panel[] = [];
 
     shape: Rectangle;

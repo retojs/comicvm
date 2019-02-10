@@ -7,7 +7,7 @@ import {
     SceneLayoutProperties
 } from "./LayoutProperties";
 import { BackgroundLayout, CharacterLayout, Layout, LayoutProperty, PageLayout, PanelLayout, StripLayout } from "./Layout";
-import { PanelConfig, StripConfig } from "./LayoutConfig";
+import { PanelWidthsConfig, StripHeightsConfig } from "./Layout.config";
 import { Square } from "../trigo/Square";
 import { Scene } from "../model/Scene";
 import { Page } from "../model/Page";
@@ -100,7 +100,7 @@ export class LayoutParser {
         scene.addPage(page);
 
         if (pageLayout.stripHeights) {
-            page.stripConfig = new StripConfig(pageLayout.stripHeights);
+            page.stripConfig = new StripHeightsConfig(pageLayout.stripHeights);
         }
         pageLayout.strips.forEach((stripLayout: StripLayout, index) => {
             this.createStrip(stripLayout, index, page);
@@ -113,7 +113,7 @@ export class LayoutParser {
         page.addStrip(strip);
 
         if (stripLayout.panelWidths) {
-            strip.panelConfig = new PanelConfig(stripLayout.panelWidths);
+            strip.panelConfig = new PanelWidthsConfig(stripLayout.panelWidths);
         }
         stripLayout.panels.forEach((panelLayout: PanelLayout, index) => {
             this.createPanel(panelLayout, index, strip);

@@ -28,7 +28,7 @@ export class Scene {
         this.plot = new Plot(plot);
     }
 
-    setup(canvas: Canvas, images: Images): Scene {
+    setup(canvas: Canvas, images?: Images): Scene {
         return this.parseLayout().executeLayout(canvas).assignImages(images);
     }
 
@@ -51,8 +51,10 @@ export class Scene {
     }
 
     assignImages(images: Images): Scene {
-        this.backgrounds.forEach(background => background.chooseImage(images));
-        this.panels.forEach(panel => panel.characters.forEach(character => character.chooseImage(images)));
+        if (images) {
+            this.backgrounds.forEach(background => background.chooseImage(images));
+            this.panels.forEach(panel => panel.characters.forEach(character => character.chooseImage(images)));
+        }
         return this;
     }
 

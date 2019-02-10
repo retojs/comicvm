@@ -1,5 +1,5 @@
 import { Panel } from "../../model/Panel";
-import { CharacterPositionLayoutLevel, LayoutConfig } from "../LayoutConfig";
+import { CharacterPositionLayoutLevel, LayoutConfig } from "../Layout.config";
 import { Square } from "../../trigo/Square";
 import { Rectangle } from "../../trigo/Rectangle";
 import { Point } from "../../trigo/Point";

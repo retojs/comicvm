@@ -1,27 +1,22 @@
-import { DomElement } from "./DomElement";
+import { DomElement, DomElementContainer } from "./DomElement";
 
 export class Button extends DomElement<HTMLButtonElement> {
 
     domElement: HTMLButtonElement;
 
-    label: string;
-    eventListener: EventListener;
-
-    constructor(container: HTMLElement | string, label: string) {
+    constructor(container: DomElementContainer, label: string) {
         super(container);
-        this.label = label;
-        this.append(this.createButton());
+
+        this.add(this.createButton(label));
     }
 
-    createButton(): HTMLButtonElement {
+    createButton(label: string): HTMLButtonElement {
         this.domElement = document.createElement("button");
-        this.domElement.innerText = this.label;
-        this.domElement.addEventListener("click", this.eventListener);
+        this.domElement.innerText = label;
         return this.domElement;
     }
 
-    setLabel(label: string) {
-        this.label = label;
-        this.domElement.innerText = this.label;
+    set label(label: string) {
+        this.domElement.innerText = label;
     }
 }

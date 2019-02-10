@@ -1,28 +1,25 @@
 import { Canvas } from "./dom/Canvas";
-import { PaintConfig } from "./paint/PaintConfig";
+import { PaintConfig } from "./paint/Paint.config";
 import { Story } from "./model/Story";
 import { Scene } from "./model/Scene";
 import { ScenePainter } from "./paint/ScenePainter";
+import { DomElementContainer } from "./dom/DomElement";
+
+// TODO
+// - generate documentation with jsdoc
+// - write documentation
+// - see: https://github.com/jsdoc3/jsdoc
 
 export class ComicVM {
 
     story: Story;
-    canvas: Canvas;
-
     currentScene: Scene;
 
-    constructor(story: Story, canvas?: Canvas) {
-        this.story = story;
+    container: DomElementContainer;
+    canvas: Canvas;
 
-        if (canvas) {
-            this.canvas = canvas;
-        } else {
-            this.canvas = new Canvas(
-                PaintConfig.canvas.id,
-                PaintConfig.canvas.width,
-                PaintConfig.canvas.height
-            );
-        }
+    constructor(story: Story) {
+        this.story = story;
     }
 
     static loadStory(storyName: string): Promise<ComicVM> {
@@ -34,18 +31,23 @@ export class ComicVM {
         return this.story.scenes[index];
     }
 
-    paintScene(scene: Scene): void {
-        this.canvas.clear();
+    paintScene(scene: Scene, container: DomElementContainer): void {
         this.currentScene = scene;
-        ScenePainter.paintScene(
-            this.currentScene.setup(this.canvas, this.story.images),
-            this.canvas
+        this.container = container;
+        this.canvas = new Canvas(
+            container,
+            PaintConfig.canvas.width,
+            PaintConfig.canvas.height
         );
+        this.repaintScene();
     }
 
     repaintScene(): void {
         if (!this.currentScene) { return; }
-        console.log("current scene ", this.currentScene);
-        this.paintScene(this.currentScene);
+        this.canvas.clear();
+        ScenePainter.paintScene(
+            this.currentScene.setup(this.canvas, this.story.images),
+            this.canvas
+        );
     }
 }

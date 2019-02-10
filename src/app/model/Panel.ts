@@ -8,7 +8,7 @@ import { PanelLayoutProperties } from "../layout/LayoutProperties";
 import { Character } from "./Character";
 import { Qualifier } from "./Qualifier";
 import { Bubble } from "./Bubble";
-import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/LayoutConfig";
+import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/Layout.config";
 
 export class Panel {
 

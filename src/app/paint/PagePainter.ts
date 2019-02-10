@@ -2,7 +2,7 @@ import { Canvas } from "../dom/Canvas";
 import { PanelPainter } from "./PanelPainter";
 import { Page } from "../model/Page";
 import { Point } from "../trigo/Point";
-import { PaintConfig } from "./PaintConfig";
+import { PaintConfig } from "./Paint.config";
 
 export class PagePainter {
 

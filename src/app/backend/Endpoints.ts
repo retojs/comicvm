@@ -1,4 +1,4 @@
-import { BackendConfig } from "./BackendConfig";
+import { BackendConfig } from "./Backend.config";
 
 export class Endpoints {
 
@@ -87,23 +87,35 @@ export class Endpoints {
         }
     }
 
+    private fetch(url, options) {
+        return fetch(url, options)
+            .then(response => {
+                if (!response.ok) {
+                    throw Error(response.statusText);
+                }
+                return response;
+            }).catch(() => {
+               return Promise.reject("Backend not available");
+            });
+    }
+
     private uploadImage(image: Blob, url: string): Promise<Response> {
         const formData = new FormData();
         formData.append("image", image);
 
-        return fetch(url, {
+        return this.fetch(url, {
             method: "POST",
             body: formData
         });
     }
 
     private getText(url: string): Promise<string> {
-        return fetch(url, this.options.text)
+        return this.fetch(url, this.options.text)
             .then(response => response.text());
     }
 
     private getJson(url: string): Promise<any> {
-        return fetch(url, this.options.json)
+        return this.fetch(url, this.options.json)
             .then(response => response.json());
     }
 }
