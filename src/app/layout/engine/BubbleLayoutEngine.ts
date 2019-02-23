@@ -5,14 +5,16 @@ import { Rectangle } from "../../trigo/Rectangle";
 import { Bubble } from "../../model/Bubble";
 import { TextBox } from "../../model/TextBox";
 
-export class TextLayoutEngine {
+export class BubbleLayoutEngine {
 
     private canvas: Canvas;
 
     layout(panels: Panel[], canvas: Canvas) {
         this.canvas = canvas;
 
-        panels.filter(panel => !!panel.bubbles && panel.bubbles.length > 0)
+        panels
+            .filter(panel => !!panel.shape && panel.shape.width > 0 && panel.shape.height > 0)
+            .filter(panel => !!panel.bubbles && panel.bubbles.length > 0)
             .forEach(panel => this.layoutPanelBubbles(panel));
     }
 
@@ -73,7 +75,8 @@ export class TextLayoutEngine {
                     this.allignBubblesLeft(bubbleLine, panelBounds, y);
                 }
             } else {
-                this.allignBubblesCentered(bubbleLine, panelBounds, y);
+                this.alignBubblesDistributed(bubbleLine, panelBounds, y);
+                // this.alignBubblesCentered(bubbleLine, panelBounds, y);
             }
             y += this.getBubbleLineHeight(bubbleLine);
         });
@@ -93,17 +96,28 @@ export class TextLayoutEngine {
         this.setBubbleLinePosition(bubbleLine, x, y);
     }
 
-    allignBubblesCentered(bubbleLine: Bubble[], container: Rectangle, verticalOffset: number) {
+    alignBubblesCentered(bubbleLine: Bubble[], container: Rectangle, verticalOffset: number) {
         let x = container.x + (container.width - this.getBubbleLineWidth(bubbleLine)) / 2,
             y = container.y + verticalOffset;
         this.setBubbleLinePosition(bubbleLine, x, y);
+    }
+
+    alignBubblesDistributed(bubbleLine: Bubble[], container: Rectangle, verticalOffset: number) {
+        const gapWidth = (container.width - this.getBubbleLineWidth(bubbleLine)) / (bubbleLine.length + 1);
+        let x = container.x + gapWidth;
+        let y = container.y + verticalOffset;
+        bubbleLine.forEach(bubble => {
+            bubble.shape.x = x + LayoutConfig.bubble.margin.left;
+            bubble.shape.y = y + LayoutConfig.bubble.margin.top;
+            x += bubble.shape.width + LayoutConfig.bubble.margin.right + Math.max(0, gapWidth);
+        });
     }
 
     setBubbleLinePosition(bubbleLine: Bubble[], x: number, y: number) {
         bubbleLine.forEach(bubble => {
             bubble.shape.x = x + LayoutConfig.bubble.margin.left;
             bubble.shape.y = y + LayoutConfig.bubble.margin.top;
-            x += bubble.shape.width + LayoutConfig.bubble.margin.right
+            x += bubble.shape.width + LayoutConfig.bubble.margin.right;
         });
     }
 
@@ -131,9 +145,13 @@ export class TextLayoutEngine {
 
         let lineCount = 1;
         let textBox = this.splitIntoLines(text, lineCount);
-        while (textBox.width > maxWidth || textBox.width / textBox.height > maxProportion) {
-            lineCount++;
-            textBox = this.splitIntoLines(text, lineCount); //,textBox.width > maxWidth ? maxWidth : undefined);
+        for (let i = 0; i < 5; i++) {
+            if (textBox.width > maxWidth || textBox.width / textBox.height > maxProportion) {
+                lineCount++;
+                textBox = this.splitIntoLines(text, lineCount);
+            } else {
+                break;
+            }
         }
         return textBox;
     }
@@ -155,11 +173,15 @@ export class TextLayoutEngine {
 
         let lines: string[];
 
-        while (!lines || lines.length > lineCount) {
-            lines = this.splitIntoLinesOfLength(text, lineWidth);
-            if (lines.length > lineCount) {
-                const remainingWidth = this.canvas.getTextWidth(lines[lines.length - 1]);
-                lineWidth += remainingWidth / lineCount;
+        for (let i = 0; i < 5; i++) {
+            if (!lines || lines.length > lineCount) {
+                lines = this.splitIntoLinesOfLength(text, lineWidth);
+                if (lines.length > lineCount) {
+                    const remainingWidth = this.canvas.getTextWidth(lines[lines.length - 1]);
+                    lineWidth += remainingWidth / lineCount;
+                }
+            } else {
+                break;
             }
         }
 

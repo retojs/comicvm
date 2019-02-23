@@ -33,15 +33,21 @@ export class Background {
 
     getImageDimensions(panel: Panel) {
         const panelsBBox = this.getPanelsBBox();
-        const charactersBBox = this.getCharactersBBox(panel);
-        // TODO fix that
-        //.scale(1 / panel.layoutProperties.zoom, panel.shape.center)
-        //.translate(-panel.layoutProperties.pan[0], -panel.layoutProperties.pan[1]);
-        panelsBBox.translate(charactersBBox.x, charactersBBox.y);
-        return panelsBBox;
+        const charactersBBox = this.getCharactersBackgroundBBox(panel);
+        const backgroundDimensions = new Rectangle(
+            charactersBBox.x + panelsBBox.x * charactersBBox.width,
+            charactersBBox.y + panelsBBox.y * charactersBBox.width,
+            panelsBBox.width * charactersBBox.width,
+            panelsBBox.height * charactersBBox.width
+        );
+        if (panel.background.image && panel.background.image.bitmapShape) {
+            return Rectangle.fitAroundBounds(panel.background.image.bitmapShape, backgroundDimensions);
+        } else {
+            return backgroundDimensions;
+        }
     }
 
-    getCharactersBBox(panel: Panel) {
+    getCharactersBackgroundBBox(panel: Panel) {
         return Rectangle.getBoundingBox(panel.characters.map(c => c.backgroundPosition));
     }
 
@@ -55,12 +61,20 @@ export class Background {
                 //  - cover all panels completely
                 //  - stay at the same position relative to the characters
 
-                const charactersBBox = Rectangle.getBoundingBox(panel.characters.map(c => c.backgroundPosition));
+                const charactersBBox = this.getCharactersBackgroundBBox(panel);
+                // const charactersBBox = this.getCharactersPanelBBox(panel);
+
+                // The shape of the frame is transformed into a coordinate system with
+                //     origin = charactersBBox.(x,y) and
+                //     unit = charactersBBox.width
+                // This makes sense since the character's position and size must be equal
+                // in all panels to calculate the minimal shape of the background image.
+
                 return new Rectangle(
-                    (panel.shape.x - charactersBBox.x) / panel.getZoom(), // normalize to default zoom
-                    (panel.shape.y - charactersBBox.y) / panel.getZoom(),
-                    panel.shape.width / panel.getZoom(),
-                    panel.shape.height / panel.getZoom()
+                    (panel.shape.x - charactersBBox.x) / charactersBBox.width,
+                    (panel.shape.y - charactersBBox.y) / charactersBBox.width,
+                    panel.shape.width / charactersBBox.width,
+                    panel.shape.height / charactersBBox.width
                 );
             })
         );

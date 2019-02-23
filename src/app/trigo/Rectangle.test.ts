@@ -20,10 +20,10 @@ describe("Rectangle", () => {
         expect(scaleMe.height).toBe(25);
     });
 
-    it("method fitToBounds fits a rectangle into a rectangle", () => {
+    it("method fitIntoBounds fits a rectangle into a rectangle", () => {
         const container = new Rectangle(0, 0, 100, 80);
         const fitMe = new Rectangle(20, 20, 80, 40);
-        Rectangle.fitToBounds(fitMe, container);
+        Rectangle.fitIntoBounds(fitMe, container);
         expect(fitMe.x).toBe(0);
         expect(fitMe.y).toBe(15);
         expect(fitMe.width).toBe(100);

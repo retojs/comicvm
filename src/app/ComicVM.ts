@@ -27,8 +27,12 @@ export class ComicVM {
             .then(story => new ComicVM(story));
     }
 
-    getScene(index: number): Scene {
+    getSceneAt(index: number): Scene {
         return this.story.scenes[index];
+    }
+
+    getScene(name: string): Scene {
+        return this.story.scenes.find(scene => scene.name === name);
     }
 
     paintScene(scene: Scene, container: DomElementContainer): void {

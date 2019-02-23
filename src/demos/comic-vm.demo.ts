@@ -15,7 +15,7 @@ export class ComicVmDemo implements Demo {
             .then(comicVM => {
                 console.log("comicVM created:", comicVM);
 
-                comicVM.paintScene(comicVM.getScene(1), container);
+                comicVM.paintScene(comicVM.getScene("background-demo"), container);
 
                 layoutConfigButtons.create(container, comicVM.repaintScene.bind(comicVM));
             })
@@ -23,6 +23,7 @@ export class ComicVmDemo implements Demo {
 
         function showError(error) {
             new Div(container, "error", error);
+            throw(error);
         }
     }
 }

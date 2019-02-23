@@ -14,7 +14,7 @@ module.exports = {
         // With jest and jest-canvas-mock these tests are causing the error
         //  "Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory"
         "src/app/layout/engine/LayoutEngine.test.ts",
-        "src/app/layout/engine/TextLayoutEngine.test.ts"
+        "src/app/layout/engine/BubbleLayoutEngine.test.ts"
     ],
 
     transform: {

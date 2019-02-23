@@ -59,6 +59,22 @@ export class Rectangle {
         return new Point(this.x + this.width / 2, this.y + this.height / 2);
     }
 
+    get topLeft(): Point {
+        return new Point(this.x, this.y);
+    }
+
+    get topRight(): Point {
+        return new Point(this.x + this.width, this.y);
+    }
+
+    get bottomLeft(): Point {
+        return new Point(this.x, this.y + this.height);
+    }
+
+    get bottomRight(): Point {
+        return new Point(this.x + this.width, this.y + this.height);
+    }
+
     static getBoundingBox(rectangles: Rectangle[]): Rectangle {
         let left = Number.MAX_VALUE,
             top = Number.MAX_VALUE,
@@ -75,7 +91,7 @@ export class Rectangle {
         return new Rectangle(left, top, right - left, bottom - top);
     }
 
-    static fitToBounds(fitMe: Rectangle, container: Rectangle) {
+    static fitIntoBounds(fitMe: Rectangle, container: Rectangle) {
         const scale = Math.min(container.width / fitMe.width, container.height / fitMe.height);
         fitMe.width *= scale;
         fitMe.height *= scale;

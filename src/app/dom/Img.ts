@@ -30,7 +30,7 @@ export class Img extends DomElement<HTMLImageElement> {
                 console.log("Image has no size! ", this.src);
             }
             this.bitmapShape = new Rectangle(0, 0, this.domElement.width, this.domElement.height);
-            const fit = Rectangle.fitToBounds(this.bitmapShape.clone(), this.bounds);
+            const fit = Rectangle.fitIntoBounds(this.bitmapShape.clone(), this.bounds);
 
             this.domElement.width = fit.width;
             this.domElement.height = fit.height;

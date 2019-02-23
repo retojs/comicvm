@@ -30,4 +30,8 @@ export class Page {
         panel.page = this;
         this.scene.addPanel(panel);
     }
+
+    toString(): string {
+        return `page ${this.index}`;
+    }
 }

@@ -224,4 +224,8 @@ export class Panel {
             return layoutProperties && layoutProperties.pan && layoutProperties.pan.length > 0;
         }
     }
+
+    toString(): string {
+        return `panel ${this.index} in ${this.strip.toString()}`;
+    }
 }

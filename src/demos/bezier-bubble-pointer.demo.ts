@@ -65,7 +65,6 @@ export class BezierBubblePointerDemo implements Demo {
             const mousePos = myCanvas.getCanvasPositionFromMousePosition(clientX, clientY)
                 .constrainY(mouseBounds);
 
-            console.log(" calcFixedRangeTop(from, to)", calcFixedRangeTop(from, to));
             const fromToDistance = to.distanceTo(from);
             const fixedRangeTop = to.clone().translate(0, fromToDistance.y * calcFixedRangeTop(from, to)); // control points will have the same distance as toLeft and toRight above this y position
             const dy = fixedRangeTop.distanceTo(mousePos).y;
@@ -102,7 +101,6 @@ export class BezierBubblePointerDemo implements Demo {
             const w2 = LayoutConfig.bubble.pointer.controlPointWidth;
             const h1 = from.y - to.y;
             const h2 = h1 * (1 - LayoutConfig.bubble.pointer.controlPointVerticalPosition);
-            console.log("w1", w1, ", w2", w2, ", h1", h1, ", h2", h2);
             return (1 - (h2 / w2 * w1) / h1);
         }
     }

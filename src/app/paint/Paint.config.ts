@@ -65,6 +65,10 @@ export class FeaturePaintStyleConfig {
         grid: PaintStyleConfig.stroke("rgba(180, 180, 0, 0.4)", 1)
     };
 
+    background = {
+        placeholder: PaintStyleConfig.fillAndStroke('rgba(180, 240, 60, 0.2)', 'rgba(120, 180, 30, 0.8)')
+    };
+
     character = {
         name: PaintStyleConfig.text("#66f", TextAlign.Center),
         box: PaintStyleConfig.stroke("#66f", 6),

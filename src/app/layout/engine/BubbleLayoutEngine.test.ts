@@ -1,4 +1,4 @@
-import { TextLayoutEngine } from "./TextLayoutEngine";
+import { BubbleLayoutEngine } from "./BubbleLayoutEngine";
 import { Canvas } from "../../dom/Canvas";
 import { LayoutEngine } from "./LayoutEngine";
 import { SAMPLE_PLOT } from "../../plot/sample.plot";
@@ -8,7 +8,7 @@ import { Scene } from "../../model/Scene";
 
 // Note: This test needs to be run with the karma test runner since it involves canvas.
 
-describe("TextLayoutEngine", () => {
+describe("BubbleLayoutEngine", () => {
 
     const samplePlot = SAMPLE_PLOT;
     const sampleLayout = SAMPLE_LAYOUT;
@@ -16,13 +16,13 @@ describe("TextLayoutEngine", () => {
     let scene: Scene;
     let canvas: Canvas;
     let layoutEngine: LayoutEngine;
-    let textLayoutEngine: TextLayoutEngine;
+    let bubbleLayoutEngine: BubbleLayoutEngine;
 
     beforeEach(() => {
         scene = new Scene("", sampleLayout, samplePlot).parseLayout();
         canvas = new Canvas(null, 600, 1800);
         layoutEngine = new LayoutEngine(scene);
-        textLayoutEngine = new TextLayoutEngine();
+        bubbleLayoutEngine = new BubbleLayoutEngine();
     });
 
     it("method layoutPanelBubbles defines the with and heights of all bubbles in a panel", () => {
@@ -39,7 +39,7 @@ describe("TextLayoutEngine", () => {
 
     it("method layoutBubblesIntoLines puts all bubbles of a panel into lines of bubbles", () => {
         layoutEngine.scene.panels.forEach(panel => {
-            const bubbleLines: Bubble[][] = textLayoutEngine.layoutBubblesIntoLines(panel);
+            const bubbleLines: Bubble[][] = bubbleLayoutEngine.layoutBubblesIntoLines(panel);
             expect(bubbleLines).toBeDefined();
         })
     })

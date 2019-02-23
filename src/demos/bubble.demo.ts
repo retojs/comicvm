@@ -45,26 +45,25 @@ Minnie to Goofy:
 
 const layout = `
 ---
-panelProperties:
-  - plotItemCount
+panelProperties: [plotItemCount]
 pages:
   # page 1
-  - strips:
-    # upper strip
-    - panels:
-      - - 2
-      - - 3
-      - - 1
-    # middle strip
-    - panels:
-      - - 1
-      - - 4
-      - - 3
-    # lower strip
-    - panels:
-      - - 1
-      - - 1
-      - - 1
+  - stripHeights: [0.4, 0.3, 0.3] 
+    strips:
+      # upper strip
+      - panels:
+          - [2]
+          - [2]
+      # middle strip
+      - panelWidths: [0.35, 0.3, 0.35]
+        panels:
+          - [2]
+          - [1]
+          - [2]
+      # lower strip
+      - panels:
+          - [3]
+          - [3]
 scene:
   pan: [0, 1]
 `;

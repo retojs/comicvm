@@ -70,7 +70,7 @@ export class CharacterLayoutEngine {
 
         // fit visible characters into the defined area
         const bounds = Rectangle.getBoundingBox(visibleCharacters.map(character => character.backgroundPosition));
-        const fitBounds = Rectangle.fitToBounds(bounds.clone(), actorsArea);
+        const fitBounds = Rectangle.fitIntoBounds(bounds.clone(), actorsArea);
         const fitBoundsPos = new Point(fitBounds.x, fitBounds.y);
         panel.characters.forEach(character => {
             character.backgroundPosition.translate(fitBounds.x - bounds.x, fitBounds.y - bounds.y);

@@ -10,10 +10,10 @@ export class Images {
 
     images: Img[];
     imageNames: string[];
-    imagesByName: { [key: string]: Img };
+    imagesByName: { [key: string]: Img } = {};
 
-    private characterImageStore: ImageStore;
-    private backgroundImageStore: ImageStore;
+    private characterImageStore = new ImageStore([]);
+    private backgroundImageStore = new ImageStore([]);
 
     private _backend: Endpoints;
 
@@ -62,6 +62,7 @@ export class Images {
 
     chooseBackgroundImage(query: ImageQuery): Img {
         const imageName = this.backgroundImageStore.getBestMatchImageName(query);
+        console.log("chosen background image ", imageName, " for query", query);
         return this.getImage(imageName);
     }
 

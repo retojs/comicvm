@@ -23,4 +23,8 @@ export class Strip {
         panel.strip = this;
         this.page.addPanel(panel);
     }
+
+    toString(): string {
+        return `strip ${this.index} in ${this.page.toString()}`;
+    }
 }

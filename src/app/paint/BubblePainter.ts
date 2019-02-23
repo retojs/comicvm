@@ -15,24 +15,26 @@ export class BubblePainter {
     }
 
     paintBubbles(panel: Panel) {
-        panel.bubbles.forEach(bubble => {
+        panel.bubbles
+            .filter(bubble => !!bubble.shape)
+            .forEach(bubble => {
 
-            this.canvas.roundRect(bubble.shape, LayoutConfig.bubble.radius, PaintConfig.of.bubble.textBox);
-            // this.canvas.rect(bubble.shape.clone().addMargin(LayoutConfig.bubble.margin), PaintConfig.of.debug.line);
+                this.canvas.roundRect(bubble.shape, LayoutConfig.bubble.radius, PaintConfig.of.bubble.textBox);
+                // this.canvas.rect(bubble.shape.clone().addMargin(LayoutConfig.bubble.margin), PaintConfig.of.debug.line);
 
-            bubble.who.forEach(name =>
-                this.paintBubblePointer(...this.calculateBubblePointer(bubble, panel.getCharacter(name)))
-            );
+                bubble.who.forEach(name =>
+                    this.paintBubblePointer(...this.calculateBubblePointer(bubble, panel.getCharacter(name)))
+                );
 
-            let linePos = new Point(
-                bubble.shape.center.x,
-                bubble.shape.y + LayoutConfig.bubble.padding.top + bubble.textBox.lineHeight * LayoutConfig.bubble.verticalAlign
-            );
-            bubble.textBox.lines.forEach(line => {
-                this.canvas.text(line, linePos, PaintConfig.of.bubble.text);
-                linePos.y += bubble.textBox.lineHeight;
+                let linePos = new Point(
+                    bubble.shape.center.x,
+                    bubble.shape.y + LayoutConfig.bubble.padding.top + bubble.textBox.lineHeight * LayoutConfig.bubble.verticalAlign
+                );
+                bubble.textBox.lines.forEach(line => {
+                    this.canvas.text(line, linePos, PaintConfig.of.bubble.text);
+                    linePos.y += bubble.textBox.lineHeight;
+                });
             });
-        });
     }
 
     calculateBubblePointer(bubble: Bubble, character: Character): Point[] {

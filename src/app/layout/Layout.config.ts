@@ -49,11 +49,11 @@ export class MarginConfig implements Margin {
     }
 }
 
-abstract class ProportionsConfig {
+export class ProportionsConfig {
 
     proportions: number[] = [];
 
-    protected constructor(proportions: number[]) {
+    constructor(proportions: number[]) {
         this.proportions = proportions;
     }
 
@@ -62,15 +62,19 @@ abstract class ProportionsConfig {
      *
      * @param index
      */
-    getSum(index: number) {
+    getSum(index: number): number {
         let sum = 0;
         for (let i = 0; i < index; i++) {
-            sum += this.proportions[i];
+            sum += this.proportions[i] || 0;
         }
-        return sum;
+        return Math.max(0, Math.min(1, sum));
     }
 
-    get hasProportions() {
+    get remainder(): number {
+        return 1 - this.getSum(this.proportions.length);
+    }
+
+    get hasProportions(): boolean {
         return this.proportions && this.proportions.length > 0;
     }
 }

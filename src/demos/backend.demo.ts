@@ -63,6 +63,7 @@ export class BackendDemo implements Demo {
 
         function showError(error) {
             new Div(container, "error", error);
+            throw(error);
         }
     }
 }

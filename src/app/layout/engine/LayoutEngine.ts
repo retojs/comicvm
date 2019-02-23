@@ -6,21 +6,21 @@ import { Strip } from "../../model/Strip";
 import { Panel } from "../../model/Panel";
 import { Rectangle } from "../../trigo/Rectangle";
 import { Canvas } from "../../dom/Canvas";
-import { TextLayoutEngine } from "./TextLayoutEngine";
+import { BubbleLayoutEngine } from "./BubbleLayoutEngine";
 import { CharacterLayoutEngine } from "./CharacterLayoutEngine";
 
 export class LayoutEngine {
 
     scene: Scene;
 
-    textLayoutEngine: TextLayoutEngine;
+    bubbleLayoutEngine: BubbleLayoutEngine;
     characterLayoutEngine: CharacterLayoutEngine;
 
     constructor(scene: Scene) {
         this.scene = scene;
         this.scene.characters = scene.plot.characters.filter(ch => ch !== STORY_TELLER);
 
-        this.textLayoutEngine = new TextLayoutEngine();
+        this.bubbleLayoutEngine = new BubbleLayoutEngine();
         this.characterLayoutEngine = new CharacterLayoutEngine();
     }
 
@@ -47,7 +47,7 @@ export class LayoutEngine {
         if (this.scene && this.scene.pages) {
             this.scene.pages.forEach(page => this.layoutPage(page));
         }
-        this.textLayoutEngine.layout(this.scene.panels, canvas);
+        this.bubbleLayoutEngine.layout(this.scene.panels, canvas);
 
         return this;
     }
@@ -82,10 +82,12 @@ export class LayoutEngine {
     }
 
     layoutPanel(panel: Panel, panelConfig: PanelWidthsConfig) {
+        const proportionPreviousPanels = panelConfig.getSum(panel.index);
+        const proportionThisPanel = panelConfig.proportions[panel.index] || panelConfig.remainder;
 
-        let x: number = panel.strip.shape.x + panel.strip.shape.width * panelConfig.getSum(panel.index),
+        let x: number = panel.strip.shape.x + panel.strip.shape.width * proportionPreviousPanels,
             y: number = panel.strip.shape.y,
-            width: number = panel.strip.shape.width * panelConfig.proportions[panel.index],
+            width: number = panel.strip.shape.width * proportionThisPanel,
             height: number = panel.strip.shape.height;
 
         x += LayoutConfig.panel.margin.left;
@@ -93,6 +95,10 @@ export class LayoutEngine {
         width -= LayoutConfig.panel.margin.horizontal;
         height -= LayoutConfig.panel.margin.vertical;
 
+        if (width < 0 && height < 0) {
+            console.error("Can not layout", panel.toString());
+            return;
+        }
         panel.shape = new Rectangle(x, y, width, height);
 
         this.characterLayoutEngine.layoutCharacters(panel);

@@ -21,7 +21,7 @@ export class PanelPainter {
         this.canvas.begin();
         this.canvas.setClip(panel.shape);
 
-        //  this.paintBackground(panel);
+        this.paintBackground(panel);
         this.paintGrid(panel);
         this.paintCharactersBBox(panel);
         this.paintActorsBBox(panel);
@@ -49,11 +49,7 @@ export class PanelPainter {
         const characterSize = panel.characters[0].defaultPosition.size;
         if (!characterSize) { return; }
 
-        let zoom = 1;
-        if (LayoutConfig.applyZoom) {
-            zoom = panel.getZoom();
-        }
-        const zoomedPanel = panel.shape.clone().scale(zoom, panel.shape.center);
+        const zoomedPanel = this.getZoomedPanelShape(panel);
 
         const lineCount = {
             x: Math.floor(zoomedPanel.width / characterSize),
@@ -92,8 +88,36 @@ export class PanelPainter {
         this.canvas.end();
     }
 
+    getZoomedShape(shape: Rectangle, zoom: number) {
+        return shape.clone().scale(zoom, shape.center);
+    }
+
+    getZoomedPanelShape(panel: Panel): Rectangle {
+        let zoom = 1;
+        if (LayoutConfig.applyZoom) {
+            zoom = panel.getZoom();
+        }
+        return this.getZoomedShape(panel.shape, zoom);
+    }
+
     paintBackground(panel: Panel) {
-        this.canvas.drawImage(panel.background.image, panel.background.getImageDimensions(panel));
+        console.log("panel bgr image ", panel.background.image);
+
+        const imageDimensions: Rectangle = panel.background.getImageDimensions(panel);
+        if (panel.background.image) {
+            this.canvas.drawImage(panel.background.image, imageDimensions);
+        } else {
+            // paint background placeholder
+            this.canvas.rect(imageDimensions, PaintConfig.of.background.placeholder);
+            this.canvas.lineFromTo(imageDimensions.topLeft,
+                imageDimensions.bottomRight,
+                PaintConfig.of.background.placeholder
+            );
+            this.canvas.lineFromTo(imageDimensions.topRight,
+                imageDimensions.bottomLeft,
+                PaintConfig.of.background.placeholder
+            );
+        }
     }
 
     paintCharacters(panel: Panel, options: { paintImage?: boolean, paintRect?: boolean, paintName?: boolean }) {
