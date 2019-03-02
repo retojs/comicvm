@@ -141,6 +141,9 @@ export class BubbleConfig {
     maxWithPerHeight = 12;
     verticalAlign = 0.808;
     pointer = new PointerConfig()
+    offScreen = {
+        padding: new MarginConfig(25, 20)
+    };
 }
 
 export class LayoutConfig {

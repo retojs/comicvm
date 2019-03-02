@@ -61,7 +61,7 @@ export class FeaturePaintStyleConfig {
     };
 
     panel = {
-        border: PaintStyleConfig.stroke("#000", 7.5),
+        border: PaintStyleConfig.stroke("black", 7.5),
         grid: PaintStyleConfig.stroke("rgba(180, 180, 0, 0.4)", 1)
     };
 
@@ -74,16 +74,19 @@ export class FeaturePaintStyleConfig {
         box: PaintStyleConfig.stroke("#66f", 6),
         bbox: PaintStyleConfig.fill("rgba(00, 00, 250, 0.1)"),
         actor: {
-            name: PaintStyleConfig.text("#f00", TextAlign.Center),
-            box: PaintStyleConfig.stroke("#f00", 6),
+            name: PaintStyleConfig.text("red", TextAlign.Center),
+            box: PaintStyleConfig.stroke("red", 6),
             bbox: PaintStyleConfig.fill("rgba(250, 0,0, 0.1)")
         }
     };
 
     bubble = {
-        textBox: PaintStyleConfig.fillAndStroke("#fff", "#444", 5),
-        text: PaintStyleConfig.text("#000", TextAlign.Center),
-        pointer: PaintStyleConfig.stroke("#000", 5, LineCap.Butt),
+        textBox: PaintStyleConfig.fillAndStroke("white", "#444", 5),
+        text: PaintStyleConfig.text("black", TextAlign.Center),
+        offScreen: {
+            text: PaintStyleConfig.text("black", TextAlign.Left)
+        },
+        pointer: PaintStyleConfig.stroke("black", 5, LineCap.Butt),
         pointerHalo: PaintStyleConfig.stroke("rgba(255, 255, 255, 0.7)", 12, LineCap.Butt)
     }
 }

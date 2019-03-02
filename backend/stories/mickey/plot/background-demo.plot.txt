@@ -6,6 +6,9 @@ Place: Duckburgh
 _____
 Plot:
 
+STORYTELLER:
+    One sunny friday afternoon in Duckburgh...
+
 Mickey to Goofy:
     Hey Goofy
 Goofy to Mickey:

@@ -5,7 +5,6 @@ export const STORY_TELLER = "STORYTELLER";
 export enum PlotItemType {
     SAYS = "says",
     DOES = "does",
-    TOLD = "told",
     DESC = "desc"
 }
 
@@ -20,7 +19,6 @@ export interface PlotItemSpec {
     whoWith?: string[];
 
     description?: string;
-    told?: string;
 }
 
 export class PlotItem {
@@ -35,7 +33,6 @@ export class PlotItem {
     _characters: string[] = [];
 
     _description: string;
-    _told: string;
 
     constructor(spec: PlotItemSpec) {
         if (!!spec.does) {
@@ -50,7 +47,6 @@ export class PlotItem {
         this._characters = spec.whoWith || [];
         this._qualifiers = spec.how || [];
         this._description = spec.description ? spec.description.trim() : undefined;
-        this._told = spec.told ? spec.told.trim() : undefined;
 
         this.normalize();
     }
@@ -106,10 +102,6 @@ export class PlotItem {
         return this._type === PlotItemType.DESC;
     }
 
-    get isTold(): boolean {
-        return this._type === PlotItemType.TOLD;
-    }
-
     get isDoes(): boolean {
         return this._type === PlotItemType.DOES;
     }
@@ -120,20 +112,12 @@ export class PlotItem {
 
     normalize() {
 
-        // assign what the storyteller says to the _told property
-        if (this.who && this.who.length > 0 && this.who[0].trim() === STORY_TELLER) {
-            this._told = this._action;
-        }
-
         // remove duplicates
         this._actors = this._actors.filter((name, index) => this._actors.indexOf(name) === index);
         this._characters = this._characters.filter((name, index) => this._characters.indexOf(name) === index && !(this._actors.indexOf(name) > -1));
 
         if (this._description) {
             this._type = PlotItemType.DESC;
-        }
-        if (this._told) {
-            this._type = PlotItemType.TOLD
         }
     }
 
@@ -145,19 +129,18 @@ export class PlotItem {
             how: this.how,
             whoWith: this.whoWith,
             description: this._description,
-            told: this._told
         });
     }
 
     toString(): string {
-        return `PlotItem: ${this._index}:
-        who: ${this.who},
-        does: ${this.does || ''},
-        says: ${this.says || ''},
-        how: ${JSON.stringify(this.how)},
-        whoWith: ${this.whoWith},
-        description: ${this._description || ''},
-        told: ${this._told || ''}
+        return `
+        PlotItem: ${this._index}:
+            who: ${this.who},
+            does: ${this.does || ''},
+            says: ${this.says || ''},
+            how: ${JSON.stringify(this.how)},
+            whoWith: ${this.whoWith},
+            description: ${this._description || ''},
         `;
     }
 }

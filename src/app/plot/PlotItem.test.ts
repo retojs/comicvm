@@ -31,8 +31,9 @@ describe("PlotItem", () => {
                 says: "Once upon a time...   "
             });
             expect(plotItem.who).toEqual([STORY_TELLER]);
-            expect(plotItem._told).toEqual("Once upon a time...");
-            expect(plotItem._type).toBe(PlotItemType.TOLD);
+            expect(plotItem._action).toEqual("Once upon a time...");
+            expect(plotItem.says).toEqual("Once upon a time...");
+            expect(plotItem._type).toBe(PlotItemType.SAYS);
         });
     });
 });

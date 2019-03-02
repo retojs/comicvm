@@ -18,23 +18,42 @@ export class BubblePainter {
         panel.bubbles
             .filter(bubble => !!bubble.shape)
             .forEach(bubble => {
+                if (bubble.isOffScreen) {
+                    this.canvas.rect(bubble.shape, PaintConfig.of.bubble.textBox);
+                    this.paintTextLeftAligned(bubble);
+                } else {
+                    this.canvas.roundRect(bubble.shape, LayoutConfig.bubble.radius, PaintConfig.of.bubble.textBox);
+                    // this.canvas.rect(bubble.shape.clone().addMargin(LayoutConfig.bubble.margin), PaintStyleConfig.stroke('red'));
 
-                this.canvas.roundRect(bubble.shape, LayoutConfig.bubble.radius, PaintConfig.of.bubble.textBox);
-                // this.canvas.rect(bubble.shape.clone().addMargin(LayoutConfig.bubble.margin), PaintConfig.of.debug.line);
+                    bubble.who.forEach(name =>
+                        this.paintBubblePointer(...this.calculateBubblePointer(bubble, panel.getCharacter(name)))
+                    );
 
-                bubble.who.forEach(name =>
-                    this.paintBubblePointer(...this.calculateBubblePointer(bubble, panel.getCharacter(name)))
-                );
-
-                let linePos = new Point(
-                    bubble.shape.center.x,
-                    bubble.shape.y + LayoutConfig.bubble.padding.top + bubble.textBox.lineHeight * LayoutConfig.bubble.verticalAlign
-                );
-                bubble.textBox.lines.forEach(line => {
-                    this.canvas.text(line, linePos, PaintConfig.of.bubble.text);
-                    linePos.y += bubble.textBox.lineHeight;
-                });
+                    this.paintTextCentered(bubble);
+                }
             });
+    }
+
+    paintTextCentered(bubble: Bubble) {
+        let linePos = new Point(
+            bubble.shape.center.x,
+            bubble.shape.y + LayoutConfig.bubble.padding.top + bubble.textBox.lineHeight * LayoutConfig.bubble.verticalAlign
+        );
+        bubble.textBox.lines.forEach(line => {
+            this.canvas.text(line, linePos, PaintConfig.of.bubble.text);
+            linePos.y += bubble.textBox.lineHeight;
+        });
+    }
+
+    paintTextLeftAligned(bubble: Bubble) {
+        let linePos = new Point(
+            bubble.shape.x + LayoutConfig.bubble.offScreen.padding.left,
+            bubble.shape.y + LayoutConfig.bubble.offScreen.padding.top + bubble.textBox.lineHeight * LayoutConfig.bubble.verticalAlign
+        );
+        bubble.textBox.lines.forEach(line => {
+            this.canvas.text(line, linePos, PaintConfig.of.bubble.offScreen.text);
+            linePos.y += bubble.textBox.lineHeight;
+        });
     }
 
     calculateBubblePointer(bubble: Bubble, character: Character): Point[] {

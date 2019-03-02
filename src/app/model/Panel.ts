@@ -3,7 +3,7 @@ import { Page } from "./Page";
 import { Strip } from "./Strip";
 import { Background } from "./Background";
 import { Rectangle } from "../trigo/Rectangle";
-import { PlotItem } from "../plot/PlotItem";
+import { PlotItem, STORY_TELLER } from "../plot/PlotItem";
 import { PanelLayoutProperties } from "../layout/LayoutProperties";
 import { Character } from "./Character";
 import { Qualifier } from "./Qualifier";
@@ -26,6 +26,7 @@ export class Panel {
     actorSlice: Character[] = [];
 
     bubbles: Bubble[] = [];
+    offScreenBubble: Bubble;
 
     shape: Rectangle;
 
@@ -39,10 +40,6 @@ export class Panel {
 
     get descriptions(): PlotItem[] {
         return this.plotItems.filter(plotItem => plotItem.isDescription);
-    }
-
-    get tolds(): PlotItem[] {
-        return this.plotItems.filter(plotItem => plotItem.isTold)
     }
 
     get does(): PlotItem[] {
@@ -105,10 +102,11 @@ export class Panel {
     extractBubbles(plotItems: PlotItem[]) {
         plotItems.filter(plotItem => !!plotItem.says)
             .forEach(plotItem => this.addBubble(plotItem));
+        this.offScreenBubble = this.bubbles.find(bubble => bubble.isOffScreen);
     }
 
     addActor(name: string): void {
-        if (!this.getActor(name)) {
+        if (!this.getActor(name) && !(name === STORY_TELLER)) {
             const character = this.getCharacter(name);
             if (!character) {
                 throw new Error("unknown character '" + name + "'");
@@ -119,7 +117,7 @@ export class Panel {
     }
 
     addCharacter(name: string): void {
-        if (!this.getCharacter(name)) {
+        if (!this.getCharacter(name) && !(name === STORY_TELLER)) {
             const character = new Character(name);
             this.characters.push(character);
             this.charactersByName[character.name] = character;

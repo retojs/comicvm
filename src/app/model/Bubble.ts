@@ -1,5 +1,6 @@
 import { Rectangle } from "../trigo/Rectangle";
 import { TextBox } from "./TextBox";
+import { STORY_TELLER } from "../plot/PlotItem";
 
 export class Bubble {
 
@@ -28,5 +29,9 @@ export class Bubble {
         }
         return who.every(name => this.who && this.who.indexOf(name) > -1)
             && this.who.every(name => who && who.indexOf(name) > -1);
+    }
+
+    get isOffScreen(): boolean {
+        return this.who && this.who[0] === STORY_TELLER;
     }
 }
