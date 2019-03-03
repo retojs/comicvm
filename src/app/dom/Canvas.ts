@@ -257,7 +257,7 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
      */
     getCanvasPositionFromMousePosition(clientX: number, clientY: number): Point {
         const x = clientX - this.domElement.getBoundingClientRect().left;
-        const y = clientY - this.domElement.getBoundingClientRect().top + getScrollOffset().top;
+        const y = clientY - this.domElement.getBoundingClientRect().top + getScrollOffset().dy;
 
         return new Point(x / this.scale, y / this.scale);
     }
@@ -271,7 +271,7 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
      */
     getMousePositionFromCanvasPosition(x: number, y: number): Point {
         const clientX = x * this.scale + this.domElement.getBoundingClientRect().left;
-        const clientY = y * this.scale + this.domElement.getBoundingClientRect().top + getScrollOffset().top;
+        const clientY = y * this.scale + this.domElement.getBoundingClientRect().top + getScrollOffset().dy;
 
         return new Point(clientX, clientY);
     }

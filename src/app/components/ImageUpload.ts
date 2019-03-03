@@ -2,6 +2,7 @@ import { Div } from "../dom/Div";
 import { Endpoints } from "../backend/Endpoints";
 import { Img } from "../dom/Img";
 import { DomElementContainer } from "../dom/DomElement";
+import { ImageType } from "../images/ImageType";
 
 export class ImageUpload {
 
@@ -9,42 +10,29 @@ export class ImageUpload {
     text: Div;
 
     story: string;
-    isForBackgroundImages: boolean;
+    imageType: ImageType;
 
     private _backend: Endpoints;
 
-    constructor(container: DomElementContainer, story: string, isForBackgroundImages: boolean) {
-        this.rootDiv = new Div(container);
+    constructor(container: DomElementContainer, story: string, imageType: ImageType) {
+        this.rootDiv = new Div(container, "image-upload-component");
         this.story = story;
-        this.isForBackgroundImages = isForBackgroundImages;
+        this.imageType = imageType;
         this._backend = new Endpoints();
 
-        this.domElement.style.display = "inline-block";
-        this.domElement.style.width = "35%";
-        this.domElement.style.border = "2px solid PaleTurquoise";
-        this.domElement.style.borderRadius = "3px";
-        this.domElement.style.backgroundColor = "PaleTurquoise";
-        this.domElement.style.textAlign = "center";
-        this.domElement.style.padding = "30px 60px";
-        this.domElement.style.margin = "5px";
-        this.domElement.style.cursor = "pointer";
-
-        this.rootDiv.onMouseEnter = () => this.domElement.style.border = "2px solid Teal";
-        this.rootDiv.onMouseLeave = () => this.domElement.style.border = "2px solid PaleTurquoise";
-
         this.rootDiv.onDrop = ((event: DragEvent) => {
-            return this.uploadDroppedImages(event, this.isForBackgroundImages)
-                .then(files => this.insertImages(files, this.isForBackgroundImages));
+            return this.uploadDroppedImages(event, this.imageType)
+                .then(files => this.insertImages(files, this.imageType));
         });
 
-        this.text = new Div(this.domElement, "",`<h2>Drop more ${this.isForBackgroundImages ? 'background' : 'character'} images here</h2>`);
+        this.text = new Div(this.domElement, "", `<h2>Drop more ${this.imageType} images here</h2>`);
     }
 
     get domElement(): HTMLDivElement {
         return this.rootDiv.domElement;
     }
 
-    uploadDroppedImages(event: DragEvent, isBackground: boolean): Promise<File[]> {
+    uploadDroppedImages(event: DragEvent, imageType: ImageType): Promise<File[]> {
         if (!event || !event.dataTransfer || !event.dataTransfer.files) { return Promise.reject("no files"); }
 
         const images = [];
@@ -52,7 +40,7 @@ export class ImageUpload {
 
         for (let i = 0; i < event.dataTransfer.files.length; i++) {
             images[i] = event.dataTransfer.files.item(i);
-            if (isBackground) {
+            if (imageType === ImageType.Background) {
                 uploadPromises.push(this._backend.uploadBackgroundImage(images[i], this.story));
             } else {
                 uploadPromises.push(this._backend.uploadCharacterImage(images[i], this.story));
@@ -64,9 +52,9 @@ export class ImageUpload {
         });
     }
 
-    insertImages(images: File[], isBackground: boolean): void {
+    insertImages(images: File[], imageType: ImageType): void {
         images.forEach(image => {
-            if (isBackground) {
+            if (imageType === ImageType.Background) {
                 new Img(this.rootDiv.container, this._backend.getBackgroundImageUrl(this.story, image.name), 500, 300);
             } else {
                 new Img(this.rootDiv.container, this._backend.getCharacterImageUrl(this.story, image.name), 100, 120);

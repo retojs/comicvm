@@ -1,0 +1,118 @@
+$handle-margin: 20px;
+
+.resizable-div {
+  position: absolute;
+  width: 2 * $handle-margin;
+  height: 2* $handle-margin;
+
+  &:hover {
+    cursor: move;
+  }
+
+  & > div {
+    border: 1px solid red;
+    position: absolute;
+
+    &:hover {
+      background-color: pink;
+    }
+  }
+
+  &__handle {
+
+    &--middle {
+      left: $handle-margin;
+      top: $handle-margin;
+      width: calc(100% - 2 * #{$handle-margin});
+      height: calc(100% - 2 * #{$handle-margin});
+    }
+
+    &--left {
+      left: -$handle-margin;
+      top: $handle-margin;
+      width: 2 * $handle-margin;
+      height: calc(100% - 2 * #{$handle-margin});
+
+      &:hover {
+        cursor: e-resize;
+      }
+    }
+
+    &--top {
+      top: -$handle-margin;
+      left: $handle-margin;
+      width: calc(100% - 2 * #{$handle-margin});
+      height: 2 * $handle-margin;
+
+      &:hover {
+        cursor: n-resize;
+      }
+
+      &-left {
+        top: -$handle-margin;
+        left: -$handle-margin;
+        width: 2 * $handle-margin;
+        height: 2 * $handle-margin;
+
+        &:hover {
+          cursor: nw-resize;
+        }
+      }
+
+      &-right {
+        top: -$handle-margin;
+        right: -$handle-margin;
+        width: 2 * $handle-margin;
+        height: 2 * $handle-margin;
+
+        &:hover {
+          cursor: ne-resize;
+        }
+      }
+    }
+
+    &--right {
+      right: -$handle-margin;
+      top: $handle-margin;
+      width: 2 * $handle-margin;
+      height: calc(100% - 2 * #{$handle-margin});
+
+      &:hover {
+        cursor: w-resize;
+      }
+    }
+
+    &--bottom {
+      bottom: -$handle-margin;
+      left: $handle-margin;
+      width: calc(100% - 2 * #{$handle-margin});
+      height: 2 * $handle-margin;
+
+      &:hover {
+        cursor: n-resize;
+      }
+
+      &-left {
+        bottom: -$handle-margin;
+        left: -$handle-margin;
+        width: 2 * $handle-margin;
+        height: 2 * $handle-margin;
+
+        &:hover {
+          cursor: ne-resize;
+        }
+      }
+
+      &-right {
+        bottom: -$handle-margin;
+        right: -$handle-margin;
+        width: 2 * $handle-margin;
+        height: 2 * $handle-margin;
+
+        &:hover {
+          cursor: nw-resize;
+        }
+      }
+    }
+  }
+}

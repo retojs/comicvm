@@ -6,6 +6,8 @@ import { ImageUpload } from "../app/components/ImageUpload";
 import { BackendConfig } from "../app/backend/Backend.config";
 import { Demo } from "./Demo";
 import { DomElementContainer } from "../app/dom/DomElement";
+import { ImageType } from "../app/images/ImageType";
+import { ImageEditor } from "../app/components/ImageEditor";
 
 export class BackendDemo implements Demo {
 
@@ -18,11 +20,13 @@ export class BackendDemo implements Demo {
 
         const backend = new Endpoints();
 
-        const imageContainer = new Div(container, "backend-demo_images");
-        const textContainer = new Div(container, "backend-demo_text");
+        const imageEditor = new ImageEditor(container, 'http://localhost:3000/mariel/images/background/dream.beach.png');
 
-        new ImageUpload(imageContainer, story, true).domElement;
-        new ImageUpload(imageContainer, story, false).domElement;
+        const imageContainer = new Div(container, "backend-demo__images");
+        const textContainer = new Div(container, "backend-demo__text");
+
+        new ImageUpload(imageContainer, story, ImageType.Background);
+        new ImageUpload(imageContainer, story, ImageType.Character);
 
         backend.getScenes(story)
             .then(scenes => {
@@ -30,7 +34,7 @@ export class BackendDemo implements Demo {
 
                 scenes.forEach(scene => {
                     const sceneContainer = new Div(textContainer, "backend-demo").domElement;
-                    new Div(sceneContainer, "backend-demo_title", `Scene: <b><i>${scene}</i></b>`);
+                    new Div(sceneContainer, "backend-demo__title", `Scene: <b><i>${scene}</i></b>`);
 
                     backend.getPlot(story, scene)
                         .then((plot) => {

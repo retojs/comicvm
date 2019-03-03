@@ -167,4 +167,8 @@ export class Rectangle {
 
         return this;
     }
+
+    toString() {
+        return `Rectangle: x=${this.x}, y=${this.y}, width=${this.width}, height=${this.height}`;
+    }
 }

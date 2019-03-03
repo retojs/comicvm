@@ -24,6 +24,10 @@ export class Point {
         )
     }
 
+    get length(): number {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
     constrain(bounds: Rectangle): Point {
         return this.constrainX(bounds).constrainY(bounds);
     }

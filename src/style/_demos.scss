@@ -55,11 +55,11 @@ select {
 }
 
 .backend-demo {
-  &_title {
+  &__title {
     padding: 16px 0 10px;
   }
 
-  &_images {
+  &__images {
     img {
       margin: 4px;
       border: 1px solid lightgrey;

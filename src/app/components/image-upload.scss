@@ -1,0 +1,15 @@
+.image-upload-component {
+  display: inline-block;
+  width: 35%;
+  border: 2px solid PaleTurquoise;
+  border-radius: 3px;
+  background-color: PaleTurquoise;
+  text-align: center;
+  padding: 30px 60px;
+  margin: 5px;
+  cursor: pointer;
+
+  &:hover {
+    border: 2px solid teal;
+  }
+}

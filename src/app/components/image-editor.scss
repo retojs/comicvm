@@ -1,0 +1,15 @@
+.image-editor-component {
+  position: relative;
+  width: 600px;
+
+  .character-placeholder {
+    background-color: rgba(50, 150, 180, 0.4);
+    border: 4px solid teal;
+  }
+
+  .character-image {
+    width: 100%;
+    height: 100%;
+    user-select: none;
+  }
+}

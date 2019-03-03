@@ -1,10 +1,14 @@
 export class Offset {
 
-    left: number;
-    top: number;
+    dx: number;
+    dy: number;
 
-    constructor(left: number, top: number) {
-        this.left = left;
-        this.top = top;
+    constructor(dx: number, dy: number) {
+        this.dx = dx;
+        this.dy = dy;
     };
+
+    invert(): Offset {
+        return new Offset(-this.dx, -this.dy);
+    }
 }
