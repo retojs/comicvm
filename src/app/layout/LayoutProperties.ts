@@ -46,28 +46,45 @@ export class CharacterLayoutProperties {
     }
 }
 
-export class SceneLayoutProperties {
-
+export interface SceneLayoutProperties {
     zoom?: number;
     pan: number[];
-    character: CharacterLayoutProperties[] = [];
-
-    constructor(zoom?: number, pan?: number [], character?: CharacterLayoutProperties[]) {
-        this.zoom = zoom;
-        this.pan = pan || [];
-        this.character = character || [];
-    }
-
+    characters: (string | string[])[];
+    characterProperties: CharacterLayoutProperties[];
 }
 
-export class BackgroundLayoutProperties extends SceneLayoutProperties {
+export function createSceneLayout(config?: Partial<SceneLayoutProperties>): SceneLayoutProperties {
+    return {
+        zoom: 1,
+        pan: [0, 0],
+        characters: null,
+        characterProperties: [],
+        ...config
+    };
+}
 
+/**
+ * Flattens nested characters of type (string | string[])[] into type string[]
+ */
+export function flatCharacters(characters: (string | string[])[]): string[] {
+    return characters.reduce((flat: string[], character: string | string[]) => {
+        if (typeof character === 'string') {
+            return [...flat, character];
+        } else {
+            return [...flat, ...character,];
+        }
+    }, []) as string[];
+}
+
+export interface BackgroundLayoutProperties extends SceneLayoutProperties {
     id: string;
+}
 
-    constructor(id: string, zoom?: number, pan?: number [], character?: CharacterLayoutProperties[]) {
-        super(zoom, pan, character);
-        this.id = id;
-    }
+export function createBackgroundLayout(config: Partial<BackgroundLayoutProperties>): BackgroundLayoutProperties {
+    return {
+        id: 'default',
+        ...createSceneLayout(config)
+    };
 }
 
 export class PanelLayoutProperties {

@@ -44,8 +44,7 @@ export class Images {
                 this.imagesByName = {};
                 this.imageNames.forEach(name =>
                     this.imagesByName[name] = this.images.find(img =>
-                        this.getName(img.src).indexOf(name) > -1
-                    )
+                        this.getName(img.src).indexOf(name) === 0)
                 );
                 return result;
             });
@@ -62,7 +61,6 @@ export class Images {
 
     chooseBackgroundImage(query: ImageQuery): Img {
         const imageName = this.backgroundImageStore.getBestMatchImageName(query);
-        console.log("chosen background image ", imageName, " for query", query);
         return this.getImage(imageName);
     }
 

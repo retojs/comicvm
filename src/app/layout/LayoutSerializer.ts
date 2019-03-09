@@ -75,8 +75,8 @@ export class LayoutSerializer {
             if (layoutProperties.pan) {
                 bgStr += indent + "pan: [" + layoutProperties.pan.join(", ") + "]" + this.NL
             }
-            if (layoutProperties.character) {
-                bgStr += this.stringifyCharacterPropertes(layoutProperties.character, indent);
+            if (layoutProperties.characterProperties) {
+                bgStr += this.stringifyCharacterPropertes(layoutProperties.characterProperties, indent);
             }
         }
         return bgStr;

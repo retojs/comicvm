@@ -25,9 +25,11 @@ export class BubblePainter {
                     this.canvas.roundRect(bubble.shape, LayoutConfig.bubble.radius, PaintConfig.of.bubble.textBox);
                     // this.canvas.rect(bubble.shape.clone().addMargin(LayoutConfig.bubble.margin), PaintStyleConfig.stroke('red'));
 
-                    bubble.who.forEach(name =>
-                        this.paintBubblePointer(...this.calculateBubblePointer(bubble, panel.getCharacter(name)))
-                    );
+                    bubble.who.forEach(name => {
+                        if (panel.characterNames.indexOf(name) > -1) {
+                            this.paintBubblePointer(...this.calculateBubblePointer(bubble, panel.getCharacter(name)));
+                        }
+                    });
 
                     this.paintTextCentered(bubble);
                 }

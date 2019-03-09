@@ -4,7 +4,7 @@ import { Strip } from "./Strip";
 import { Background } from "./Background";
 import { Rectangle } from "../trigo/Rectangle";
 import { PlotItem, STORY_TELLER } from "../plot/PlotItem";
-import { PanelLayoutProperties } from "../layout/LayoutProperties";
+import { flatCharacters, PanelLayoutProperties } from "../layout/LayoutProperties";
 import { Character } from "./Character";
 import { Qualifier } from "./Qualifier";
 import { Bubble } from "./Bubble";
@@ -20,7 +20,9 @@ export class Panel {
     background: Background;
 
     characters: Character[] = [];
+    characterNames: string[];
     charactersByName: { [key: string]: Character } = {};
+    characterImageGroups: (string | string[])[];
     actors: Character[] = [];
     actorsByName: { [key: string]: Character } = {};
     actorSlice: Character[] = [];
@@ -38,8 +40,10 @@ export class Panel {
         this.index = index;
     }
 
-    get descriptions(): PlotItem[] {
-        return this.plotItems.filter(plotItem => plotItem.isDescription);
+    setPlotItems(plotItems: PlotItem[]): void {
+        this.plotItems = plotItems || [];
+        this.extractCharacters(this.plotItems);
+        this.extractBubbles(this.plotItems);
     }
 
     get does(): PlotItem[] {
@@ -48,6 +52,10 @@ export class Panel {
 
     get says(): PlotItem[] {
         return this.plotItems.filter(p => p.isSays);
+    }
+
+    get descriptions(): PlotItem[] {
+        return this.plotItems.filter(plotItem => plotItem.isDescription);
     }
 
     get hasActors(): boolean {
@@ -62,16 +70,18 @@ export class Panel {
         return this.charactersByName[name];
     }
 
-    setPlotItems(plotItems: PlotItem[]): void {
-        this.plotItems = plotItems || [];
-        this.extractCharacters(this.plotItems);
-        this.extractBubbles(this.plotItems);
-    }
-
     extractCharacters(plotItems: PlotItem[]): void {
         this.resetCharacters();
 
-        this.scene.characters.forEach(name => this.addCharacter(name));
+        if (this.background.layoutProperties.characters) {
+            this.characterImageGroups = this.background.layoutProperties.characters;
+            this.characterNames = flatCharacters(this.background.layoutProperties.characters);
+        } else {
+            this.characterImageGroups = this.scene.characters;
+            this.characterNames = flatCharacters(this.scene.characters);
+        }
+
+        this.characterNames.forEach(name => this.addCharacter(name as string));
 
         plotItems
             .filter(plotItem => plotItem.who && plotItem.who.length > 0)
@@ -89,6 +99,11 @@ export class Panel {
                 })
             );
 
+        // maintain order
+        this.actors = this.characterNames
+            .reduce((actors, name) => [...actors, this.getActor(name)], [])
+            .filter(actor => !!actor);
+
         plotItems
             .filter(plotItem => plotItem.how && plotItem.how.length > 0)
             .forEach(plotItem =>
@@ -100,7 +115,8 @@ export class Panel {
     }
 
     extractBubbles(plotItems: PlotItem[]) {
-        plotItems.filter(plotItem => !!plotItem.says)
+        plotItems
+            .filter(plotItem => !!plotItem.says)
             .forEach(plotItem => this.addBubble(plotItem));
         this.offScreenBubble = this.bubbles.find(bubble => bubble.isOffScreen);
     }
@@ -108,11 +124,10 @@ export class Panel {
     addActor(name: string): void {
         if (!this.getActor(name) && !(name === STORY_TELLER)) {
             const character = this.getCharacter(name);
-            if (!character) {
-                throw new Error("unknown character '" + name + "'");
+            if (character) {
+                this.actors.push(character);
+                this.actorsByName[character.name] = character;
             }
-            this.actors.push(character);
-            this.actorsByName[character.name] = character;
         }
     }
 
@@ -126,10 +141,9 @@ export class Panel {
 
     addCharacterQualifier(qualifier: Qualifier): void {
         const character = this.getCharacter(qualifier.who);
-        if (!character) {
-            throw new Error("unknown character '" + qualifier.who + "'");
+        if (character) {
+            character.addQualifier(qualifier.how);
         }
-        character.addQualifier(qualifier.how);
     }
 
     addBubble(plotItem: PlotItem) {
@@ -162,7 +176,7 @@ export class Panel {
      * Returns the answer to the question: At what index is the first actor in this panel's characters array?
      * It matters for positioning the characters in the panel you know...
      */
-    getFirstActorIndex() {
+    get firstActorIndex() {
         if (!this.actors) { return -1;}
 
         return this.actors.reduce((mostLeftIndex, character) => {
@@ -178,7 +192,7 @@ export class Panel {
         this.actorsByName = {};
     }
 
-    getZoom(): number {
+    get zoom(): number {
 
         let zoom = 1.0;
 
@@ -197,7 +211,7 @@ export class Panel {
         return zoom;
     }
 
-    getPanning(): number[] {
+    get panning(): number[] {
 
         let panning = {x: 0, y: 0};
 

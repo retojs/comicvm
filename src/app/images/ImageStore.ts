@@ -20,16 +20,16 @@ export class ImageStore {
         const sortedMatches: ImageSearchMatch[] = Object.keys(matchesByImageName)
             .map(key => matchesByImageName[key])
             .sort((a: ImageSearchMatch, b: ImageSearchMatch) => {
-                if (a.getMatchCount(MatchQuality.PREMIUM) !== b.getMatchCount(MatchQuality.PREMIUM)) {
-                    return b.getMatchCount(MatchQuality.PREMIUM) - a.getMatchCount(MatchQuality.PREMIUM)
+                if (a.premiumMatchCount !== b.premiumMatchCount) {
+                    return b.premiumMatchCount - a.premiumMatchCount
                 }
-                if (a.getMatchCount(MatchQuality.DEFAULT) !== b.getMatchCount(MatchQuality.DEFAULT)) {
-                    return b.getMatchCount(MatchQuality.DEFAULT) - a.getMatchCount(MatchQuality.DEFAULT)
+                if (a.defaultMatchCount !== b.defaultMatchCount) {
+                    return b.defaultMatchCount - a.defaultMatchCount
                 }
-                if (a.getMatchCount(MatchQuality.SECONDARY) !== b.getMatchCount(MatchQuality.SECONDARY)) {
-                    return b.getMatchCount(MatchQuality.SECONDARY) - a.getMatchCount(MatchQuality.SECONDARY)
+                if (a.secondaryMatchCount !== b.secondaryMatchCount) {
+                    return b.secondaryMatchCount - a.secondaryMatchCount
                 }
-                return a.imageName.length - b.imageName.length;
+                return a.imageName.length - b.imageName.length; // prefer shorter image name
             });
 
         // console.log("sorted matches for query " + query.toString(), sortedMatches.reduce((str, match) => str + "\n" + match.toString(), ""));

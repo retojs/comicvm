@@ -5,6 +5,13 @@ import { Rectangle } from "../trigo/Rectangle";
 import { Point } from "../trigo/Point";
 import { PaintConfig } from "./Paint.config";
 import { BubblePainter } from "./BubblePainter";
+import { Character } from "../model/Character";
+
+interface CharacterPaintOptions {
+    paintImage?: boolean,
+    paintRect?: boolean,
+    paintName?: boolean
+}
 
 export class PanelPainter {
 
@@ -95,14 +102,12 @@ export class PanelPainter {
     getZoomedPanelShape(panel: Panel): Rectangle {
         let zoom = 1;
         if (LayoutConfig.applyZoom) {
-            zoom = panel.getZoom();
+            zoom = panel.zoom;
         }
         return this.getZoomedShape(panel.shape, zoom);
     }
 
     paintBackground(panel: Panel) {
-        console.log("panel bgr image ", panel.background.image);
-
         const imageDimensions: Rectangle = panel.background.getImageDimensions(panel);
         if (panel.background.image) {
             this.canvas.drawImage(panel.background.image, imageDimensions);
@@ -120,23 +125,55 @@ export class PanelPainter {
         }
     }
 
-    paintCharacters(panel: Panel, options: { paintImage?: boolean, paintRect?: boolean, paintName?: boolean }) {
-        if (panel.characters && panel.characters.length > 0) {
-            panel.characters.forEach(chr => {
-                const position = chr.getPosition();
-                const isActor = !!panel.getActor(chr.name);
-                if (!options || options.paintImage) {
-                    this.canvas.drawImage(chr.image, chr.getImageDimensions(position));
-                }
-                if (!options || options.paintRect) {
-                    this.canvas.rect(position, isActor ? PaintConfig.of.character.actor.box : PaintConfig.of.character.box);
-                }
-                if (!options || options.paintName) {
-                    this.canvas.text(chr.name,
-                        position.center.translate(0, position.height / 2 + this.canvas.getLineHeight()),
-                        isActor ? PaintConfig.of.character.actor.name : PaintConfig.of.character.name);
+    paintCharacters(panel: Panel, options: CharacterPaintOptions) {
+        if (panel.characterImageGroups && panel.characterImageGroups.length > 0) {
+            panel.characterImageGroups.forEach((group: string | string[]) => {
+                if (typeof group === 'string') {
+                    this.paintSingleCharacter(panel, panel.getCharacter(group), options);
+                } else {
+                    this.paintGroupOfCharacters(panel, group, options);
                 }
             });
+        }
+    }
+
+    paintSingleCharacter(panel: Panel, character: Character, options: CharacterPaintOptions) {
+        const position = character.getPosition();
+        const isActor = !!panel.getActor(character.name);
+        if (!options || options.paintImage) {
+            this.canvas.drawImage(character.image, character.getImageDimensions(position));
+        }
+        if (!options || options.paintRect) {
+            this.canvas.rect(position, isActor ? PaintConfig.of.character.actor.box : PaintConfig.of.character.box);
+        }
+        if (!options || options.paintName) {
+            this.canvas.text(character.name,
+                position.center.translate(0, position.height / 2 + this.canvas.getLineHeight()),
+                isActor ? PaintConfig.of.character.actor.name : PaintConfig.of.character.name);
+        }
+    }
+
+    paintGroupOfCharacters(panel: Panel, group: string[], options: CharacterPaintOptions) {
+        const characterBBox = Rectangle.getBoundingBox(group.map(name => panel.getCharacter(name).getPosition()));
+        const containsActor = group.some(name => !!panel.getActor(name));
+        if (!options || options.paintImage) {
+            const image = panel.getCharacter(group[0]).image;
+            if (image) {
+                const imageDim = Rectangle.fitAroundBounds(image.bitmapShape, characterBBox);
+                this.canvas.drawImage(image, imageDim);
+            }
+        }
+        if (!options || options.paintRect) {
+            this.canvas.rect(characterBBox, containsActor ? PaintConfig.of.character.actor.box : PaintConfig.of.character.box);
+            group.forEach(name => this.canvas.rect(
+                panel.getCharacter(name).getPosition(),
+                panel.getActor(name) ? PaintConfig.of.character.actor.box : PaintConfig.of.character.box)
+            )
+        }
+        if (!options || options.paintName) {
+            this.canvas.text(group.join(" "),
+                characterBBox.center.translate(0, characterBBox.height / 2 + this.canvas.getLineHeight()),
+                containsActor ? PaintConfig.of.character.actor.name : PaintConfig.of.character.name);
         }
     }
 

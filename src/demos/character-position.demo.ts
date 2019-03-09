@@ -87,6 +87,7 @@ backgrounds:
      Minnie:
        pos: {size: 0.8}
 scene:
+  characters: [ [Mickey, Minnie], Goofy]
   pan: [0, 1]
 `;
 

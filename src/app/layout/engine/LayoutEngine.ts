@@ -18,7 +18,12 @@ export class LayoutEngine {
 
     constructor(scene: Scene) {
         this.scene = scene;
-        this.scene.characters = scene.plot.characters.filter(ch => ch !== STORY_TELLER);
+
+        if (this.scene.layoutProperties.characters) {
+            this.scene.characters = this.scene.layoutProperties.characters;
+        } else {
+            this.scene.characters = scene.plot.characters.filter(ch => ch !== STORY_TELLER);
+        }
 
         this.bubbleLayoutEngine = new BubbleLayoutEngine();
         this.characterLayoutEngine = new CharacterLayoutEngine();

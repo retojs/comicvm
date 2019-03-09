@@ -19,6 +19,7 @@ backgrounds:
   default:
     zoom: 0.75
 scene:
+  characters: [[Mickey, Minnie], Goofy]
   pan: [0, 0.8]
   Minnie:
     pos: { x: -0.6, y: 0.4, size: 1.2}

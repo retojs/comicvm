@@ -7,6 +7,7 @@ import { Plot } from "../plot/Plot";
 import { LayoutEngine } from "../layout/engine/LayoutEngine";
 import { Canvas } from "../dom/Canvas";
 import { Images } from "../images/Images";
+import { ImageQuery } from "../images/ImageQuery";
 
 export class Scene {
 
@@ -20,7 +21,7 @@ export class Scene {
     pages: Page[] = [];
     panels: Panel[] = [];
     backgrounds: Background[] = [];
-    characters: string[];
+    characters: (string | string[])[];
 
     constructor(name: string, layout: string, plot: string) {
         this.name = name;
@@ -53,7 +54,20 @@ export class Scene {
     assignImages(images: Images): Scene {
         if (images) {
             this.backgrounds.forEach(background => background.chooseImage(images));
-            this.panels.forEach(panel => panel.characters.forEach(character => character.chooseImage(images)));
+            this.panels.forEach(panel => {
+                panel.characterImageGroups.forEach((group: string | string[]) => {
+                    if (typeof group === 'string') {
+                        panel.getCharacter(group).chooseImage(images);
+                    } else {
+                        const imageQuery = group.reduce(
+                            (query: ImageQuery, name: string) => query.addQuery(panel.getCharacter(name).getImageQuery()),
+                            new ImageQuery([], [], [])
+                        );
+                        const image = images.chooseCharacterImage(imageQuery);
+                        group.forEach(name => panel.getCharacter(name).image = image);
+                    }
+                });
+            });
         }
         return this;
     }

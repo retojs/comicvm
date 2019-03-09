@@ -19,6 +19,7 @@ export type PageLayout = {
 export type BackgroundLayout = {
     [characterName: string]: CharacterLayout;
 } & {
+    characters: (string | string[])[];
     zoom?: number;
     pan?: number[];
 }

@@ -30,7 +30,7 @@ export class CharacterLayoutEngine {
 
         let x = panel.shape.x + characterSize / 2;
         if (panel.hasActors) {
-            const leftActorIndex = panel.getFirstActorIndex();
+            const leftActorIndex = panel.firstActorIndex;
             x = panel.shape.x + (1 - leftActorIndex * 2) * characterSize - characterSize / 2;
         }
         let y = panel.shape.y + (panel.shape.height - characterSize) / 2;
@@ -52,11 +52,11 @@ export class CharacterLayoutEngine {
 
         if (CharacterPositionLayoutLevel.DEFAULT < LayoutConfig.characterPositionLayoutLevel
             && panel.scene.layoutProperties) {
-            this.adjustCharacterBackgroundPositions(panel, panel.scene.layoutProperties.character);
+            this.adjustCharacterBackgroundPositions(panel, panel.scene.layoutProperties.characterProperties);
         }
         if (CharacterPositionLayoutLevel.BACKGROUND <= LayoutConfig.characterPositionLayoutLevel
             && panel.background.layoutProperties) {
-            this.adjustCharacterBackgroundPositions(panel, panel.background.layoutProperties.character);
+            this.adjustCharacterBackgroundPositions(panel, panel.background.layoutProperties.characterProperties);
         }
 
         let visibleCharacters = panel.characters;
@@ -102,10 +102,9 @@ export class CharacterLayoutEngine {
                     );
                 } else {
                     const character = panel.getCharacter(chProps.who);
-                    if (!character) {
-                        throw new Error("unknown character " + chProps.who);
+                    if (character) {
+                        character.backgroundPosition.adjust(chProps.pos);
                     }
-                    character.backgroundPosition.adjust(chProps.pos);
                 }
             }
         });
@@ -121,10 +120,9 @@ export class CharacterLayoutEngine {
                     );
                 } else {
                     const character = panel.getCharacter(pos.who);
-                    if (!character) {
-                        throw new Error("unknown character " + pos.who);
+                    if (character) {
+                        character.panelPosition.adjust(pos);
                     }
-                    character.panelPosition.adjust(pos);
                 }
             }
         });
@@ -134,7 +132,7 @@ export class CharacterLayoutEngine {
 
         if (!LayoutConfig.applyZoom) { return; }
 
-        const zoom = panel.getZoom();
+        const zoom = panel.zoom;
 
         panel.characters.forEach(ch => {
             if (ch.defaultPosition) {
@@ -153,7 +151,7 @@ export class CharacterLayoutEngine {
 
         if (!LayoutConfig.applyPanning) { return; }
 
-        const panning = panel.getPanning();
+        const panning = panel.panning;
         const characterSize = panel.characters[0].defaultPosition.size;
 
         panel.characters.forEach(ch => {

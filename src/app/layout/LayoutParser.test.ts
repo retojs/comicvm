@@ -1,5 +1,5 @@
 import { LayoutParser } from "./LayoutParser";
-import { BackgroundLayoutProperties, CharacterLayoutProperties, CharacterPositionChange, PanelLayoutProperties } from "./LayoutProperties";
+import { CharacterLayoutProperties, CharacterPositionChange, createBackgroundLayout, PanelLayoutProperties } from "./LayoutProperties";
 import { Background } from "../model/Background";
 import { Qualifier } from "../model/Qualifier";
 import { Panel } from "../model/Panel";
@@ -105,11 +105,11 @@ describe("LayoutParser", () => {
         expect(scene.backgrounds[4].panels.length).toBe(2);
 
         expect(scene.backgrounds[0].layoutProperties).toEqual(
-            new BackgroundLayoutProperties(
-                Background.defaultId,
-                1,
-                [0.5, 1.5],
-                [
+            createBackgroundLayout({
+                id: Background.defaultId,
+                zoom: 1,
+                pan: [0.5, 1.5],
+                characterProperties: [
                     new CharacterLayoutProperties(
                         "Mariel",
                         [
@@ -126,14 +126,14 @@ describe("LayoutParser", () => {
                         new CharacterPositionChange("all", 2.5)
                     )
                 ]
-            )
+            })
         );
         expect(scene.backgrounds[1].layoutProperties).toEqual(
-            new BackgroundLayoutProperties(
-                "sunset-beach",
-                1,
-                [1, 1],
-                [
+            createBackgroundLayout({
+                id: "sunset-beach",
+                zoom: 1,
+                pan: [1, 1],
+                characterProperties: [
                     new CharacterLayoutProperties(
                         "Basil",
                         [
@@ -141,15 +141,16 @@ describe("LayoutParser", () => {
                         ],
                         new CharacterPositionChange("Basil", 1.5, -0.5, 2)
                     )
-                ]));
-
+                ]
+            })
+        );
     });
 
     it("creates a scene model from a YAML input", () => {
         expect(scene.layoutProperties).toBeDefined();
         expect(scene.layoutProperties.zoom).toBe(1);
         expect(scene.layoutProperties.pan).toEqual([1, 1]);
-        expect(scene.layoutProperties.character).toEqual([
+        expect(scene.layoutProperties.characterProperties).toEqual([
             new CharacterLayoutProperties(
                 "Mariel",
                 [new Qualifier("Mariel", "wet")],

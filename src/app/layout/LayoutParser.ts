@@ -1,10 +1,10 @@
 import {
-    BackgroundLayoutProperties,
     CharacterLayoutProperties,
     CharacterPositionChange,
+    createBackgroundLayout,
+    createSceneLayout,
     PanelLayoutProperties,
-    PanelLayoutPropertyName,
-    SceneLayoutProperties
+    PanelLayoutPropertyName
 } from "./LayoutProperties";
 import { BackgroundLayout, CharacterLayout, Layout, LayoutProperty, PageLayout, PanelLayout, StripLayout } from "./Layout";
 import { PanelWidthsConfig, StripHeightsConfig } from "./Layout.config";
@@ -30,11 +30,15 @@ export class LayoutParser {
     }
 
     parseLayout(scene: Scene): LayoutParser {
-        const sceneLayout = YAML.parse(scene.layout);
+        const sceneLayout: Layout = YAML.parse(scene.layout);
 
         if (sceneLayout.scene) {
-            scene.layoutProperties = new SceneLayoutProperties(sceneLayout.scene.zoom, sceneLayout.scene.pan);
-            scene.layoutProperties.character = this.parseCharacterLayoutProperties(sceneLayout.scene);
+            scene.layoutProperties = createSceneLayout({
+                zoom: sceneLayout.scene.zoom,
+                pan: sceneLayout.scene.pan,
+                characters: sceneLayout.scene.characters
+            });
+            scene.layoutProperties.characterProperties = this.parseCharacterLayoutProperties(sceneLayout.scene);
         }
 
         if (sceneLayout.backgrounds) {
@@ -68,15 +72,24 @@ export class LayoutParser {
         const background = new Background(id);
         scene.addBackground(background);
 
-        background.layoutProperties = new BackgroundLayoutProperties(id, bgrLayout.zoom, bgrLayout.pan);
-        background.layoutProperties.character = this.parseCharacterLayoutProperties(bgrLayout);
+        background.layoutProperties = createBackgroundLayout({
+            id,
+            zoom: bgrLayout.zoom,
+            pan: bgrLayout.pan,
+            characters: bgrLayout.characters
+        });
+        background.layoutProperties.characterProperties = this.parseCharacterLayoutProperties(bgrLayout);
         return background;
     }
 
     parseCharacterLayoutProperties(layout: BackgroundLayout): CharacterLayoutProperties[] {
         const chProps: CharacterLayoutProperties[] = [];
         Object.keys(layout)
-            .filter(key => key !== "zoom" && key !== "pan")
+            .filter(key =>
+                key !== "zoom"
+                && key !== "pan"
+                && key !== "characters"
+            )
             .forEach(name => {
                 const chLayout: CharacterLayout = layout[name];
                 const prop = new CharacterLayoutProperties(name);

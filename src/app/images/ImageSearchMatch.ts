@@ -7,7 +7,7 @@ export enum MatchQuality {
 export class ImageSearchMatch {
 
     imageName: string;
-    matches: { [key: string]: string[] } = {};
+    matches: { [key in MatchQuality]: string[] } = {DEFAULT: null, PREMIUM: null, SECONDARY: null};
 
     constructor(imageName: string) {
         this.imageName = imageName;
@@ -17,12 +17,24 @@ export class ImageSearchMatch {
         return this.getMatches(MatchQuality.PREMIUM);
     }
 
+    get premiumMatchCount() {
+        return this.getMatchCount(MatchQuality.PREMIUM);
+    }
+
     get defaultMatches() {
         return this.getMatches(MatchQuality.DEFAULT);
     }
 
+    get defaultMatchCount() {
+        return this.getMatchCount(MatchQuality.DEFAULT);
+    }
+
     get secondaryMatches() {
         return this.getMatches(MatchQuality.SECONDARY);
+    }
+
+    get secondaryMatchCount() {
+        return this.getMatchCount(MatchQuality.SECONDARY);
     }
 
     addMatch(match: string, quality: MatchQuality): void {

@@ -50,8 +50,12 @@ export class Character {
         return position;
     }
 
+    getImageQuery(): ImageQuery {
+        return new ImageQuery([this.name], this.how, []);
+    }
+
     chooseImage(images: Images): Img {
-        this.image = images.chooseCharacterImage(new ImageQuery([this.name], this.how, []));
+        this.image = images.chooseCharacterImage(this.getImageQuery());
         return this.image;
     }
 
