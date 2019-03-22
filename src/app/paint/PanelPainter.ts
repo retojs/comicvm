@@ -108,6 +108,11 @@ export class PanelPainter {
     }
 
     paintBackground(panel: Panel) {
+        // TODO:
+        // calc image size after each character layout
+        // if animation is defined calculate for start and end
+        // multiple images for different distances of the same background will keep proportional
+        //
         const imageDimensions: Rectangle = panel.background.getImageDimensions(panel);
         if (panel.background.image) {
             this.canvas.drawImage(panel.background.image, imageDimensions);

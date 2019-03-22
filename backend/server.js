@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 
 const port = process.env.PORT || '3000';
 
+const DEBUG = true;
+
 /**
  * rootDir is the directory where all story files are written to.
  *
@@ -36,7 +38,6 @@ const port = process.env.PORT || '3000';
  */
 const rootDir = path.join(__dirname, '/stories');
 
-
 const app = express();
 
 app.use(cors());
@@ -47,11 +48,25 @@ app.use(bodyParser.urlencoded({
 
 app.get(/^\//, function (req, res, next) {
 
-    if (true) {
+    if (DEBUG) {
         console.log(`\n${req.method} request: ${req.originalUrl}`);
         console.log(' - path:', req.path);
         console.log(' - params:', req.params);
         console.log(' - query:', req.query);
+        console.log(' - hostname:', req.hostname);
+        console.log(' - baseUrl:', req.baseUrl);
+    }
+    next();
+});
+
+app.post(/^\//, function (req, res, next) {
+
+    if (DEBUG) {
+        console.log(`\n${req.method} request: ${req.originalUrl}`);
+        console.log(' - path:', req.path);
+        console.log(' - params:', req.params);
+        console.log(' - query:', req.query);
+        console.log(' - body:', req.body);
         console.log(' - hostname:', req.hostname);
         console.log(' - baseUrl:', req.baseUrl);
     }

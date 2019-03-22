@@ -1,0 +1,35 @@
+@import "variables";
+
+.margin {
+  &-top {
+    margin-top: $gap-size;
+
+    &--double {
+      margin-top: $gap-size--double;
+    }
+  }
+
+  &-right {
+    margin-right: $gap-size;
+
+    &--double {
+      margin-right: $gap-size--double;
+    }
+  }
+
+  &-bottom {
+    margin-bottom: $gap-size;
+
+    &--double {
+      margin-bottom: $gap-size--double;
+    }
+  }
+
+  &-left {
+    margin-left: $gap-size;
+
+    &--double {
+      margin-left: $gap-size--double;
+    }
+  }
+}

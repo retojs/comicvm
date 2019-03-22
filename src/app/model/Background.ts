@@ -31,7 +31,7 @@ export class Background {
         return this.image;
     }
 
-    getImageDimensions(panel: Panel) {
+    getImageDimensions(panel: Panel): Rectangle {
         const panelsBBox = this.getPanelsBBox();
         const charactersBBox = this.getCharactersBackgroundBBox(panel);
         const backgroundDimensions = new Rectangle(

@@ -42,7 +42,9 @@ export abstract class DomElement<T extends HTMLElement> {
 
     set class(styleClass: string) {
         if (styleClass) {
-            this.domElement.classList.add(styleClass);
+            styleClass.split(" ").forEach(name =>
+                this.domElement.classList.add(name)
+            )
         }
     }
 
@@ -66,13 +68,32 @@ export abstract class DomElement<T extends HTMLElement> {
         );
     }
 
+    get parentOffset(): [number, number] {
+        return [
+            this.domElement.offsetLeft,
+            this.domElement.offsetTop
+        ];
+    }
+
+    get parentOffsetInvert(): [number, number] {
+        return [
+            -this.domElement.offsetLeft,
+            -this.domElement.offsetTop
+        ];
+    }
+
+    get borderWidth(): string {
+        return window.getComputedStyle(this.domElement).getPropertyValue('border-width');
+    }
+
     get shape(): Rectangle {
         const clientRect = this.boundingClientRect;
+        const borderWidth: number = parseInt(this.borderWidth);
         return new Rectangle(
             this.domElement.offsetLeft,
             this.domElement.offsetTop,
-            clientRect.width,
-            clientRect.height);
+            clientRect.width - 2 * borderWidth,
+            clientRect.height - 2 * borderWidth);
     }
 
     set shape(shape: Rectangle) {

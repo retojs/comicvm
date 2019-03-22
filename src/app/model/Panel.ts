@@ -4,7 +4,7 @@ import { Strip } from "./Strip";
 import { Background } from "./Background";
 import { Rectangle } from "../trigo/Rectangle";
 import { PlotItem, STORY_TELLER } from "../plot/PlotItem";
-import { flatCharacters, PanelLayoutProperties } from "../layout/LayoutProperties";
+import { flatCharacters, PanelAnimationProperties, PanelLayoutProperties } from "../layout/LayoutProperties";
 import { Character } from "./Character";
 import { Qualifier } from "./Qualifier";
 import { Bubble } from "./Bubble";
@@ -30,11 +30,11 @@ export class Panel {
     bubbles: Bubble[] = [];
     offScreenBubble: Bubble;
 
-    shape: Rectangle;
-
     plotItems: PlotItem[] = [];
 
     layoutProperties: PanelLayoutProperties;
+
+    shape: Rectangle;
 
     constructor(index: number) {
         this.index = index;
@@ -73,7 +73,7 @@ export class Panel {
     extractCharacters(plotItems: PlotItem[]): void {
         this.resetCharacters();
 
-        if (this.background.layoutProperties.characters) {
+        if (this.background && this.background.layoutProperties && this.background.layoutProperties.characters) {
             this.characterImageGroups = this.background.layoutProperties.characters;
             this.characterNames = flatCharacters(this.background.layoutProperties.characters);
         } else {

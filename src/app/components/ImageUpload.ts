@@ -12,6 +12,8 @@ export class ImageUpload {
     story: string;
     imageType: ImageType;
 
+    imageContainer: Div;
+
     private _backend: Endpoints;
 
     constructor(container: DomElementContainer, story: string, imageType: ImageType) {
@@ -55,9 +57,9 @@ export class ImageUpload {
     insertImages(images: File[], imageType: ImageType): void {
         images.forEach(image => {
             if (imageType === ImageType.Background) {
-                new Img(this.rootDiv.container, this._backend.getBackgroundImageUrl(this.story, image.name), 500, 300);
+                new Img(this.imageContainer, this._backend.getBackgroundImageUrl(this.story, image.name), 500, 300);
             } else {
-                new Img(this.rootDiv.container, this._backend.getCharacterImageUrl(this.story, image.name), 100, 120);
+                new Img(this.imageContainer, this._backend.getCharacterImageUrl(this.story, image.name), 100, 120);
             }
         });
     }

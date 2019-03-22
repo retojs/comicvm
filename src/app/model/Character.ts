@@ -63,6 +63,17 @@ export class Character {
         if (!this.image) {
             return new Rectangle(0, 0, 0, 0);
         }
-        return Rectangle.fitAroundBounds(this.image.bitmapShape, characterPosition);
+        const size: Square = Images.getCharacterSizeFromString(this.image.src);
+        if (size.width > 0) {
+            const scale = characterPosition.size / size.size;
+            return new Rectangle(
+                characterPosition.x - size.x * scale,
+                characterPosition.y - size.y * scale,
+                this.image.bitmapShape.width * scale,
+                this.image.bitmapShape.height * scale,
+            );
+        } else {
+            return Rectangle.fitAroundBounds(this.image.bitmapShape, characterPosition);
+        }
     }
 }

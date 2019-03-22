@@ -5,8 +5,7 @@ import { Div } from "../app/dom/Div";
 
 export function create(container: DomElementContainer, repaintFn: () => void) {
 
-    const buttonContainer = new Div(container);
-    buttonContainer.domElement.id = "buttons";
+    const buttonContainer = new Div(container, "buttons");
 
     (function createToggleZoomButton() {
         const toggleZoomButton = new Button(buttonContainer, getToggleZoomButtonLabel());

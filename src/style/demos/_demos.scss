@@ -41,7 +41,7 @@ select {
   padding: 5px;
 }
 
-#buttons {
+.buttons {
   position: absolute;
   right: 0;
   top: 80px;
@@ -51,18 +51,5 @@ select {
     padding: 10px;
     margin: 15px;
     width: 200px;
-  }
-}
-
-.backend-demo {
-  &__title {
-    padding: 16px 0 10px;
-  }
-
-  &__images {
-    img {
-      margin: 4px;
-      border: 1px solid lightgrey;
-    }
   }
 }

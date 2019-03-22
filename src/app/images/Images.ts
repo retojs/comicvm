@@ -3,6 +3,10 @@ import { Endpoints } from "../backend/Endpoints";
 import { Img } from "../dom/Img";
 import { BackendConfig } from "../backend/Backend.config";
 import { ImageQuery } from "./ImageQuery";
+import { Rectangle } from "../trigo/Rectangle";
+import { Square } from "../trigo/Square";
+
+export const SIZE_STRING_REG_EXP = /_x=-?\d*y=-?\d*size=\d*/;
 
 export class Images {
 
@@ -11,11 +15,59 @@ export class Images {
     images: Img[];
     imageNames: string[];
     imagesByName: { [key: string]: Img } = {};
+    imagePaths: string[];
 
     private characterImageStore = new ImageStore([]);
     private backgroundImageStore = new ImageStore([]);
 
     private _backend: Endpoints;
+
+    /**
+     * Generates strings like '_x=70y=30size=155' for an image and a rectangle.
+     *
+     * @param size
+     * @param img
+     */
+    static getCharacterSizeString(size: Rectangle, img: Img): string {
+        const scale = img.domElement.naturalWidth / img.domElement.width;
+        const xPx = Math.round(size.x * scale);
+        const yPx = Math.round(size.y * scale);
+        const sizePx = Math.round(size.width * scale);
+        return `_x=${xPx}y=${yPx}size=${sizePx}`;
+    }
+
+    /**
+     * Returns the character size relative to the specified image
+     *
+     * @param img
+     */
+    static getCharacterSize(img: Img): Square {
+        const scale = img.domElement.width / img.domElement.naturalWidth;
+        const size = Square.fromRectangle(Images.getCharacterSizeFromString(img.src));
+        return new Square(
+            size.x * scale,
+            size.y * scale,
+            size.size * scale
+        );
+    }
+
+    /**
+     * Parses strings like '_x=70y=30size=155' into a square.
+     *
+     * @param imageName: The image this size belongs to
+     */
+    static getCharacterSizeFromString(imageName: string): Square {
+        const match = (imageName || '').match(SIZE_STRING_REG_EXP);
+        if (match && match[0]) {
+            const s = match[0];
+            const x = parseInt(s.substring(s.indexOf("x=") + 2, s.indexOf("y=")));
+            const y = parseInt(s.substring(s.indexOf("y=") + 2, s.indexOf("size=")));
+            const size = parseInt(s.substring(s.indexOf("size=") + 5));
+            return new Square(x, y, size);
+        } else {
+            return new Square(0, 0, -1);
+        }
+    }
 
     constructor(story: string) {
         this.story = story;
@@ -25,15 +77,16 @@ export class Images {
     load(): Promise<Img[]> {
         return this._backend.getImages(this.story)
             .then(imageUrls => {
-                this.imageNames = imageUrls.map(url => this.getName(url));
+                this.imagePaths = imageUrls;
+                this.imageNames = imageUrls.map(url => Images.getName(url));
 
                 this.backgroundImageStore = new ImageStore(imageUrls
                     .filter(path => path.indexOf("/background/") > -1)
-                    .map(path => this.getName(path)));
+                    .map(path => Images.getName(path)));
 
                 this.characterImageStore = new ImageStore(imageUrls
                     .filter(path => path.indexOf("/character/") > -1)
-                    .map(path => this.getName(path)));
+                    .map(path => Images.getName(path)));
 
                 return imageUrls;
             })
@@ -44,7 +97,7 @@ export class Images {
                 this.imagesByName = {};
                 this.imageNames.forEach(name =>
                     this.imagesByName[name] = this.images.find(img =>
-                        this.getName(img.src).indexOf(name) === 0)
+                        Images.getName(img.src).indexOf(name) === 0)
                 );
                 return result;
             });
@@ -78,7 +131,7 @@ export class Images {
      *
      * @param path
      */
-    getName(path: string): string {
+    static getName(path: string): string {
         return path.substr(path.lastIndexOf('/') + 1);
     }
 }

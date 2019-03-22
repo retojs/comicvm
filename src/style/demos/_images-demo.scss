@@ -1,0 +1,30 @@
+
+.images-demo {
+  &__title {
+    padding: 16px 0 10px;
+    font-weight: 600;
+  }
+
+  &__images {
+    img {
+      margin: 4px;
+      border: 1px solid lightgrey;
+    }
+  }
+}
+
+.image-editor {
+  text-align: center;
+}
+
+.image-name {
+  position: absolute;
+  left: 16px;
+  bottom: 8px;
+  font-size: 12px;
+  font-family: monospace;
+
+  &.unsaved-change {
+    color: red;
+  }
+}

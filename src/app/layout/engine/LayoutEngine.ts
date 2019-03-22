@@ -19,7 +19,7 @@ export class LayoutEngine {
     constructor(scene: Scene) {
         this.scene = scene;
 
-        if (this.scene.layoutProperties.characters) {
+        if (this.scene.layoutProperties && this.scene.layoutProperties.characters) {
             this.scene.characters = this.scene.layoutProperties.characters;
         } else {
             this.scene.characters = scene.plot.characters.filter(ch => ch !== STORY_TELLER);

@@ -1,5 +1,11 @@
 @import "./font/Roboto.css";
 
+@import "../app/components/image-upload";
+@import "../app/components/image-editor";
+@import "../app/components/resizable-div";
+
+@import "shared/index";
+
 $primary-color: #2e878a;
 $background-color: #e1ecea;
 
@@ -17,12 +23,12 @@ body {
   text-align: left;
   width: 1294px;
   background-color: white;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  box-shadow: $panel-box-shadow;
   padding: 10px 20px;
 }
 
 canvas {
   display: block;
   margin: auto;
-  box-shadow: 1px 3px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: $panel-box-shadow;
 }

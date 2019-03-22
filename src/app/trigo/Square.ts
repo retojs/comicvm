@@ -3,6 +3,10 @@ import { PositionChange } from "./PositionChange";
 
 export class Square extends Rectangle {
 
+    static fromRectangle(rect: Rectangle): Square {
+        return new Square(rect.x, rect.y, Math.min(rect.width, rect.height));
+    }
+
     constructor(x: number, y: number, size: number) {
         super(x, y, size, size);
     }

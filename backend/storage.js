@@ -1,5 +1,6 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 module.exports.setupEndpoints = function (app, rootDir) {
 
@@ -19,7 +20,7 @@ module.exports.setupEndpoints = function (app, rootDir) {
 
     /**
      * @param story: the story the uploaded image belongs to
-     * @param path: the path to upload the image to (?)
+     * @param path: either background or character
      * @param FormData with 'image' property
      */
     app.post('/:story/upload-image/:path', upload.single('image'), function (req, res) {
@@ -27,22 +28,26 @@ module.exports.setupEndpoints = function (app, rootDir) {
     });
 
     /**
-     * @param story:
-     * @param path:
+     * @param story: the story the image to rename belongs to
+     * @param path: the path to the image to be renamed
      */
-    app.post('/:story/images/move/tmp/:path', function (req, res) {
+    app.post('/:story/rename-image/:path/:name', function (req, res) {
         const story = req.params['story'];
         const path = req.params['path'];
-        const dest = req.body['dest'];
+        const oldName = req.params['name'];
+        const newName = req.body['newName'];
         const localPath = {
-            from: toLocalPath(`/${story}/images/tmp/${path}`),
-            to: toLocalPath(dest)
+            from: toLocalPath(`${story}/images/${path}/${oldName}`),
+            to: toLocalPath(`${story}/images/${path}/${newName}`)
         };
-
-        fs.rename(localPath.from, localPath.to, function () {
-            console.log(`moved image\n from ${localPath.from}\n to ${localPath.to}`);
-            res.end();
-        });
+        if (!fs.existsSync(localPath.from)) {
+            console.log(" ! image does not exist " + path + "/" + oldName);
+        } else {
+            fs.rename(localPath.from, localPath.to, function () {
+                console.log(`moved image\n from ${localPath.from}\n to ${localPath.to}`);
+                res.end();
+            });
+        }
     });
 
 

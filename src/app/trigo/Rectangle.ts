@@ -16,7 +16,7 @@ export class Rectangle {
             Math.abs(p1.y - p2.y));
     }
 
-    constructor(x: number, y: number, width: number, height: number) {
+    constructor(x?: number, y?: number, width?: number, height?: number) {
         this._x = x;
         this._y = y;
         this._width = width;

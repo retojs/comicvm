@@ -17,4 +17,8 @@ export class Label extends DomElement<HTMLLabelElement> {
         }
         return this.domElement;
     }
+
+    set label(text: string) {
+        this.domElement.innerHTML = text;
+    }
 }

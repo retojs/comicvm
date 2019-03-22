@@ -5,16 +5,18 @@ import { Rectangle } from "../../trigo/Rectangle";
 import { Point } from "../../trigo/Point";
 import { ALL_CHARACTERS, CharacterLayoutProperties, CharacterPositionChange } from "../LayoutProperties";
 
+const DEFAULT_ZOOM = (1.0 + Math.sqrt(5)) * 0.5; // golden ratio
+
 export class CharacterLayoutEngine {
 
     constructor() {}
 
-    layoutCharacters(panel: Panel) {
+    layoutCharacters(panel: Panel, time?: number) {
         this.setCharacterDefaultPositions(panel);
         this.setCharacterBackgroundPositions(panel);
         this.setCharacterPanelPositions(panel);
-        this.applyZoom(panel);
-        this.applyPanning(panel);
+        this.applyZoom(panel, time);
+        this.applyPanning(panel, time);
     }
 
     setCharacterDefaultPositions(panel: Panel) {
@@ -128,11 +130,23 @@ export class CharacterLayoutEngine {
         });
     }
 
-    applyZoom(panel: Panel) {
+    applyZoom(panel: Panel, time: number) {
 
         if (!LayoutConfig.applyZoom) { return; }
 
-        const zoom = panel.zoom;
+        let zoom = panel.zoom;
+        if (panel.layoutProperties.animation) {
+
+            // TODO set zoom
+            // animation.zoom = 1 means
+            //  - at duration = 0 zoom is zoom - 0.5 * DEFAULT_ZOOM
+            //  - at duration = 1 zoom is zoom + 0.5 * DEFAULT_ZOOM
+            // --> zoom factor increase is linear, just add delta to zoom
+
+            zoom += time - 0.5 * panel.layoutProperties.animation.zoom * DEFAULT_ZOOM;
+
+            // TODO transition function (ease in / out etc.)
+        }
 
         panel.characters.forEach(ch => {
             if (ch.defaultPosition) {
@@ -147,11 +161,23 @@ export class CharacterLayoutEngine {
         })
     }
 
-    applyPanning(panel: Panel) {
+    applyPanning(panel: Panel, time: number) {
 
         if (!LayoutConfig.applyPanning) { return; }
 
-        const panning = panel.panning;
+        let panning = panel.panning;
+        if (panel.layoutProperties.animation) {
+
+            // TODO set panning
+            // animation.pan = [1, 0] means
+            //  - at duration 0 pan is pan - 0.5
+            //  - at duration 1 pan is pan + 0.5
+            panning[0] += time - 0.5 * panel.layoutProperties.animation.pan[0];
+            panning[1] += time - 0.5 * panel.layoutProperties.animation.pan[1];
+
+            // TODO transition function (ease in / out etc.)
+        }
+
         const characterSize = panel.characters[0].defaultPosition.size;
 
         panel.characters.forEach(ch => {

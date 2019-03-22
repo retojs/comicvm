@@ -3,34 +3,92 @@ import { Div } from "../dom/Div";
 import { Img } from "../dom/Img";
 import { ResizableDiv } from "./ResizableDiv";
 import { Rectangle } from "../trigo/Rectangle";
+import { Images } from "../images/Images";
+import { Square } from "../trigo/Square";
+import { Button } from "../dom/Button";
 
-export class ImageEditor {
-    // displays a character image in a panel with a character
-    // you can drag'n drop the image and store the position relative to the character.
 
-    // resize library: http://interactjs.io/docs/#
+/**
+ * A tool to define where and how large a character's image should be drawn relative to the character.
+ * The onSizeChange event returns a string encoding that information which can be stored as part of the image name.
+ */
+export class ImageEditor extends Div {
 
-    root: Div;
-    img: Img;
-    characterPlaceholder: Div;
-    characterSize: number;
+    image: Img;
+    imageContainer: Div;
+    characterPlaceholder: ResizableDiv;
+    characterSize: Rectangle;
+    resetSizeButton: Button;
+
+    private source: HTMLImageElement;
+
+    private onSizeChangeHandler: (sizeString: string) => void = () => {};
+    private onResetSizeHandler: () => void = () => {};
 
     constructor(container: DomElementContainer, imageUrl?: string) {
-        this.root = new Div(container, "image-editor-component");
-        this.characterPlaceholder = new ResizableDiv(this.root, "character-placeholder");
-        this.img = new Img(this.root, imageUrl);
+        super(container, "image-editor-component");
 
-        this.img.class = "character-image";
-        this.img.onLoad = () => {
-            this.characterSize = Math.min(this.img.shape.width, this.img.shape.height);
-            const rootShape = this.root.shape;
-            this.characterPlaceholder.shape = new Rectangle(
-                (rootShape.width - this.characterSize) / 2,
-                (rootShape.height - this.characterSize) / 2,
-                this.characterSize,
-                this.characterSize
-            )
+        this.imageContainer = new Div(this);
+        this.createImageElement(imageUrl);
+        this.disableDrag();
+
+        this.characterPlaceholder = new ResizableDiv(this, "character-placeholder");
+        this.characterPlaceholder.onSizeChange = (size: Rectangle) => {
+            size.translate(...this.image.parentOffsetInvert);
+            this.onSizeChangeHandler(Images.getCharacterSizeString(size, this.image));
         };
-        this.img.disableDrag();
+
+        this.resetSizeButton = new Button(this, "Reset size", () => {
+            this.resetSize();
+            this.onResetSizeHandler();
+        });
+    }
+
+    get sourceImage(): HTMLImageElement {
+        return this.source;
+    }
+
+    set sourceImage(source: HTMLImageElement) {
+        this.source = source;
+        this.createImageElement(source.src);
+    }
+
+    createImageElement(imageUrl: string) {
+        if (this.image) {
+            this.image.domElement.remove();
+        }
+        this.image = new Img(this.imageContainer, imageUrl);
+        this.image.class = "character-image";
+        this.image.onLoad = () => {
+            this.characterSize = Images.getCharacterSize(this.image).translate(...this.image.parentOffset);
+
+            if (this.characterSize.width > 0) {
+                this.characterPlaceholder.shape = this.characterSize;
+            } else {
+                this.resetSize();
+            }
+        };
+        this.image.disableDrag();
+    }
+
+    set onSizeChange(onSizeChange: (sizeString: string) => void) {
+        this.onSizeChangeHandler = onSizeChange;
+    }
+
+    set onResetSize(onResetSize: () => void) {
+        this.onResetSizeHandler = onResetSize;
+    }
+
+    resetSize() {
+        const borderWidth = parseInt(this.image.borderWidth);
+        console.log("image border width ", borderWidth);
+
+        this.characterSize = Rectangle.fitIntoBounds(
+            new Square(0, 0, 1),
+            this.image.bitmapShape
+        ).translate(...this.image.parentOffset)
+            .translate(borderWidth, borderWidth);
+
+        this.characterPlaceholder.shape = this.characterSize;
     }
 }

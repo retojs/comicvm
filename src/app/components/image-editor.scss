@@ -1,15 +1,35 @@
+@import '../../style/shared/variables';
+
+$color-image-border: #ccc;
+$color-character-placeholder-border: teal;
+$color-character-placeholder-background: rgba(50, 150, 180, 0.4);
+
+$border-width-character-placeholder: 0;
+$border-width-image: 1px;
+
 .image-editor-component {
   position: relative;
-  width: 600px;
+  display: inline-block;
+  margin: auto;
+  padding: $gap-size--double;
+  text-align: right;
+  box-shadow: $panel-box-shadow;
 
   .character-placeholder {
-    background-color: rgba(50, 150, 180, 0.4);
-    border: 4px solid teal;
+    background-color: $color-character-placeholder-background;
+    border: $border-width-character-placeholder solid $color-character-placeholder-border;
   }
 
   .character-image {
-    width: 100%;
-    height: 100%;
+    display: block;
+    height: 400px;
+    max-width: 800px;
     user-select: none;
+    border: $border-width-image solid $color-image-border;
+  }
+
+  button {
+    padding: $gap-size--half;
+    margin-top: $gap-size--double;
   }
 }

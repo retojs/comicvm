@@ -3,19 +3,7 @@ import { DomElementContainer } from "../dom/DomElement";
 import { Rectangle } from "../trigo/Rectangle";
 import { Offset } from "../trigo/Offset";
 import { Point } from "../trigo/Point";
-import { MarginConfig } from "../layout/Layout.config";
-
-/**
- * The width of the border around the resizable DIV.
- * (Needed to calculate position and size correctly.)
- */
-export const resizableElementBorderWidth = 4;
-export const resizableElementBorder = new MarginConfig(
-    0,
-    2 * resizableElementBorderWidth,
-    2 * resizableElementBorderWidth,
-    0
-);
+import { Square } from "../trigo/Square";
 
 enum ResizeDirection {
     Horizontal,
@@ -28,9 +16,11 @@ enum ResizeDirection {
 
 export class ResizableDiv extends Div {
 
-    initialMousePos: Point;
-    initialShape: Rectangle;
-    mouseMoveHandler: EventListener;
+    private initialMousePos: Point;
+    private initialShape: Rectangle;
+    private mouseMoveHandler: EventListener;
+
+    private onSizeChangeHandler: (size: Rectangle) => void = () => {};
 
     constructor(container: DomElementContainer, styleClass?: string, innerHTML?: string,) {
         super(container, styleClass, innerHTML);
@@ -38,7 +28,11 @@ export class ResizableDiv extends Div {
         this.createHandles();
     }
 
-    createHandles() {
+    set onSizeChange(onSizeChange: (size: Square) => void) {
+        this.onSizeChangeHandler = onSizeChange;
+    }
+
+    private createHandles() {
         const top = new Div(this, "resizable-div__handle--top");
         const topRight = new Div(this, "resizable-div__handle--top-right");
         const right = new Div(this, "resizable-div__handle--right");
@@ -87,7 +81,6 @@ export class ResizableDiv extends Div {
         );
 
         document.addEventListener("mouseup", () => {
-            console.log("mouse up");
             this.initialMousePos = null;
         });
 
@@ -98,7 +91,7 @@ export class ResizableDiv extends Div {
         });
     }
 
-    createMouseDownHandler(mouseMoveHandler: (dSize: number) => void, direction: ResizeDirection): EventListener {
+    private createMouseDownHandler(mouseMoveHandler: (dSize: number) => void, direction: ResizeDirection): EventListener {
         return function handleMouseDown(event: MouseEvent) {
             this.initialMousePos = new Point(event.clientX, event.clientY);
             this.initialShape = this.shape.clone();
@@ -138,60 +131,59 @@ export class ResizableDiv extends Div {
         }
     }
 
-    move(dPos: Offset) {
-        this.shape = this.initialShape.clone()
-            .translate(dPos.dx, dPos.dy)
-            .cutMargin(resizableElementBorder);
+    private move(dPos: Offset) {
+        this.shape = this.initialShape.clone().translate(dPos.dx, dPos.dy);
+        this.onSizeChangeHandler(this.shape.clone());
     }
 
-    resizeTop(dSize: number) {
+    private resizeTop(dSize: number) {
         const shape = this.initialShape.clone().translate(dSize / 2, dSize);
         this.shape = this.resize(shape, -dSize);
     }
 
-    resizeTopRight(dSize: number) {
+    private resizeTopRight(dSize: number) {
         const shape = this.initialShape.clone().translate(0, -dSize);
         this.shape = this.resize(shape, dSize);
     }
 
-    resizeRight(dSize: number) {
+    private resizeRight(dSize: number) {
         const shape = this.initialShape.clone().translate(0, -dSize / 2);
         this.shape = this.resize(shape, dSize);
     }
 
-    resizeBottomRight(dSize: number) {
+    private resizeBottomRight(dSize: number) {
         const shape = this.initialShape.clone();
         this.shape = this.resize(shape, dSize);
     }
 
-    resizeBottom(dSize: number) {
+    private resizeBottom(dSize: number) {
         const shape = this.initialShape.clone().translate(-dSize / 2, 0);
         this.shape = this.resize(shape, dSize);
     }
 
-    resizeBottomLeft(dSize: number) {
+    private resizeBottomLeft(dSize: number) {
         const shape = this.initialShape.clone().translate(-dSize, 0);
         this.shape = this.resize(shape, dSize);
     }
 
-    resizeLeft(dSize: number) {
+    private resizeLeft(dSize: number) {
         const shape = this.initialShape.clone().translate(dSize, dSize / 2);
         this.shape = this.resize(shape, -dSize);
     }
 
-    resizeTopLeft(dSize: number) {
+    private resizeTopLeft(dSize: number) {
         const shape = this.initialShape.clone().translate(-dSize, -dSize);
         this.shape = this.resize(shape, dSize);
     }
 
-    resize(shape: Rectangle, dSize: number): Rectangle {
-        shape.cutMargin(resizableElementBorder);
+    private resize(shape: Rectangle, dSize: number): Rectangle {
         shape.width += dSize;
         shape.height += dSize;
+        this.onSizeChangeHandler(shape.clone());
         return shape;
     }
 
-    getMovedOffset(event: MouseEvent): Offset {
+    private getMovedOffset(event: MouseEvent): Offset {
         return new Offset(
             event.clientX - this.initialMousePos.x,
             event.clientY - this.initialMousePos.y,

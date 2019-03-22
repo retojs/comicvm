@@ -19,7 +19,10 @@ export class Endpoints {
             background: "/:story/upload-image/background",
             character: "/:story/upload-image/character"
         },
-        moveTempImage: "/:story/images/move/tmp/:name"
+        renameImage: {
+            background: "/:story/rename-image/background/:name",
+            character: "/:story/rename-image/character/:name"
+        }
     };
 
     private options = {
@@ -63,6 +66,16 @@ export class Endpoints {
         return this.uploadImage(image, this.getImageUrl(this.urls.uploadImage.character, story));
     }
 
+    renameBackgroundImage(oldName: string, newName: string, story: string): Promise<string> {
+        return this.renameImage(this.getImageUrl(this.urls.renameImage.background, story, oldName), newName)
+            .then(() => this.getImageUrl(this.urls.image.background, story, newName));
+    }
+
+    renameCharacterImage(oldName: string, newName: string, story: string): Promise<string> {
+        return this.renameImage(this.getImageUrl(this.urls.renameImage.character, story, oldName), newName)
+            .then(() => this.getImageUrl(this.urls.image.character, story, newName));
+    }
+
     getBackgroundImageUrl(story: string, name: string) {
         return this.getImageUrl(this.urls.image.background, story, name);
     }
@@ -95,7 +108,7 @@ export class Endpoints {
                 }
                 return response;
             }).catch(() => {
-               return Promise.reject("Backend not available");
+                return Promise.reject("Backend not available");
             });
     }
 
@@ -106,6 +119,16 @@ export class Endpoints {
         return this.fetch(url, {
             method: "POST",
             body: formData
+        });
+    }
+
+    renameImage(url: string, newName: string): Promise<Response> {
+        return this.fetch(url, {
+            method: "POST",
+            body: JSON.stringify({newName}),
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
     }
 
