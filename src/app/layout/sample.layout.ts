@@ -7,6 +7,7 @@ panelProperties:
   - characterPositions
   - zoom
   - pan
+  - animation
 pages:
   # page 1
   - stripHeights: [0.4, 0.6]
@@ -38,6 +39,12 @@ pages:
       # upper strip
       - panels:
           - - 1
+            -
+            -
+            -
+            -
+            -
+            - { zoom: 1, pan: [-1, 0.5] }
           - - 2
             - sunset-beach
 backgrounds:

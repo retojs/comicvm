@@ -18,7 +18,8 @@ export enum PanelLayoutPropertyName {
     CharacterQualifier = "characterQualifier",
     CharacterPositions = "characterPositions",
     Zoom = "zoom",
-    Pan = "pan"
+    Pan = "pan",
+    Animation = "animation"
 }
 
 export const ALL_CHARACTERS = "all";
@@ -57,7 +58,7 @@ export function createSceneLayout(config?: Partial<SceneLayoutProperties>): Scen
     return {
         zoom: 1,
         pan: [0, 0],
-        characters: null,
+        characters: undefined,
         characterProperties: [],
         ...config
     };
@@ -89,24 +90,33 @@ export function createBackgroundLayout(config: Partial<BackgroundLayoutPropertie
 
 export class PanelLayoutProperties {
 
-    plotItemCount?: number;
-    backgroundId?: string;
-    characterQualifier: Qualifier[] = [];
-    characterPositions: CharacterPositionChange[] = [];
-    zoom?: number;
-    pan: number[];
+    constructor(
+        public plotItemCount: number = 0,
+        public backgroundId: string = null,
+        public characterQualifier: Qualifier[] = [],
+        public characterPositions: CharacterPositionChange[] = [],
+        public zoom?: number,
+        public pan: [] | [number, number] = [],
+        public animation?: PanelAnimationProperties
+    ) {}
+}
 
-    constructor(plotItemCount?: number,
-                backgroundId?: string,
-                characterQualifier?: Qualifier[],
-                characterPositions?: CharacterPositionChange[],
-                zoom?: number,
-                pan?: number[]) {
-        this.plotItemCount = plotItemCount;
-        this.backgroundId = backgroundId;
-        this.characterQualifier = characterQualifier || [];
-        this.characterPositions = characterPositions || [];
-        this.zoom = zoom;
-        this.pan = pan || [];
+export class PanelAnimationProperties {
+
+    constructor(
+        public zoom: number,
+        public pan: [] | [number, number]
+    ) {}
+
+    toString(): string {
+        debugger;
+        let props: string[] = [];
+        if (this.zoom != null) {
+            props.push(` zoom: ${this.zoom}`);
+        }
+        if (this.pan != null) {
+            props.push(` pan: [${this.pan[0]}, ${this.pan[1]}]`);
+        }
+        return `{${props.join(",")} }`;
     }
 }

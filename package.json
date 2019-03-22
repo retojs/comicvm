@@ -6,7 +6,8 @@
   "main": "index.ts",
   "scripts": {
     "build": "webpack",
-    "start": "webpack-dev-server --history-api-fallback --inline --progress --open",
+    "start": "concurrently --kill-others \"npm run start:frontend\" \"npm run start:backend\"",
+    "start:frontend": "webpack-dev-server --history-api-fallback --inline --progress --open",
     "start:backend": "node ./backend/server.js",
     "test:karma": "karma start",
     "test:karma:debug": "karma start --auto-watch --no-single-run",
@@ -23,6 +24,7 @@
     "@types/node": "^10.12.18",
     "@types/yaml": "^1.0.1",
     "body-parser": "^1.18.3",
+    "concurrently": "^4.1.0",
     "cors": "^2.8.5",
     "css-loader": "^1.0.1",
     "express": "^4.16.4",

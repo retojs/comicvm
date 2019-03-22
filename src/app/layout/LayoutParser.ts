@@ -3,6 +3,7 @@ import {
     CharacterPositionChange,
     createBackgroundLayout,
     createSceneLayout,
+    PanelAnimationProperties,
     PanelLayoutProperties,
     PanelLayoutPropertyName
 } from "./LayoutProperties";
@@ -161,7 +162,8 @@ export class LayoutParser {
                 return this.createQualifiers(input as string);
             case PanelLayoutPropertyName.CharacterPositions:
                 return this.createPositionChanges(input as any);
-
+            case PanelLayoutPropertyName.Animation:
+                return this.createAnimationProperties(input as any);
         }
     }
 
@@ -198,5 +200,12 @@ export class LayoutParser {
             }
         }
         return positionChanges;
+    }
+
+    createAnimationProperties(input: PanelAnimationProperties): PanelAnimationProperties {
+        if (input) {
+            return new PanelAnimationProperties(input.zoom, input.pan);
+        }
+        return null;
     }
 }

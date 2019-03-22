@@ -1,6 +1,9 @@
 import { LayoutSerializer } from "./LayoutSerializer";
 import { SAMPLE_LAYOUT } from "./sample.layout";
 import { Scene } from "../model/Scene";
+import * as fs from "fs";
+
+const WRITE_TO_FILE = true;
 
 describe("LayoutSerializer", () => {
 
@@ -17,8 +20,9 @@ describe("LayoutSerializer", () => {
     it("serializes layout", () => {
         const str = serializer.stringify();
 
-        // fs.writeFileSync("src/app/layout/serialized.layout.yml", str, "utf8");
-
+        if (WRITE_TO_FILE) {
+            fs.writeFileSync("src/app/layout/serialized.layout.yml", str, "utf8");
+        }
         expect(removeWhitespace(str)).toEqual(removeWhitespace(yamlInput));
     });
 

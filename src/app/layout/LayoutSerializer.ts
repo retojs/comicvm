@@ -136,11 +136,11 @@ export class LayoutSerializer {
         let props = this.scene.layoutParser.layout.panelProperties.map((propName: PanelLayoutPropertyName) =>
             this.stringifyPanelLayoutProperty(propName, panel.layoutProperties)
         );
-        while (props[props.length - 1] === null && props.length > 1) {
+        while (props[props.length - 1] == null && props.length > 1) {
             props = props.slice(0, props.length - 1);
         }
         return props
-            .map(p => "-" + (p === null ? "" : " " + p))
+            .map(p => "-" + (p == null ? "" : " " + p))
             .join(this.NL + indent + this.INDENT);
     }
 
@@ -153,25 +153,27 @@ export class LayoutSerializer {
             case PanelLayoutPropertyName.CharacterQualifier:
                 if (properties.characterQualifier && properties.characterQualifier.length > 0) {
                     return this.stringifyQualifier(properties.characterQualifier);
-                } else {
-                    return null;
                 }
+                break;
             case PanelLayoutPropertyName.CharacterPositions:
                 if (properties.characterPositions && properties.characterPositions.length > 0) {
                     return properties.characterPositions.map(pos =>
                         this.stringifyCharacterPosition(pos, true)
                     ).join("");
-                } else {
-                    return null;
                 }
+                break;
             case PanelLayoutPropertyName.Zoom:
                 return properties.zoom ? "" + properties.zoom : null;
             case PanelLayoutPropertyName.Pan:
                 if (properties.pan && properties.pan.length > 0) {
                     return "[" + properties.pan.join(", ") + "]";
-                } else {
-                    return null;
                 }
+                break;
+            case PanelLayoutPropertyName.Animation:
+                if (properties.animation) {
+                    return properties.animation.toString();
+                }
+                break;
         }
     }
 

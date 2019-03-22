@@ -1,5 +1,11 @@
 import { LayoutParser } from "./LayoutParser";
-import { CharacterLayoutProperties, CharacterPositionChange, createBackgroundLayout, PanelLayoutProperties } from "./LayoutProperties";
+import {
+    CharacterLayoutProperties,
+    CharacterPositionChange,
+    createBackgroundLayout,
+    PanelAnimationProperties,
+    PanelLayoutProperties
+} from "./LayoutProperties";
 import { Background } from "../model/Background";
 import { Qualifier } from "../model/Qualifier";
 import { Panel } from "../model/Panel";
@@ -49,8 +55,8 @@ describe("LayoutParser", () => {
             new PanelLayoutProperties(
                 0,
                 "bgr-3",
-                null,
-                null,
+                [],
+                [],
                 1.9,
                 [1.3, 1.0]
             )
@@ -59,7 +65,7 @@ describe("LayoutParser", () => {
             new PanelLayoutProperties(
                 3,
                 "bgr-3",
-                null,
+                [],
                 [
                     new CharacterPositionChange("Silas", undefined, 1.7, 1.5)
                 ]
@@ -68,7 +74,12 @@ describe("LayoutParser", () => {
         checkPanelProps(scene.pages[1].strips[0].panels[0],
             new PanelLayoutProperties(
                 1,
-                Background.defaultId
+                Background.defaultId,
+                [],
+                [],
+                null,
+                [],
+                {zoom: 1, pan: [-1, 0.5]}
             )
         );
         checkPanelProps(scene.pages[1].strips[0].panels[1],
@@ -79,14 +90,32 @@ describe("LayoutParser", () => {
         );
     });
 
-
     function checkPanelProps(panel: Panel, expectedProps: PanelLayoutProperties) {
-        expect(panel.layoutProperties.plotItemCount).toBe(expectedProps.plotItemCount);
-        expect(panel.layoutProperties.backgroundId).toBe(expectedProps.backgroundId);
-        expect(panel.layoutProperties.characterQualifier).toEqual(expectedProps.characterQualifier);
-        expect(panel.layoutProperties.characterPositions).toEqual(expectedProps.characterPositions);
-        expect(panel.layoutProperties.zoom).toBe(expectedProps.zoom);
-        expect(panel.layoutProperties.pan).toEqual(expectedProps.pan);
+        if (!bothNullOrUndefined(panel.layoutProperties.plotItemCount, expectedProps.plotItemCount)) {
+            expect(panel.layoutProperties.plotItemCount).toBe(expectedProps.plotItemCount);
+        }
+        if (!bothNullOrUndefined(panel.layoutProperties.backgroundId, expectedProps.backgroundId)) {
+            expect(panel.layoutProperties.backgroundId).toBe(expectedProps.backgroundId);
+        }
+        if (!bothNullOrUndefined(panel.layoutProperties.characterQualifier, expectedProps.characterQualifier)) {
+            expect(panel.layoutProperties.characterQualifier).toEqual(expectedProps.characterQualifier);
+        }
+        if (!bothNullOrUndefined(panel.layoutProperties.characterPositions, expectedProps.characterPositions)) {
+            expect(panel.layoutProperties.characterPositions).toEqual(expectedProps.characterPositions);
+        }
+        if (!bothNullOrUndefined(panel.layoutProperties.zoom, expectedProps.zoom)) {
+            expect(panel.layoutProperties.zoom).toBe(expectedProps.zoom);
+        }
+        if (!bothNullOrUndefined(panel.layoutProperties.pan, expectedProps.pan)) {
+            expect(panel.layoutProperties.pan).toEqual(expectedProps.pan);
+        }
+        if (!bothNullOrUndefined(panel.layoutProperties.animation, expectedProps.animation)) {
+            expect(panel.layoutProperties.animation).toEqual(expectedProps.animation);
+        }
+    }
+
+    function bothNullOrUndefined(a: any, b: any) {
+        return a == null && b == null;
     }
 
     it("creates a background layout model from a YAML input", () => {
@@ -185,5 +214,15 @@ describe("LayoutParser", () => {
             expect(bgr.scene).toBeDefined();
             expect(bgr.panels).toBeDefined();
         });
+    });
+
+    it("parses animation properties", () => {
+        const animProps: PanelAnimationProperties = scene.pages[1].panels[0].layoutProperties.animation;
+        expect(animProps.zoom).toBe(1);
+        expect(animProps.pan).toBeDefined();
+        expect(animProps.pan.length).toBe(2);
+        expect(animProps.pan[0]).toBe(-1);
+        expect(animProps.pan[1]).toBe(0.5);
+
     });
 });

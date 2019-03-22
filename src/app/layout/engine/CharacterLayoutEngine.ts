@@ -5,7 +5,7 @@ import { Rectangle } from "../../trigo/Rectangle";
 import { Point } from "../../trigo/Point";
 import { ALL_CHARACTERS, CharacterLayoutProperties, CharacterPositionChange } from "../LayoutProperties";
 
-const DEFAULT_ZOOM = (1.0 + Math.sqrt(5)) * 0.5; // golden ratio
+const DEFAULT_ZOOM = 0.5 * (1.0 + Math.sqrt(5)) - 1; // golden ratio
 
 export class CharacterLayoutEngine {
 
