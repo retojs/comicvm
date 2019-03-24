@@ -15,11 +15,6 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
     private debounceInterval = 500;
     private lastKeyUp: number;
 
-    static createInputPanel(container: DomElementContainer): Div {
-        return new Div(container, "parameter-input-panel")
-            .appendDiv("title", "LayoutConfig");
-    }
-
     static createMarginConfigInput(container: DomElementContainer, name: string, value: MarginConfig, onKeyUp: ParameterListener<MarginConfig>): ParameterInput {
         return new ParameterInput(container, name, value.asString, (value: string) => {
             const values: number[] = value.split(" ").map(str => parseInt(str));

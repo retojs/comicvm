@@ -108,46 +108,43 @@ export class PanelPainter {
     }
 
     paintBackground(panel: Panel) {
-        // TODO:
-        // calc image size after each character layout
-        // if animation is defined calculate for start and end
-        // multiple images for different distances of the same background will keep proportional
-        //
-        const imageDimensions: Rectangle = panel.background.getImageDimensions(panel);
         if (panel.background.image) {
-            this.canvas.drawImage(panel.background.image, imageDimensions);
-        } else {
-            // paint background placeholder
-            this.canvas.rect(imageDimensions, PaintConfig.of.background.placeholder);
-            this.canvas.lineFromTo(imageDimensions.topLeft,
-                imageDimensions.bottomRight,
-                PaintConfig.of.background.placeholder
-            );
-            this.canvas.lineFromTo(imageDimensions.topRight,
-                imageDimensions.bottomLeft,
-                PaintConfig.of.background.placeholder
-            );
+            this.canvas.drawImage(panel.background.image, panel.backgroundImageShape);
+        } else if (panel.backgroundImageShape) {
+            this.paintBackgroundImagePlaceholder(panel);
         }
     }
 
+    paintBackgroundImagePlaceholder(panel: Panel) {
+        this.canvas.rect(panel.backgroundImageShape, PaintConfig.of.background.placeholder);
+        this.canvas.lineFromTo(panel.backgroundImageShape.topLeft,
+            panel.backgroundImageShape.bottomRight,
+            PaintConfig.of.background.placeholder
+        );
+        this.canvas.lineFromTo(panel.backgroundImageShape.topRight,
+            panel.backgroundImageShape.bottomLeft,
+            PaintConfig.of.background.placeholder
+        );
+    }
+
     paintCharacters(panel: Panel, options: CharacterPaintOptions) {
-        if (panel.characterImageGroups && panel.characterImageGroups.length > 0) {
-            panel.characterImageGroups.forEach((group: string | string[]) => {
+        if (panel.characterGroups && panel.characterGroups.length > 0) {
+            panel.characterGroups.forEach((group: string | string[]) => {
                 if (typeof group === 'string') {
                     this.paintSingleCharacter(panel, panel.getCharacter(group), options);
                 } else {
-                    this.paintGroupOfCharacters(panel, group, options);
+                    this.paintCharacterGroup(panel, group, options);
                 }
             });
         }
     }
 
     paintSingleCharacter(panel: Panel, character: Character, options: CharacterPaintOptions) {
+        if (!options || options.paintImage) {
+            this.canvas.drawImage(character.image, character.imageShape);
+        }
         const position = character.getPosition();
         const isActor = !!panel.getActor(character.name);
-        if (!options || options.paintImage) {
-            this.canvas.drawImage(character.image, character.getImageDimensions(position));
-        }
         if (!options || options.paintRect) {
             this.canvas.rect(position, isActor ? PaintConfig.of.character.actor.box : PaintConfig.of.character.box);
         }
@@ -158,16 +155,15 @@ export class PanelPainter {
         }
     }
 
-    paintGroupOfCharacters(panel: Panel, group: string[], options: CharacterPaintOptions) {
-        const characterBBox = Rectangle.getBoundingBox(group.map(name => panel.getCharacter(name).getPosition()));
-        const containsActor = group.some(name => !!panel.getActor(name));
+    paintCharacterGroup(panel: Panel, group: string[], options: CharacterPaintOptions) {
+        const character = panel.getCharacter(group[0]);
         if (!options || options.paintImage) {
-            const image = panel.getCharacter(group[0]).image;
-            if (image) {
-                const imageDim = Rectangle.fitAroundBounds(image.bitmapShape, characterBBox);
-                this.canvas.drawImage(image, imageDim);
+            if (character.image) {
+                this.canvas.drawImage(character.image, character.imageShape);
             }
         }
+        const characterBBox = Rectangle.getBoundingBox(group.map(name => panel.getCharacter(name).getPosition()));
+        const containsActor = group.some(name => !!panel.getActor(name));
         if (!options || options.paintRect) {
             this.canvas.rect(characterBBox, containsActor ? PaintConfig.of.character.actor.box : PaintConfig.of.character.box);
             group.forEach(name => this.canvas.rect(

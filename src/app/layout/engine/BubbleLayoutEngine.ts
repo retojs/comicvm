@@ -10,16 +10,17 @@ export class BubbleLayoutEngine {
     private canvas: Canvas;
 
     layout(panels: Panel[], canvas: Canvas) {
-        this.canvas = canvas;
-
         panels
             .filter(panel => !!panel.shape && panel.shape.width > 0 && panel.shape.height > 0)
             .filter(panel => !!panel.bubbles && panel.bubbles.length > 0)
-            .forEach(panel => {
-                this.createBubbleShapes(panel);
-                this.layoutOffscreenBubble(panel);
-                this.layoutBubblesIntoLines(panel);
-            });
+            .forEach(panel => this.layoutPanel(panel, canvas));
+    }
+
+    layoutPanel(panel: Panel, canvas: Canvas) {
+        this.canvas = canvas;
+        this.createBubbleShapes(panel);
+        this.layoutOffscreenBubble(panel);
+        this.layoutBubblesIntoLines(panel);
     }
 
     private createBubbleShapes(panel: Panel): void {

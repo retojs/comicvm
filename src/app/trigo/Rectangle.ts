@@ -1,5 +1,6 @@
 import { Point } from "./Point";
 import { MarginConfig } from "../layout/Layout.config";
+import { Dimensions } from "./Dimensions";
 
 export class Rectangle {
 
@@ -8,12 +9,16 @@ export class Rectangle {
     _width: number;
     _height: number;
 
-    static from(p1: Point, p2: Point) {
+    static fromPoints(p1: Point, p2: Point) {
         return new Rectangle(
             Math.min(p1.x, p2.x),
             Math.min(p1.y, p2.y),
             Math.abs(p1.x - p2.x),
             Math.abs(p1.y - p2.y));
+    }
+
+    static fromDimensions(x: number, y: number, dimensions: Dimensions): Rectangle {
+        return new Rectangle(x, y, dimensions.width, dimensions.height);
     }
 
     constructor(x?: number, y?: number, width?: number, height?: number) {
@@ -120,7 +125,12 @@ export class Rectangle {
     translate(dx?: number, dy?: number): Rectangle {
         this.x = dx ? this.x + dx : this.x;
         this.y = dy ? this.y + dy : this.y;
+        return this;
+    }
 
+    translateInvert(dx?: number, dy?: number): Rectangle {
+        this.x = dx ? this.x - dx : this.x;
+        this.y = dy ? this.y - dy : this.y;
         return this;
     }
 

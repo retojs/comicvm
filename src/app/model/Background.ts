@@ -27,11 +27,10 @@ export class Background {
     }
 
     chooseImage(images: Images): Img {
-        this.image = images.chooseBackgroundImage(new ImageQuery([this.id]));
-        return this.image;
+        return images ? images.chooseBackgroundImage(new ImageQuery([this.id])) : null;
     }
 
-    getImageDimensions(panel: Panel): Rectangle {
+    getImageShape(panel: Panel): Rectangle {
         const panelsBBox = this.getPanelsBBox();
         const charactersBBox = this.getCharactersBackgroundBBox(panel);
         const backgroundDimensions = new Rectangle(
@@ -41,9 +40,9 @@ export class Background {
             panelsBBox.height * charactersBBox.width
         );
         if (panel.background.image && panel.background.image.bitmapShape) {
-            return Rectangle.fitAroundBounds(panel.background.image.bitmapShape, backgroundDimensions);
+            return Rectangle.fitAroundBounds(panel.background.image.bitmapShape.clone(), backgroundDimensions);
         } else {
-            return backgroundDimensions;
+            return backgroundDimensions.clone();
         }
     }
 

@@ -52,7 +52,6 @@ export class FeaturePaintStyleConfig {
 
     page = {
         background: PaintStyleConfig.fill("white"),
-        border: PaintStyleConfig.stroke("rgba(0,0, 0, 0.2)", 2),
         separator: PaintStyleConfig.stroke("rgba(0, 0, 0, 0.2)", 2)
     };
 

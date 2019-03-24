@@ -11,12 +11,20 @@ export class CharacterLayoutEngine {
 
     constructor() {}
 
-    layoutCharacters(panel: Panel, time?: number) {
+    layout(panels: Panel[]) {
+        panels
+            .filter(panel => !!panel.shape && panel.shape.width > 0 && panel.shape.height > 0)
+            .forEach(panel => {
+                this.layoutCharacters(panel);
+            });
+    }
+
+    layoutCharacters(panel: Panel) {
         this.setCharacterDefaultPositions(panel);
         this.setCharacterBackgroundPositions(panel);
         this.setCharacterPanelPositions(panel);
-        this.applyZoom(panel, time);
-        this.applyPanning(panel, time);
+        this.applyZoom(panel);
+        this.applyPanning(panel);
     }
 
     setCharacterDefaultPositions(panel: Panel) {
@@ -130,7 +138,7 @@ export class CharacterLayoutEngine {
         });
     }
 
-    applyZoom(panel: Panel, time: number) {
+    applyZoom(panel: Panel) {
 
         if (!LayoutConfig.applyZoom) { return; }
 
@@ -143,7 +151,7 @@ export class CharacterLayoutEngine {
             //  - at duration = 1 zoom is zoom + 0.5 * DEFAULT_ZOOM
             // --> zoom factor increase is linear, just add delta to zoom
 
-            zoom += time - 0.5 * panel.layoutProperties.animation.zoom * DEFAULT_ZOOM;
+            zoom += panel.animationTime - 0.5 * panel.layoutProperties.animation.zoom * DEFAULT_ZOOM;
 
             // TODO transition function (ease in / out etc.)
         }
@@ -161,7 +169,7 @@ export class CharacterLayoutEngine {
         })
     }
 
-    applyPanning(panel: Panel, time: number) {
+    applyPanning(panel: Panel) {
 
         if (!LayoutConfig.applyPanning) { return; }
 
@@ -172,8 +180,8 @@ export class CharacterLayoutEngine {
             // animation.pan = [1, 0] means
             //  - at duration 0 pan is pan - 0.5
             //  - at duration 1 pan is pan + 0.5
-            panning[0] += time - 0.5 * panel.layoutProperties.animation.pan[0];
-            panning[1] += time - 0.5 * panel.layoutProperties.animation.pan[1];
+            panning[0] += panel.animationTime - 0.5 * panel.layoutProperties.animation.pan[0];
+            panning[1] += panel.animationTime - 0.5 * panel.layoutProperties.animation.pan[1];
 
             // TODO transition function (ease in / out etc.)
         }

@@ -1,0 +1,11 @@
+---
+panelProperties:
+  - plotItemCount
+  - animation
+pages:
+  # page 1
+  - strips:
+      # upper strip
+      - panels:
+          - - 2
+            - { zoom: 1, pan: [] }

@@ -15,6 +15,7 @@ export class Character {
     panelPosition?: Square;
 
     image: Img;
+    imageShape: Rectangle;
 
     constructor(name: string, how?: string[]) {
         this.name = name;
@@ -55,11 +56,11 @@ export class Character {
     }
 
     chooseImage(images: Images): Img {
-        this.image = images.chooseCharacterImage(this.getImageQuery());
-        return this.image;
+        return images ? images.chooseCharacterImage(this.getImageQuery()) : null;
     }
 
-    getImageDimensions(characterPosition: Square): Rectangle {
+    getImageShape(): Rectangle {
+        const characterPosition: Square = this.getPosition();
         if (!this.image) {
             return new Rectangle(0, 0, 0, 0);
         }
@@ -73,7 +74,7 @@ export class Character {
                 this.image.bitmapShape.height * scale,
             );
         } else {
-            return Rectangle.fitAroundBounds(this.image.bitmapShape, characterPosition);
+            return Rectangle.fitAroundBounds(this.image.bitmapShape.clone(), characterPosition);
         }
     }
 }

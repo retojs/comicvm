@@ -1,13 +1,22 @@
-.parameter-input-panel {
+.config-panel {
   position: absolute;
   top: 0;
-  right: 0;
   padding: 10px;
 
   .title {
     margin-bottom: 20px;
     font-weight: 600;
   }
+}
+
+.layout-config-panel {
+  @extend .config-panel;
+  right: 0;
+}
+
+.paint-config-panel {
+  @extend .config-panel;
+  left: 0;
 }
 
 .parameter-input {

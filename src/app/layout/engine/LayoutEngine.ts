@@ -52,6 +52,7 @@ export class LayoutEngine {
         if (this.scene && this.scene.pages) {
             this.scene.pages.forEach(page => this.layoutPage(page));
         }
+        this.characterLayoutEngine.layout(this.scene.panels);
         this.bubbleLayoutEngine.layout(this.scene.panels, canvas);
 
         return this;
@@ -105,7 +106,5 @@ export class LayoutEngine {
             return;
         }
         panel.shape = new Rectangle(x, y, width, height);
-
-        this.characterLayoutEngine.layoutCharacters(panel);
     }
 }

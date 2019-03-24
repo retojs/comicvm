@@ -105,12 +105,14 @@ export class CharacterPositionDemo implements Demo {
             DEFAULT_CANVAS_HEIGHT
         );
 
-        const scenePainter = ScenePainter.paintScene(
-            new Scene("Scene", layout, plot).parseLayout().executeLayout(canvas),
-            canvas
-        );
+        const scene = new Scene("Scene", layout, plot).setup(canvas);
 
-        layoutConfigButtons.create(container, scenePainter.repaintScene.bind(scenePainter));
+        const scenePainter = ScenePainter.paintScene(scene, canvas);
+
+        layoutConfigButtons.create(container, () => {
+            scene.setup(canvas);
+            scenePainter.paintScene();
+        });
     }
 
 }

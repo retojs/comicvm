@@ -4,7 +4,7 @@ import { Strip } from "./Strip";
 import { Background } from "./Background";
 import { Rectangle } from "../trigo/Rectangle";
 import { PlotItem, STORY_TELLER } from "../plot/PlotItem";
-import { flatCharacters, PanelAnimationProperties, PanelLayoutProperties } from "../layout/LayoutProperties";
+import { flatCharacters, PanelLayoutProperties } from "../layout/LayoutProperties";
 import { Character } from "./Character";
 import { Qualifier } from "./Qualifier";
 import { Bubble } from "./Bubble";
@@ -22,7 +22,7 @@ export class Panel {
     characters: Character[] = [];
     characterNames: string[];
     charactersByName: { [key: string]: Character } = {};
-    characterImageGroups: (string | string[])[];
+    characterGroups: (string | string[])[];
     actors: Character[] = [];
     actorsByName: { [key: string]: Character } = {};
     actorSlice: Character[] = [];
@@ -35,6 +35,9 @@ export class Panel {
     layoutProperties: PanelLayoutProperties;
 
     shape: Rectangle;
+    backgroundImageShape: Rectangle;
+
+    animationTime = 0;
 
     constructor(index: number) {
         this.index = index;
@@ -74,10 +77,10 @@ export class Panel {
         this.resetCharacters();
 
         if (this.background && this.background.layoutProperties && this.background.layoutProperties.characters) {
-            this.characterImageGroups = this.background.layoutProperties.characters;
+            this.characterGroups = this.background.layoutProperties.characters;
             this.characterNames = flatCharacters(this.background.layoutProperties.characters);
         } else {
-            this.characterImageGroups = this.scene.characters;
+            this.characterGroups = this.scene.characters;
             this.characterNames = flatCharacters(this.scene.characters);
         }
 

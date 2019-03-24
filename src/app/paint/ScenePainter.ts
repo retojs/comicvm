@@ -23,12 +23,7 @@ export class ScenePainter {
 
     paintScene(): ScenePainter {
         this.canvas.clear();
-        this.repaintScene();
-        return this;
-    }
-
-    repaintScene() {
-        this.layoutEngine.layout(this.canvas);
         this.scene.pages.forEach(page => this.pagePainter.paintPage(page));
+        return this;
     }
 }

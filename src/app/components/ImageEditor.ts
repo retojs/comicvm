@@ -34,7 +34,7 @@ export class ImageEditor extends Div {
 
         this.characterPlaceholder = new ResizableDiv(this, "character-placeholder");
         this.characterPlaceholder.onSizeChange = (size: Rectangle) => {
-            size.translate(...this.image.parentOffsetInvert);
+            size.translateInvert(...this.image.parentOffset);
             this.onSizeChangeHandler(Images.getCharacterSizeString(size, this.image));
         };
 

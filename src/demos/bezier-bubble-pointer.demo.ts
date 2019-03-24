@@ -25,7 +25,7 @@ export class BezierBubblePointerDemo implements Demo {
         let to = new Point(LayoutConfig.page.width * 0.5, 250); // where the pointer lines touch the bottom border of the bubble
         let toLeft = to.clone().translate(-distanceLeftRight / 2);
         let toRight = to.clone().translate(distanceLeftRight / 2);
-        let mouseBounds = Rectangle.from(from, to);
+        let mouseBounds = Rectangle.fromPoints(from, to);
 
         const initialMousePos = myCanvas.getMousePositionFromCanvasPosition(
             to.x + (from.x - to.x) * LayoutConfig.bubble.pointer.controlPointVerticalPosition,
@@ -50,7 +50,7 @@ export class BezierBubblePointerDemo implements Demo {
 
         myCanvas.onDblClick = (event: MouseEvent) => {
             from = myCanvas.getCanvasPositionFromMousePosition(event.clientX, event.clientY);
-            mouseBounds = Rectangle.from(from, to);
+            mouseBounds = Rectangle.fromPoints(from, to);
             repaint(event);
         };
 

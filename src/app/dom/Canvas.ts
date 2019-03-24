@@ -235,16 +235,16 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
         return this.lineHeights[currentFont];
     }
 
-    drawImage(img: Img, dimensions: Rectangle) {
+    drawImage(img: Img, shape: Rectangle) {
         if (!img) { return; }
 
         this.begin();
         this.ctx.drawImage(
             img.domElement,
-            dimensions.x,
-            dimensions.y,
-            dimensions.width,
-            dimensions.height
+            shape.x,
+            shape.y,
+            shape.width,
+            shape.height
         );
         this.end();
     }

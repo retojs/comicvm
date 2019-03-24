@@ -1,7 +1,5 @@
 import { Rectangle } from "../trigo/Rectangle";
 import { Dimensions } from "../trigo/Dimensions";
-import { getScrollOffset } from "./util";
-import { Point } from "../trigo/Point";
 
 export type DomElementContainer = HTMLElement | DomElement<HTMLElement> | string;
 
@@ -52,33 +50,10 @@ export abstract class DomElement<T extends HTMLElement> {
         this.domElement.classList.remove(styleClass);
     }
 
-    get boundingClientRect(): Rectangle {
-        const clientRect = this.domElement.getBoundingClientRect();
-        return new Rectangle(
-            clientRect.left,
-            clientRect.top,
-            clientRect.width,
-            clientRect.height);
-    }
-
-    getOffsetPos(event: MouseEvent) {
-        return new Point(
-            event.clientX - this.domElement.getBoundingClientRect().left,
-            event.clientY - this.domElement.getBoundingClientRect().top + getScrollOffset().dy
-        );
-    }
-
     get parentOffset(): [number, number] {
         return [
             this.domElement.offsetLeft,
             this.domElement.offsetTop
-        ];
-    }
-
-    get parentOffsetInvert(): [number, number] {
-        return [
-            -this.domElement.offsetLeft,
-            -this.domElement.offsetTop
         ];
     }
 
@@ -87,13 +62,7 @@ export abstract class DomElement<T extends HTMLElement> {
     }
 
     get shape(): Rectangle {
-        const clientRect = this.boundingClientRect;
-        const borderWidth: number = parseInt(this.borderWidth);
-        return new Rectangle(
-            this.domElement.offsetLeft,
-            this.domElement.offsetTop,
-            clientRect.width - 2 * borderWidth,
-            clientRect.height - 2 * borderWidth);
+        return Rectangle.fromDimensions(0, 0, this.dimensions).translate(...this.parentOffset);
     }
 
     set shape(shape: Rectangle) {
@@ -105,12 +74,11 @@ export abstract class DomElement<T extends HTMLElement> {
 
     get dimensions(): Dimensions {
         const clientRect = this.domElement.getBoundingClientRect();
-        return new Dimensions(clientRect.width, clientRect.height);
-    }
-
-    set dimensions(dim: Dimensions) {
-        this.domElement.style.width = dim.width + "px";
-        this.domElement.style.height = dim.height + "px";
+        const borderWidth: number = parseInt(this.borderWidth);
+        return new Dimensions(
+            clientRect.width - 2 * borderWidth,
+            clientRect.height - 2 * borderWidth
+        );
     }
 
     set onClick(onClick: EventListener) {

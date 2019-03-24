@@ -8,6 +8,9 @@ import { LayoutEngine } from "../layout/engine/LayoutEngine";
 import { Canvas } from "../dom/Canvas";
 import { Images } from "../images/Images";
 import { ImageQuery } from "../images/ImageQuery";
+import { Character } from "./Character";
+import { Rectangle } from "../trigo/Rectangle";
+import { Img } from "../dom/Img";
 
 export class Scene {
 
@@ -52,24 +55,45 @@ export class Scene {
     }
 
     assignImages(images: Images): Scene {
-        if (images) {
-            this.backgrounds.forEach(background => background.chooseImage(images));
-            this.panels.forEach(panel => {
-                panel.characterImageGroups.forEach((group: string | string[]) => {
-                    if (typeof group === 'string') {
-                        panel.getCharacter(group).chooseImage(images);
-                    } else {
-                        const imageQuery = group.reduce(
-                            (query: ImageQuery, name: string) => query.addQuery(panel.getCharacter(name).getImageQuery()),
-                            new ImageQuery([], [], [])
-                        );
-                        const image = images.chooseCharacterImage(imageQuery);
-                        group.forEach(name => panel.getCharacter(name).image = image);
-                    }
-                });
-            });
-        }
+        this.backgrounds.forEach(background => this.assignBackgroundImage(background, images));
+        this.panels.forEach(panel => this.assignCharacterImages(panel, images));
         return this;
+    }
+
+    assignBackgroundImage(background: Background, images: Images) {
+        background.image = background.chooseImage(images);
+        background.panels.forEach(panel => panel.backgroundImageShape = background.getImageShape(panel))
+    }
+
+    assignCharacterImages(panel: Panel, images: Images) {
+        panel.characterGroups.forEach((group: string | string[]) => {
+            if (typeof group === 'string') {
+                const character: Character = panel.getCharacter(group);
+                character.image = character.chooseImage(images);
+                character.imageShape = character.getImageShape();
+            } else {
+                assignCharacterGroupImage(group as string[]);
+            }
+        });
+
+        function assignCharacterGroupImage(group: string[]) {
+            const image: Img = chooseCharacterGroupImage();
+            const characterBBox = Rectangle.getBoundingBox(group.map(name => panel.getCharacter(name).getPosition()));
+            group.forEach(name => {
+                panel.getCharacter(name).image = image;
+                if (image) {
+                    panel.getCharacter(name).imageShape = Rectangle.fitAroundBounds(image.bitmapShape.clone(), characterBBox);
+                }
+            });
+
+            function chooseCharacterGroupImage(): Img {
+                const imageQuery = group.reduce(
+                    (query: ImageQuery, name: string) => query.addQuery(panel.getCharacter(name).getImageQuery()),
+                    new ImageQuery([], [], [])
+                );
+                return images ? images.chooseCharacterImage(imageQuery) : null;
+            }
+        }
     }
 
     addPage(page: Page) {

@@ -1,0 +1,12 @@
+Title: Character Position Test
+
+Characters: Mickey, Minnie
+
+Place: Duckburgh
+_____
+Plot:
+
+Mickey:
+    Hey Minnie?
+Minnie:
+    What's up, Mickey?
