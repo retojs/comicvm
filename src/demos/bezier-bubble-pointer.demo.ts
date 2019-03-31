@@ -2,9 +2,10 @@ import { Canvas } from "../app/dom/Canvas";
 import { Point } from "../app/trigo/Point";
 import { PaintStyleConfig } from "../app/paint/Paint.config";
 import { DomElementContainer } from "../app/dom/DomElement";
-import { DEFAULT_CANVAS_WIDTH, Demo } from "./Demo";
 import { LayoutConfig } from "../app/layout/Layout.config";
 import { Rectangle } from "../app/trigo/Rectangle";
+import { Demo, DEMO_DEFAULT_WIDTH } from "./Demo";
+
 
 // TODO
 // - rename to bubble pointer demo
@@ -17,7 +18,7 @@ export class BezierBubblePointerDemo implements Demo {
     desc = "This tool helps with the calculation of the bubble pointer bezier curves. (double click to set pointer)";
 
     create(container: DomElementContainer) {
-        const myCanvas = new Canvas(container, DEFAULT_CANVAS_WIDTH, 400);
+        const myCanvas = new Canvas(container, DEMO_DEFAULT_WIDTH, 400, DEMO_DEFAULT_WIDTH / LayoutConfig.page.width);
 
         const distanceLeftRight = 100;
 
@@ -27,7 +28,7 @@ export class BezierBubblePointerDemo implements Demo {
         let toRight = to.clone().translate(distanceLeftRight / 2);
         let mouseBounds = Rectangle.fromPoints(from, to);
 
-        const initialMousePos = myCanvas.getMousePositionFromCanvasPosition(
+        const initialMousePos = myCanvas.getDomPositionFromCanvasPosition(
             to.x + (from.x - to.x) * LayoutConfig.bubble.pointer.controlPointVerticalPosition,
             to.y + (from.y - to.y) * LayoutConfig.bubble.pointer.controlPointVerticalPosition
         );

@@ -81,7 +81,6 @@ export class ImageEditor extends Div {
 
     resetSize() {
         const borderWidth = parseInt(this.image.borderWidth);
-        console.log("image border width ", borderWidth);
 
         this.characterSize = Rectangle.fitIntoBounds(
             new Square(0, 0, 1),

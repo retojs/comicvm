@@ -28,10 +28,19 @@ export abstract class DomElement<T extends HTMLElement> {
         return element;
     }
 
-    set content(innerHTML: string) {
-        if (innerHTML) {
-            this.domElement.innerHTML = innerHTML;
+    addContent(content: DomElement<HTMLElement> | string) {
+        if (content) {
+            if (typeof content === "string") {
+                this.domElement.innerHTML += content;
+            } else {
+                this.domElement.appendChild((content as DomElement<HTMLElement>).domElement);
+            }
         }
+    }
+
+    setContent(content: DomElement<HTMLElement> | string): void {
+        this.clearContent();
+        this.addContent(content);
     }
 
     clearContent() {

@@ -1,9 +1,9 @@
-import { Canvas } from "./dom/Canvas";
-import { PaintConfig } from "./paint/Paint.config";
 import { Story } from "./model/Story";
 import { Scene } from "./model/Scene";
 import { ScenePainter } from "./paint/ScenePainter";
 import { DomElementContainer } from "./dom/DomElement";
+import { ComicVmCanvas } from "./paint/ComicVmCanvas";
+import { Canvas } from "./dom/Canvas";
 
 // TODO
 // - generate documentation with jsdoc
@@ -15,7 +15,6 @@ export class ComicVM {
     story: Story;
     currentScene: Scene;
 
-    container: DomElementContainer;
     canvas: Canvas;
 
     constructor(story: Story) {
@@ -35,14 +34,13 @@ export class ComicVM {
         return this.story.scenes.find(scene => scene.name === name);
     }
 
-    paintScene(scene: Scene, container: DomElementContainer): void {
+    paintScene(scene: Scene, container: DomElementContainer | Canvas): void {
         this.currentScene = scene;
-        this.container = container;
-        this.canvas = new Canvas(
-            container,
-            PaintConfig.canvas.width,
-            PaintConfig.canvas.height
-        );
+        if (container instanceof Canvas) {
+            this.canvas = container as Canvas;
+        } else {
+            this.canvas = new ComicVmCanvas(container);
+        }
         this.repaintScene();
     }
 

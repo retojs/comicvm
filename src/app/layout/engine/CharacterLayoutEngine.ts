@@ -3,7 +3,7 @@ import { CharacterPositionLayoutLevel, LayoutConfig } from "../Layout.config";
 import { Square } from "../../trigo/Square";
 import { Rectangle } from "../../trigo/Rectangle";
 import { Point } from "../../trigo/Point";
-import { ALL_CHARACTERS, CharacterLayoutProperties, CharacterPositionChange } from "../LayoutProperties";
+import { ALL_CHARACTERS, CharacterLayoutProperties, CharacterPositionTransform } from "../LayoutProperties";
 
 const DEFAULT_ZOOM = 0.5 * (1.0 + Math.sqrt(5)) - 1; // golden ratio
 
@@ -108,30 +108,30 @@ export class CharacterLayoutEngine {
             if (chProps.pos) {
                 if (chProps.who === ALL_CHARACTERS) {
                     panel.characters.forEach(character =>
-                        character.backgroundPosition.adjust(chProps.pos)
+                        character.backgroundPosition.transform(chProps.pos)
                     );
                 } else {
                     const character = panel.getCharacter(chProps.who);
                     if (character) {
-                        character.backgroundPosition.adjust(chProps.pos);
+                        character.backgroundPosition.transform(chProps.pos);
                     }
                 }
             }
         });
     }
 
-    adjustCharacterPanelPositions(panel: Panel, positionChanges: CharacterPositionChange[]) {
+    adjustCharacterPanelPositions(panel: Panel, positionChanges: CharacterPositionTransform[]) {
 
         positionChanges.forEach(pos => {
             if (pos) {
                 if (pos.who === ALL_CHARACTERS) {
                     panel.characters.forEach(character =>
-                        character.panelPosition.adjust(pos)
+                        character.panelPosition.transform(pos)
                     );
                 } else {
                     const character = panel.getCharacter(pos.who);
                     if (character) {
-                        character.panelPosition.adjust(pos);
+                        character.panelPosition.transform(pos);
                     }
                 }
             }

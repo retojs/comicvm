@@ -91,17 +91,19 @@ export class ResizableDiv extends Div {
         });
     }
 
-    private createMouseDownHandler(mouseMoveHandler: (dSize: number) => void, direction: ResizeDirection): EventListener {
+    private createMouseDownHandler(mouseMoveHandler: (dSize: number) => void,
+                                   resizeDirection: ResizeDirection): EventListener {
+
         return function handleMouseDown(event: MouseEvent) {
             this.initialMousePos = new Point(event.clientX, event.clientY);
             this.initialShape = this.shape.clone();
             this.mouseMoveHandler = (event: MouseEvent) => {
                 const dPos = this.getMovedOffset(event);
-                if (direction == null) {
+                if (resizeDirection == null) {
                     mouseMoveHandler(dPos);
                 } else {
                     let dSize = 0;
-                    switch (direction) {
+                    switch (resizeDirection) {
                         case ResizeDirection.Horizontal:
                             dSize = dPos.dx;
                             break;

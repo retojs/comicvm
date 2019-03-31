@@ -9,6 +9,9 @@ import { Character } from "./Character";
 import { Qualifier } from "./Qualifier";
 import { Bubble } from "./Bubble";
 import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/Layout.config";
+import { Images } from "../images/Images";
+import { Img } from "../dom/Img";
+import { ImageQuery } from "../images/ImageQuery";
 
 export class Panel {
 
@@ -174,6 +177,17 @@ export class Panel {
     }
 
     /**
+     * Returns the bounding box of all characters' background positions.
+     */
+    getCharactersBackgroundBBox() {
+        const animationTime = this.animationTime;
+        //  this.animationTime = 0;
+        const bbox = Rectangle.getBoundingBox(this.characters.map(c => c.backgroundPosition));
+        this.animationTime = animationTime;
+        return bbox;
+    }
+
+    /**
      * Returns the first actor's element index in this panel's characters array.
      * or:
      * Returns the answer to the question: At what index is the first actor in this panel's characters array?
@@ -193,6 +207,37 @@ export class Panel {
         this.charactersByName = {};
         this.actors = [];
         this.actorsByName = {};
+    }
+
+    setupCharacterImages(images: Images) {
+        this.characterGroups.forEach((group: string | string[]) => {
+            if (typeof group === 'string') {
+                const character: Character = this.getCharacter(group);
+                character.image = character.chooseImage(images);
+                character.imageShape = character.getImageShape();
+            } else {
+                this.setupCharacterGroupImage(group as string[], images);
+            }
+        });
+    }
+
+    setupCharacterGroupImage(group: string[], images: Images) {
+        const image: Img = this.chooseCharacterGroupImage(group, images);
+        const characterBBox = Rectangle.getBoundingBox(group.map(name => this.getCharacter(name).getPosition()));
+        group.forEach(name => {
+            this.getCharacter(name).image = image;
+            if (image) {
+                this.getCharacter(name).imageShape = Rectangle.fitAroundBounds(image.bitmapShape.clone(), characterBBox);
+            }
+        });
+    }
+
+    chooseCharacterGroupImage(group: string[], images: Images): Img {
+        const imageQuery = group.reduce(
+            (query: ImageQuery, name: string) => query.addQuery(this.getCharacter(name).getImageQuery()),
+            new ImageQuery([], [], [])
+        );
+        return images ? images.chooseCharacterImage(imageQuery) : null;
     }
 
     get zoom(): number {
@@ -238,6 +283,10 @@ export class Panel {
         function hasPanning(layoutProperties: any) {
             return layoutProperties && layoutProperties.pan && layoutProperties.pan.length > 0;
         }
+    }
+
+    get qualifiedIndex(): string {
+        return `page-${this.page.index}-strip-${this.strip.index}-panel-${this.index}`;
     }
 
     toString(): string {

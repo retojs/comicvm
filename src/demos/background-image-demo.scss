@@ -1,0 +1,16 @@
+.background-image-demo {
+
+  min-height: 79vh;
+
+  .panel-bounding-box,
+  .panel-selection-page {
+    display: inline-block;
+    vertical-align: top;
+    margin: 32px;
+  }
+
+  .panel-selection-page {
+    margin-right: 50px;
+    cursor: pointer;
+  }
+}

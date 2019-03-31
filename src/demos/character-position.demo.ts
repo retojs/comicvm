@@ -1,9 +1,9 @@
 import * as layoutConfigButtons from "./layout-config-buttons";
 import { ScenePainter } from "../app/paint/ScenePainter";
-import { Canvas } from "../app/dom/Canvas";
 import { Scene } from "../app/model/Scene";
 import { DomElementContainer } from "../app/dom/DomElement";
-import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH, Demo } from "./Demo";
+import { Demo } from "./Demo";
+import { ComicVmCanvas } from "../app/paint/ComicVmCanvas";
 
 const plot = `
 Title: Character Position Test
@@ -98,15 +98,8 @@ export class CharacterPositionDemo implements Demo {
     desc = "This example demonstrates how character positions can be configured for the whole scene, a background or a panel";
 
     create(container: DomElementContainer) {
-
-        const canvas = new Canvas(
-            container,
-            DEFAULT_CANVAS_WIDTH,
-            DEFAULT_CANVAS_HEIGHT
-        );
-
+        const canvas = new ComicVmCanvas(container);
         const scene = new Scene("Scene", layout, plot).setup(canvas);
-
         const scenePainter = ScenePainter.paintScene(scene, canvas);
 
         layoutConfigButtons.create(container, () => {
@@ -114,5 +107,4 @@ export class CharacterPositionDemo implements Demo {
             scenePainter.paintScene();
         });
     }
-
 }

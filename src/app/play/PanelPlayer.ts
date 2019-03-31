@@ -44,8 +44,7 @@ export class PanelPlayer {
         this.panel.animationTime = time;
         this.characterLayoutEngine.layoutCharacters(this.panel);
         this.bubbleLayoutEngine.layoutPanel(this.panel, this.panelPainter.canvas);
-        this.scene.assignImages(this.images);
-        this.panel.backgroundImageShape = this.panel.background.getImageShape(this.panel);
+        this.scene.setupImages(this.images);
     }
 
     /**

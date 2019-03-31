@@ -1,11 +1,11 @@
-import { LayoutConfig, MarginConfig, TextAlign } from "../layout/Layout.config";
+import { MarginConfig, TextAlign } from "../layout/Layout.config";
 import { Rectangle } from "../trigo/Rectangle";
 import { Point } from "../trigo/Point";
-import { PaintConfig, PaintStyleConfig } from "../paint/Paint.config";
+import { FontConfig, PaintStyleConfig } from "../paint/Paint.config";
 import { Line } from "../trigo/Line";
-import { getScrollOffset } from "./util";
 import { DomElement, DomElementContainer } from "./DomElement";
 import { Img } from "./Img";
+import { Transform } from "../trigo/Transform";
 
 export const enum LineCap {
     Butt = "butt",
@@ -13,49 +13,57 @@ export const enum LineCap {
     Square = "square"
 }
 
+export const defaultCanvasFont = new FontConfig(14, "Roboto");
+
 export class Canvas extends DomElement<HTMLCanvasElement> {
 
     domElement: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D;
 
     width: number;
     height: number;
-    scale: number;
+
+    private scale: number;
+
+    private font: FontConfig;
 
     // a cache for line heights per font
     private lineHeights: number[] = [];
 
-    constructor(container: DomElementContainer, width?: number, height?: number) {
+    constructor(container: DomElementContainer, width?: number, height?: number, scale?: number) {
         super(container);
-
-        this.width = width;
-        this.height = height;
-        this.scale = this.width / LayoutConfig.page.width;
-
-        this.domElement = this.add(this.createCanvasElement());
-
-        this.ctx = this.domElement.getContext("2d");
-        this.ctx.scale(this.scale, this.scale);
-        this.ctx.font = PaintConfig.canvas.font;
+        this.domElement = this.add(this.createCanvasElement(width, height));
+        this.setScale(scale);
     }
 
-    createCanvasElement(): HTMLCanvasElement {
+    get ctx(): CanvasRenderingContext2D {
+        return this.domElement.getContext("2d");
+    }
+
+    createCanvasElement(width?: number, height?: number): HTMLCanvasElement {
         this.domElement = document.createElement("canvas");
-        this.domElement.width = this.width;
-        this.domElement.height = this.height;
+        this.setDimensions(width, height);
         return this.domElement;
     }
 
-    begin() {
-        this.ctx.save();
+    setDimensions(width: number, height: number) {
+        const newScale = this.scale * width / this.width;
+        this.width = width;
+        this.height = height;
+        this.domElement.width = width;
+        this.domElement.height = height;
+        this.setScale(newScale);
     }
 
-    end() {
-        this.ctx.restore();
+    setScale(scale: number) {
+        this.scale = scale || 1;
+        this.resetTransform();
+        this.ctx.scale(this.scale, this.scale);
+        this.setFont(this.font); // TODO why do we need this for correct font size?
     }
 
-    clear() {
-        this.ctx.clearRect(0, 0, this.width / this.scale, this.height / this.scale);
+    setFont(font: FontConfig) {
+        this.font = font || defaultCanvasFont;
+        this.ctx.font = this.font.toString();
     }
 
     setClip(clip: Rectangle) {
@@ -65,6 +73,44 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
         this.ctx.lineTo(clip.x + clip.width, clip.y + clip.height);
         this.ctx.lineTo(clip.x, clip.y + clip.height);
         this.ctx.clip();
+    }
+
+    transform(transform: Transform) {
+        this.setScale(transform.scale);
+        this.ctx.translate(transform.dx, transform.dy);
+    }
+
+    /**
+     * Translates and scales the canvas such that the specified rectangle
+     * is drawn perfectly fitted into the second specified rectangle.
+     *
+     * @param shape: the rectangle that should fit the target
+     * @param target: the target rectangle
+     */
+    transformTo(shape: Rectangle, target: Rectangle) {
+        const scale = Rectangle.getMinScale(shape, target);
+        this.setScale(scale);
+
+        const targetShape = Rectangle.fitIntoBounds(shape.clone(), target);
+        const dx = targetShape.x / scale - shape.x;
+        const dy = targetShape.y / scale - shape.y;
+        this.ctx.translate(dx, dy);
+    }
+
+    resetTransform() {
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    }
+
+    clear() {
+        this.ctx.clearRect(0, 0, this.width / this.scale, this.height / this.scale);
+    }
+
+    begin() {
+        this.ctx.save();
+    }
+
+    end() {
+        this.ctx.restore();
     }
 
     circle(origin: Point, radius: number, config: PaintStyleConfig) {
@@ -192,8 +238,9 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
         if (config.fillStyle) {
             this.ctx.fillStyle = config.fillStyle;
         }
+        this.ctx.font = this.font.toString();
         if (config.font) {
-            this.ctx.font = config.font;
+            this.ctx.font = config.font.toString();
         }
         let x = pos.x;
         if (config.textAlign === TextAlign.Center) {
@@ -206,20 +253,20 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
         this.end();
     }
 
-    getTextWidth(text: string, font?: string): number {
+    getTextWidth(text: string, font?: FontConfig): number {
         this.begin();
         if (font) {
-            this.ctx.font = font;
+            this.ctx.font = font.toString();
         }
         const textWidth = this.ctx.measureText(text).width;
         this.end();
         return textWidth;
     }
 
-    getLineHeight(font?: string): number {
+    getLineHeight(font?: FontConfig): number {
         this.begin();
         if (font) {
-            this.ctx.font = font;
+            this.ctx.font = font.toString();
         }
         const currentFont = this.ctx.font;
         if (!this.lineHeights[currentFont]) {
@@ -238,6 +285,11 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
     drawImage(img: Img, shape: Rectangle) {
         if (!img) { return; }
 
+        if (!img.domElement.crossOrigin
+            || img.domElement.crossOrigin.toLowerCase() !== "Anonymous".toLowerCase()) {
+            throw new Error("img.crossOrigin not set to 'Anonymous'")
+        }
+
         this.begin();
         this.ctx.drawImage(
             img.domElement,
@@ -249,6 +301,14 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
         this.end();
     }
 
+    getImageData(clip: Rectangle): ImageData {
+        return this.ctx.getImageData(clip.x, clip.y, clip.width, clip.height);
+    }
+
+    putImageData(imageData: ImageData, dx: number, dy: number): void {
+        this.ctx.putImageData(imageData, dx, dy);
+    }
+
     /**
      * Returns the canvas coordinates to draw a point at the specified mouse position (clientX, clientY)
      *
@@ -257,7 +317,7 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
      */
     getCanvasPositionFromMousePosition(clientX: number, clientY: number): Point {
         const x = clientX - this.domElement.getBoundingClientRect().left;
-        const y = clientY - this.domElement.getBoundingClientRect().top + getScrollOffset().dy;
+        const y = clientY - this.domElement.getBoundingClientRect().top;
 
         return new Point(x / this.scale, y / this.scale);
     }
@@ -269,10 +329,26 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
      * @param x
      * @param y
      */
-    getMousePositionFromCanvasPosition(x: number, y: number): Point {
+    getDomPositionFromCanvasPosition(x: number, y: number): Point {
         const clientX = x * this.scale + this.domElement.getBoundingClientRect().left;
-        const clientY = y * this.scale + this.domElement.getBoundingClientRect().top + getScrollOffset().dy;
+        const clientY = y * this.scale + this.domElement.getBoundingClientRect().top;
 
         return new Point(clientX, clientY);
+    }
+
+    markCenter() {
+        const stroke = PaintStyleConfig.stroke("teal", 2);
+        const pos = this.shape.translateToOrigin().center;
+        const markSize = 50;
+        this.lineFromTo(
+            pos.clone().translate(0, -markSize / 2),
+            pos.clone().translate(0, markSize / 2),
+            stroke
+        );
+        this.lineFromTo(
+            pos.clone().translate(-markSize / 2, 0),
+            pos.clone().translate(markSize / 2, 0),
+            stroke
+        );
     }
 }

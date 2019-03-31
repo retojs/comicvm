@@ -1,13 +1,24 @@
-import { LayoutConfig, TextAlign } from "../layout/Layout.config";
+import { TextAlign } from "../layout/Layout.config";
 import { LineCap } from "../dom/Canvas";
 
 export class CanvasConfig {
 
     width = 720;
-    height = 720 * LayoutConfig.page.proportion;
+    height = Math.round(720 * Math.sqrt(2));
 
-    id = "comic-vm-canvas";
-    font = "40px Roboto";
+    font = new FontConfig(40, "Roboto");
+}
+
+export class FontConfig {
+
+    constructor(
+        public size,
+        public family,
+    ) {}
+
+    toString(): string {
+        return this.size + "px " + this.family;
+    }
 }
 
 export class PaintStyleConfig {
@@ -18,10 +29,10 @@ export class PaintStyleConfig {
     fillStyle: string;
     lineWidth: number;
     lineCap: LineCap;
-    font: string;
+    font: FontConfig;
     textAlign: TextAlign;
 
-    private constructor(fillStyle?: string, strokeStyle?: string, lineWidth?: number, lineCap?: LineCap, font?: string, textAlign?: TextAlign, enabled?: boolean) {
+    private constructor(fillStyle?: string, strokeStyle?: string, lineWidth?: number, lineCap?: LineCap, font?: FontConfig, textAlign?: TextAlign, enabled?: boolean) {
         this.strokeStyle = strokeStyle;
         this.fillStyle = fillStyle;
         this.lineWidth = lineWidth;
@@ -39,7 +50,7 @@ export class PaintStyleConfig {
         return new PaintStyleConfig(color, null, null, null, null, null, enabled);
     }
 
-    static text(color: string, textAlign?: TextAlign, font?: string, enabled?: boolean): PaintStyleConfig {
+    static text(color: string, textAlign?: TextAlign, font?: FontConfig, enabled?: boolean): PaintStyleConfig {
         return new PaintStyleConfig(color, null, null, null, font, textAlign, enabled);
     }
 

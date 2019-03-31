@@ -1,5 +1,5 @@
 import { Rectangle } from "./Rectangle";
-import { PositionChange } from "./PositionChange";
+import { Transform } from "./Transform";
 
 export class Square extends Rectangle {
 
@@ -28,7 +28,8 @@ export class Square extends Rectangle {
         return new Square(this.x, this.y, this.size);
     }
 
-    adjust(positionChange: PositionChange) {
-        positionChange.adjust(this);
+    transform(transform: Transform) {
+        transform.transform(this);
+        return this;
     }
 }

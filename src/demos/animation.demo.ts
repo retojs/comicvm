@@ -6,8 +6,8 @@ import { PanelPlayer } from "../app/play/PanelPlayer";
 import { ComicVM } from "../app/ComicVM";
 import { PanelPainter } from "../app/paint/PanelPainter";
 import { Canvas } from "../app/dom/Canvas";
-import { PaintConfig } from "../app/paint/Paint.config";
 import { Button } from "../app/dom/Button";
+import { ComicVmCanvas } from "../app/paint/ComicVmCanvas";
 
 export class AnimationDemo implements Demo {
 
@@ -28,11 +28,7 @@ export class AnimationDemo implements Demo {
 
         this.playBtn = new Button(container, "Play");
 
-        this.canvas = new Canvas(
-            container,
-            PaintConfig.canvas.width,
-            PaintConfig.canvas.height
-        );
+        this.canvas = new ComicVmCanvas(container);
 
         ComicVM.loadStory("Mickey")
             .then(comicVM => {

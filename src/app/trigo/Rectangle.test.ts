@@ -29,4 +29,24 @@ describe("Rectangle", () => {
         expect(fitMe.width).toBe(100);
         expect(fitMe.height).toBe(50);
     });
+
+    it("method transformTo(target) returns a rectangle that has the same shape as the target rectangle, if their proportions are identical", () => {
+        const target = new Rectangle(0, 0, 100, 100);
+        const transformMe = new Rectangle(20, 20, 20, 20);
+        const result = transformMe.transformTo(target);
+        expect(result.x).toBe(target.x);
+        expect(result.y).toBe(target.y);
+        expect(result.width).toBe(target.width);
+        expect(result.height).toBe(target.height);
+    });
+
+    it("method transformTo(target) returns a rectangle that is fitted into the target rectangle", () => {
+        const target = new Rectangle(0, 0, 120, 120);
+        const transformMe = new Rectangle(20, 20, 60, 30);
+        const result = transformMe.transformTo(target);
+        expect(result.x).toBe(0);
+        expect(result.y).toBe((120 - 2 * 30) / 2);
+        expect(result.width).toBe(target.width);
+        expect(result.height).toBe(2 * 30);
+    });
 });

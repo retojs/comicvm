@@ -1,3 +1,5 @@
+import { Rectangle } from "./Rectangle";
+
 export class Dimensions {
 
     width: number;
@@ -6,5 +8,9 @@ export class Dimensions {
     constructor(width: number, height: number) {
         this.width = width;
         this.height = height;
+    }
+
+    static fromRectangle(shape: Rectangle): Dimensions {
+        return new Dimensions(shape.width, shape.height);
     }
 }

@@ -1,6 +1,6 @@
 import { Square } from "./Square";
 
-export class PositionChange {
+export class Transform {
 
     _dx: number;
     _dy: number;
@@ -24,17 +24,14 @@ export class PositionChange {
         return this._scale || 1.0;
     }
 
-    clone(): PositionChange {
-        return new PositionChange(this._dx, this._dy, this._scale);
+    clone(): Transform {
+        return new Transform(this._dx, this._dy, this._scale);
     }
 
-    adjust(square: Square): void {
-        const size = square.size * this.scale,
-            x = square.x + (this.dx * square.size) - (size - square.size) / 2,
-            y = square.y + (this.dy * square.size) - (size - square.size) / 2;
-
-        square.x = x;
-        square.y = y;
+    transform(square: Square): void {
+        const size = square.size * this.scale;
+        square.x = square.x + (this.dx * square.size) - (size - square.size) / 2;
+        square.y = square.y + (this.dy * square.size) - (size - square.size) / 2;
         square.size = size;
     }
 }

@@ -1,9 +1,8 @@
 @import "./font/Roboto.css";
-
 @import "../app/components/image-upload";
 @import "../app/components/image-editor";
 @import "../app/components/resizable-div";
-
+@import "../app/components/coordinates-display";
 @import "shared/index";
 
 $primary-color: #2e878a;
@@ -16,7 +15,6 @@ body {
   font-family: 'Roboto', sans-serif;
   text-align: center;
 }
-
 
 .main {
   margin: auto;

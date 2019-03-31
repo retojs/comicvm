@@ -30,7 +30,7 @@ export class ImagesDemo implements Demo {
     create(container: DomElementContainer) {
         this.backend = new Endpoints();
 
-        new Div(container, "story-title", `<h1>Story :  ${this.story}</h1>`)
+        new Div(container, "story-title", `<h1>Story :  ${this.story}</h1>`);
 
         const imageEditorContainer = new Div(container, "image-editor", "<h2>Image Editor</h2>");
         const storyContentContainer = new Div(container, "story-content margin-top--double");
@@ -75,7 +75,7 @@ export class ImagesDemo implements Demo {
 
         const buttonContainer = new Div(container, "buttons");
 
-        const getShapeSetShape = new Button(buttonContainer, "image.shape = image.shape", (event: MouseEvent) => {
+        new Button(buttonContainer, "image.shape = image.shape", () => {
             this.imageEditor.characterPlaceholder.shape = this.imageEditor.characterPlaceholder.shape;
         });
     }
@@ -87,7 +87,7 @@ export class ImagesDemo implements Demo {
         }
         this.imageEditor.sourceImage = target;
         this.imageName = Images.getName(target.src);
-        this.imageNameDisplay.content = this.imageName;
+        this.imageNameDisplay.setContent(this.imageName);
     }
 
     createImageEditor(container: DomElementContainer, sourceImage: Img) {
@@ -104,13 +104,13 @@ export class ImagesDemo implements Demo {
             if (SIZE_STRING_REG_EXP.test(this.imageName)) {
                 newImageName = plainName.replace(SIZE_STRING_REG_EXP, sizeString) + fileEnding;
             }
-            this.imageNameDisplay.content = newImageName;
+            this.imageNameDisplay.setContent(newImageName);
             this.imageNameDisplay.class = UNSAVED_CHANGE_STYLE_CLASS;
         };
 
         this.imageEditor.onResetSize = () => {
             newImageName = this.imageName.replace(SIZE_STRING_REG_EXP, '');
-            this.imageNameDisplay.content = newImageName;
+            this.imageNameDisplay.setContent(newImageName);
             if (newImageName !== this.imageName) {
                 this.imageNameDisplay.class = UNSAVED_CHANGE_STYLE_CLASS;
             }
@@ -132,7 +132,7 @@ export class ImagesDemo implements Demo {
                     }, 500);
                 });
             this.imageName = newImageName;
-            this.imageNameDisplay.content = newImageName;
+            this.imageNameDisplay.setContent(newImageName);
             this.imageNameDisplay.removeClass(UNSAVED_CHANGE_STYLE_CLASS);
 
         };

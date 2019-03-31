@@ -1,6 +1,6 @@
 import {
     CharacterLayoutProperties,
-    CharacterPositionChange,
+    CharacterPositionTransform,
     createBackgroundLayout,
     createSceneLayout,
     PanelAnimationProperties,
@@ -103,7 +103,7 @@ export class LayoutParser {
                     }
                 }
                 if (chLayout.pos) {
-                    prop.pos = new CharacterPositionChange(name, chLayout.pos.x, chLayout.pos.y, chLayout.pos.size);
+                    prop.pos = new CharacterPositionTransform(name, chLayout.pos.x, chLayout.pos.y, chLayout.pos.size);
                 }
             });
         return chProps;
@@ -188,14 +188,14 @@ export class LayoutParser {
         return qualifiers;
     }
 
-    createPositionChanges(input: { [key: string]: Square }): CharacterPositionChange[] {
-        let positionChanges: CharacterPositionChange[] = [];
+    createPositionChanges(input: { [key: string]: Square }): CharacterPositionTransform[] {
+        let positionChanges: CharacterPositionTransform[] = [];
         if (input) {
             const characterNames = Object.keys(input);
             if (characterNames && characterNames.length > 0) {
                 positionChanges = characterNames.map(name => {
                     const pos: Square = input[name];
-                    return new CharacterPositionChange(name, pos.x, pos.y, pos.size);
+                    return new CharacterPositionTransform(name, pos.x, pos.y, pos.size);
                 });
             }
         }

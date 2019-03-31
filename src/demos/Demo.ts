@@ -1,8 +1,7 @@
 import { DomElementContainer } from "../app/dom/DomElement";
-import { PaintConfig } from "../app/paint/Paint.config";
 
-export const DEFAULT_CANVAS_WIDTH = PaintConfig.canvas.width;
-export const DEFAULT_CANVAS_HEIGHT = PaintConfig.canvas.height;
+export const DEMO_DEFAULT_WIDTH = 720;
+export const DEMO_DEFAULT_HEIGHT = 720 / Math.sqrt(2);
 
 export interface Demo {
     name: string;

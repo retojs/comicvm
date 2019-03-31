@@ -1,6 +1,6 @@
 import {
     CharacterLayoutProperties,
-    CharacterPositionChange,
+    CharacterPositionTransform,
     PanelLayoutProperties,
     PanelLayoutPropertyName,
     SceneLayoutProperties
@@ -181,7 +181,7 @@ export class LayoutSerializer {
         return qualifier.map(q => q.who + "=" + q.how).join("; ");
     }
 
-    stringifyCharacterPosition(pos: CharacterPositionChange, printCharacterName: boolean): string {
+    stringifyCharacterPosition(pos: CharacterPositionTransform, printCharacterName: boolean): string {
         const positionProps = [];
         if (pos._dx !== null && pos._dx !== undefined) {
             positionProps.push("x: " + pos._dx);

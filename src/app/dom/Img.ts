@@ -31,6 +31,7 @@ export class Img extends DomElement<HTMLImageElement> {
     createImageElement(src: string): HTMLImageElement {
         this.domElement = document.createElement("img");
         this.domElement.src = src;
+        this.domElement.crossOrigin = "Anonymous";
 
         this.onLoad = () => {
             if (!this.domElement.width) {

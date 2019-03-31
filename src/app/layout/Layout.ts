@@ -1,8 +1,8 @@
-import { PositionChange } from "../trigo/PositionChange";
+import { Transform } from "../trigo/Transform";
 import { PanelAnimationProperties, PanelLayoutPropertyName } from "./LayoutProperties";
 import { Square } from "../trigo/Square";
 
-export type LayoutProperty = number | number[] | string | string | PositionChange | PanelAnimationProperties
+export type LayoutProperty = number | number[] | string | string | Transform | PanelAnimationProperties
 
 export type PanelLayout = LayoutProperty[]
 

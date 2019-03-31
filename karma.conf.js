@@ -23,11 +23,13 @@ module.exports = function (config) {
         basePath: '',
         files: [
             'src/app/layout/engine/LayoutEngine.test.ts',
-            'src/app/layout/engine/BubbleLayoutEngine.test.ts'
+            'src/app/layout/engine/BubbleLayoutEngine.test.ts',
+            'src/app/components/PanelBoundingBoxViewer.test.ts'
         ],
         preprocessors: {
             'src/app/layout/engine/LayoutEngine.test.ts': ['webpack', 'sourcemap'],
             'src/app/layout/engine/BubbleLayoutEngine.test.ts': ['webpack', 'sourcemap'],
+            'src/app/components/PanelBoundingBoxViewer.test.ts': ['webpack', 'sourcemap'],
         },
         mime: {
             "text/x-typescript": ["ts", "tsx"],

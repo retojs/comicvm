@@ -82,7 +82,7 @@ export class ProportionsConfig {
 export class PageConfig {
 
     width = 2100;
-    height = 2970;
+    height = Math.round(2100 * Math.sqrt(2));
 
     padding = new MarginConfig(50, 40);
 
@@ -95,7 +95,7 @@ export class PageConfig {
     }
 
     get proportion() {
-        return this.height / this.width;
+        return Math.sqrt(2);
     }
 }
 

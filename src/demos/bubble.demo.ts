@@ -2,11 +2,12 @@ import { ScenePainter } from "../app/paint/ScenePainter";
 import { Canvas } from "../app/dom/Canvas";
 import { Scene } from "../app/model/Scene";
 import { DomElementContainer } from "../app/dom/DomElement";
-import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH, Demo } from "./Demo";
 import { ParameterInput } from "./parameter-input/parameter-input";
 import { LayoutConfig, MarginConfig } from "../app/layout/Layout.config";
 import { PaintConfig } from "../app/paint/Paint.config";
 import { Div } from "../app/dom/Div";
+import { ComicVmCanvas } from "../app/paint/ComicVmCanvas";
+import { Demo } from "./Demo";
 
 const plot = `
 Title: Character Position Test
@@ -81,13 +82,7 @@ export class BubbleDemo implements Demo {
     scenePainter: ScenePainter;
 
     create(container: DomElementContainer) {
-
-        this.canvas = new Canvas(
-            container,
-            DEFAULT_CANVAS_WIDTH,
-            DEFAULT_CANVAS_HEIGHT
-        );
-
+        this.canvas = new ComicVmCanvas(container);
         this.scene = new Scene("Mickey", layout, plot).setup(this.canvas);
         this.scenePainter = ScenePainter.paintScene(this.scene, this.canvas);
 

@@ -10,7 +10,7 @@
  */
 
 import { Qualifier } from "../model/Qualifier";
-import { PositionChange } from "../trigo/PositionChange";
+import { Transform } from "../trigo/Transform";
 
 export enum PanelLayoutPropertyName {
     PlotItemCount = "plotItemCount",
@@ -24,7 +24,7 @@ export enum PanelLayoutPropertyName {
 
 export const ALL_CHARACTERS = "all";
 
-export class CharacterPositionChange extends PositionChange {
+export class CharacterPositionTransform extends Transform {
 
     who?: string;
 
@@ -38,9 +38,9 @@ export class CharacterLayoutProperties {
 
     who: string;
     how: Qualifier[] = [];
-    pos?: CharacterPositionChange;
+    pos?: CharacterPositionTransform;
 
-    constructor(who: string, how?: Qualifier[], pos?: CharacterPositionChange) {
+    constructor(who: string, how?: Qualifier[], pos?: CharacterPositionTransform) {
         this.who = who;
         this.how = how || [];
         this.pos = pos;
@@ -94,7 +94,7 @@ export class PanelLayoutProperties {
         public plotItemCount: number = 0,
         public backgroundId: string = null,
         public characterQualifier: Qualifier[] = [],
-        public characterPositions: CharacterPositionChange[] = [],
+        public characterPositions: CharacterPositionTransform[] = [],
         public zoom?: number,
         public pan: [] | [number, number] = [],
         public animation?: PanelAnimationProperties
@@ -109,7 +109,6 @@ export class PanelAnimationProperties {
     ) {}
 
     toString(): string {
-        debugger;
         let props: string[] = [];
         if (this.zoom != null) {
             props.push(` zoom: ${this.zoom}`);

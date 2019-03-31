@@ -7,10 +7,7 @@ import { Plot } from "../plot/Plot";
 import { LayoutEngine } from "../layout/engine/LayoutEngine";
 import { Canvas } from "../dom/Canvas";
 import { Images } from "../images/Images";
-import { ImageQuery } from "../images/ImageQuery";
-import { Character } from "./Character";
-import { Rectangle } from "../trigo/Rectangle";
-import { Img } from "../dom/Img";
+import { Point } from "../trigo/Point";
 
 export class Scene {
 
@@ -32,15 +29,15 @@ export class Scene {
         this.plot = new Plot(plot);
     }
 
-    setup(canvas: Canvas, images?: Images): Scene {
-        return this.parseLayout().executeLayout(canvas).assignImages(images);
-    }
-
     reset() {
         this.pages = [];
         this.panels = [];
         this.backgrounds = [];
         this.characters = [];
+    }
+
+    setup(canvas: Canvas, images?: Images): Scene {
+        return this.parseLayout().executeLayout(canvas).setupImages(images);
     }
 
     parseLayout(): Scene {
@@ -54,46 +51,10 @@ export class Scene {
         return this;
     }
 
-    assignImages(images: Images): Scene {
-        this.backgrounds.forEach(background => this.assignBackgroundImage(background, images));
-        this.panels.forEach(panel => this.assignCharacterImages(panel, images));
+    setupImages(images: Images): Scene {
+        this.backgrounds.forEach(background => background.setupImage(images));
+        this.panels.forEach(panel => panel.setupCharacterImages(images));
         return this;
-    }
-
-    assignBackgroundImage(background: Background, images: Images) {
-        background.image = background.chooseImage(images);
-        background.panels.forEach(panel => panel.backgroundImageShape = background.getImageShape(panel))
-    }
-
-    assignCharacterImages(panel: Panel, images: Images) {
-        panel.characterGroups.forEach((group: string | string[]) => {
-            if (typeof group === 'string') {
-                const character: Character = panel.getCharacter(group);
-                character.image = character.chooseImage(images);
-                character.imageShape = character.getImageShape();
-            } else {
-                assignCharacterGroupImage(group as string[]);
-            }
-        });
-
-        function assignCharacterGroupImage(group: string[]) {
-            const image: Img = chooseCharacterGroupImage();
-            const characterBBox = Rectangle.getBoundingBox(group.map(name => panel.getCharacter(name).getPosition()));
-            group.forEach(name => {
-                panel.getCharacter(name).image = image;
-                if (image) {
-                    panel.getCharacter(name).imageShape = Rectangle.fitAroundBounds(image.bitmapShape.clone(), characterBBox);
-                }
-            });
-
-            function chooseCharacterGroupImage(): Img {
-                const imageQuery = group.reduce(
-                    (query: ImageQuery, name: string) => query.addQuery(panel.getCharacter(name).getImageQuery()),
-                    new ImageQuery([], [], [])
-                );
-                return images ? images.chooseCharacterImage(imageQuery) : null;
-            }
-        }
     }
 
     addPage(page: Page) {
@@ -109,5 +70,9 @@ export class Scene {
     addBackground(bgr: Background) {
         this.backgrounds.push(bgr);
         bgr.scene = this;
+    }
+
+    getPanelAtPosition(pos: Point): Panel {
+        return this.panels.find(panel => panel.shape.contains(pos));
     }
 }

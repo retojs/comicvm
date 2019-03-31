@@ -1,6 +1,7 @@
 import { Point } from "./Point";
 import { MarginConfig } from "../layout/Layout.config";
 import { Dimensions } from "./Dimensions";
+import { Transform } from "./Transform";
 
 export class Rectangle {
 
@@ -97,17 +98,25 @@ export class Rectangle {
     }
 
     static fitIntoBounds(fitMe: Rectangle, container: Rectangle) {
-        const scale = Math.min(container.width / fitMe.width, container.height / fitMe.height);
+        const scale = Rectangle.getMinScale(fitMe, container);
         fitMe.width *= scale;
         fitMe.height *= scale;
         return Rectangle.alignCentered(fitMe, container);
     }
 
     static fitAroundBounds(fitMe: Rectangle, contained: Rectangle) {
-        const scale = Math.max(contained.width / fitMe.width, contained.height / fitMe.height);
+        const scale = Rectangle.getMaxScale(fitMe, contained);
         fitMe.width *= scale;
         fitMe.height *= scale;
         return Rectangle.alignCentered(fitMe, contained);
+    }
+
+    static getMinScale(r1: Rectangle, r2: Rectangle): number {
+        return Math.min(r2.width / r1.width, r2.height / r1.height);
+    }
+
+    static getMaxScale(r1: Rectangle, r2: Rectangle): number {
+        return Math.max(r2.width / r1.width, r2.height / r1.height);
     }
 
     static alignCentered(alignMe: Rectangle, container: Rectangle): Rectangle {
@@ -131,6 +140,57 @@ export class Rectangle {
     translateInvert(dx?: number, dy?: number): Rectangle {
         this.x = dx ? this.x - dx : this.x;
         this.y = dy ? this.y - dy : this.y;
+        return this;
+    }
+
+    translateToOrigin(): Rectangle {
+        this.x = 0;
+        this.y = 0;
+        return this;
+    }
+
+    transform(transform: Transform): Rectangle {
+        this.x += transform.dx;
+        this.y += transform.dy;
+        this.width /= transform.scale;
+        this.height /= transform.scale;
+        return this;
+    }
+
+    transformTo(target: Rectangle): Rectangle {
+        return this.transform(this.getShapeTransformTo(target))
+    }
+
+    getCanvasTransformTo(target: Rectangle): Transform {
+        const scale = Rectangle.getMinScale(this, target);
+        const targetShape = Rectangle.fitIntoBounds(this.clone(), target);
+        const dx = targetShape.x / scale - this.x;
+        const dy = targetShape.y / scale - this.y;
+        return new Transform(dx, dy, scale);
+    }
+
+    getShapeTransformTo(target: Rectangle): Transform {
+        const scale = Rectangle.getMinScale(this, target);
+        const targetShape = Rectangle.fitIntoBounds(this.clone(), target);
+        const dx = targetShape.x - this.x;
+        const dy = targetShape.y - this.y;
+        return new Transform(dx, dy, 1 / scale);
+    }
+
+    /**
+     * Scales and translates this rectangle as if it was a part of the specified container
+     * and the container was transformed by the specified transformation.
+     *
+     * @param transform
+     * @param container
+     */
+    transformAsPartOf(container: Rectangle, transform: Transform): Rectangle {
+        const distance = container.topLeft.distanceTo(this.topLeft);
+        const transformedContainer = container.clone().transform(transform);
+        this.x = transformedContainer.x + distance.x / transform.scale;
+        this.y = transformedContainer.y + distance.y / transform.scale;
+        this.width /= transform.scale;
+        this.height /= transform.scale;
         return this;
     }
 
@@ -169,6 +229,10 @@ export class Rectangle {
         return this;
     }
 
+    addMarginOf(width: number): Rectangle {
+        return this.addMargin(new MarginConfig(width));
+    }
+
     cutMargin(margin: MarginConfig): Rectangle {
         this.x += margin.left;
         this.y += margin.top;
@@ -176,6 +240,17 @@ export class Rectangle {
         this.height -= margin.vertical;
 
         return this;
+    }
+
+    cutMarginOf(width: number): Rectangle {
+        return this.cutMargin(new MarginConfig(width));
+    }
+
+    contains(point: Point): boolean {
+        return this.x < point.x
+            && this.x + this.width > point.x
+            && this.y < point.y
+            && this.y + this.height > point.y
     }
 
     toString() {
