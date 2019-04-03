@@ -4,8 +4,8 @@ import { Scene } from "../../model/Scene";
 import { Page } from "../../model/Page";
 import { Strip } from "../../model/Strip";
 import { Panel } from "../../model/Panel";
-import { Rectangle } from "../../trigo/Rectangle";
-import { Canvas } from "../../dom/Canvas";
+import { Rectangle } from "../../../common/trigo/Rectangle";
+import { Canvas } from "../../../common/dom/Canvas";
 import { BubbleLayoutEngine } from "./BubbleLayoutEngine";
 import { CharacterLayoutEngine } from "./CharacterLayoutEngine";
 
@@ -88,8 +88,8 @@ export class LayoutEngine {
     }
 
     layoutPanel(panel: Panel, panelConfig: PanelWidthsConfig) {
-        const proportionPreviousPanels = panelConfig.getSum(panel.index);
-        const proportionThisPanel = panelConfig.proportions[panel.index] || panelConfig.remainder;
+        const proportionPreviousPanels = panelConfig.getSum(panel.stripIndex);
+        const proportionThisPanel = panelConfig.proportions[panel.stripIndex] || panelConfig.remainder;
 
         let x: number = panel.strip.shape.x + panel.strip.shape.width * proportionPreviousPanels,
             y: number = panel.strip.shape.y,

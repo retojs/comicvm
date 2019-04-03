@@ -1,13 +1,14 @@
 import { ScenePainter } from "../app/paint/ScenePainter";
-import { Canvas } from "../app/dom/Canvas";
+import { Canvas } from "../common/dom/Canvas";
 import { Scene } from "../app/model/Scene";
-import { DomElementContainer } from "../app/dom/DomElement";
-import { ParameterInput } from "./parameter-input/parameter-input";
-import { LayoutConfig, MarginConfig } from "../app/layout/Layout.config";
+import { DomElementContainer } from "../common/dom/DomElement";
+import { LayoutConfig, } from "../app/layout/Layout.config";
 import { PaintConfig } from "../app/paint/Paint.config";
-import { Div } from "../app/dom/Div";
+import { Div } from "../common/dom/Div";
 import { ComicVmCanvas } from "../app/paint/ComicVmCanvas";
 import { Demo } from "./Demo";
+import { ParameterInput } from "./components/ParameterInput";
+import { Margin } from "../common/style/Margin";
 
 const plot = `
 Title: Character Position Test
@@ -102,27 +103,27 @@ export class BubbleDemo implements Demo {
         const paintConfigPanel = new Div(container, "paint-config-panel")
             .appendDiv("title", "PaintConfig");
 
-        ParameterInput.createMarginConfigInput(layoutConfigPanel, "page.padding", LayoutConfig.page.padding, (value: MarginConfig) => {
+        ParameterInput.createMarginConfigInput(layoutConfigPanel, "page.padding", LayoutConfig.page.padding, (value: Margin) => {
             LayoutConfig.page.padding = value;
             this.repaint();
         });
-        ParameterInput.createMarginConfigInput(layoutConfigPanel, "panel.margin", LayoutConfig.panel.margin, (value: MarginConfig) => {
+        ParameterInput.createMarginConfigInput(layoutConfigPanel, "panel.margin", LayoutConfig.panel.margin, (value: Margin) => {
             LayoutConfig.panel.margin = value;
             this.repaint();
         });
-        ParameterInput.createMarginConfigInput(layoutConfigPanel, "panel.padding", LayoutConfig.panel.padding, (value: MarginConfig) => {
+        ParameterInput.createMarginConfigInput(layoutConfigPanel, "panel.padding", LayoutConfig.panel.padding, (value: Margin) => {
             LayoutConfig.panel.padding = value;
             this.repaint();
         });
-        ParameterInput.createMarginConfigInput(layoutConfigPanel, "bubble.margin", LayoutConfig.bubble.margin, (value: MarginConfig) => {
+        ParameterInput.createMarginConfigInput(layoutConfigPanel, "bubble.margin", LayoutConfig.bubble.margin, (value: Margin) => {
             LayoutConfig.bubble.margin = value;
             this.repaint();
         });
-        ParameterInput.createMarginConfigInput(layoutConfigPanel, "bubble.padding", LayoutConfig.bubble.padding, (value: MarginConfig) => {
+        ParameterInput.createMarginConfigInput(layoutConfigPanel, "bubble.padding", LayoutConfig.bubble.padding, (value: Margin) => {
             LayoutConfig.bubble.padding = value;
             this.repaint();
         });
-        ParameterInput.createMarginConfigInput(layoutConfigPanel, "bubble.radius", LayoutConfig.bubble.radius, (value: MarginConfig) => {
+        ParameterInput.createMarginConfigInput(layoutConfigPanel, "bubble.radius", LayoutConfig.bubble.radius, (value: Margin) => {
             LayoutConfig.bubble.radius = value;
             this.repaint();
         });

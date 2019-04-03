@@ -126,6 +126,10 @@ export abstract class DomElement<T extends HTMLElement> {
         this.domElement.addEventListener("keyup", onKeyUp);
     }
 
+    set onKeyDown(onKeyDown: EventListener) {
+        this.domElement.addEventListener("keydown", onKeyDown);
+    }
+
     set onDrop(onDrop: EventListener) {
 
         this.domElement.ondragover = (event: DragEvent) => {

@@ -2,9 +2,9 @@ import { Scene } from "./Scene";
 import { Panel } from "./Panel";
 import { BackgroundLayoutProperties } from "../layout/LayoutProperties";
 import { Images } from "../images/Images";
-import { Img } from "../dom/Img";
+import { Img } from "../../common/dom/Img";
 import { ImageQuery } from "../images/ImageQuery";
-import { Rectangle } from "../trigo/Rectangle";
+import { Rectangle } from "../../common/trigo/Rectangle";
 
 export class Background {
 

@@ -1,7 +1,7 @@
-import * as layoutConfigButtons from "./layout-config-buttons";
+import * as LayoutConfigButtons from "./components/LayoutConfigButtons";
 import { ScenePainter } from "../app/paint/ScenePainter";
 import { Scene } from "../app/model/Scene";
-import { DomElementContainer } from "../app/dom/DomElement";
+import { DomElementContainer } from "../common/dom/DomElement";
 import { Demo } from "./Demo";
 import { ComicVmCanvas } from "../app/paint/ComicVmCanvas";
 
@@ -102,7 +102,7 @@ export class CharacterPositionDemo implements Demo {
         const scene = new Scene("Scene", layout, plot).setup(canvas);
         const scenePainter = ScenePainter.paintScene(scene, canvas);
 
-        layoutConfigButtons.create(container, () => {
+        LayoutConfigButtons.create(container, () => {
             scene.setup(canvas);
             scenePainter.paintScene();
         });

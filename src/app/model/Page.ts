@@ -1,7 +1,7 @@
 import { Scene } from "./Scene";
 import { Strip } from "./Strip";
 import { Panel } from "./Panel";
-import { Rectangle } from "../trigo/Rectangle";
+import { Rectangle } from "../../common/trigo/Rectangle";
 import { StripHeightsConfig } from "../layout/Layout.config";
 
 export class Page {

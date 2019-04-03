@@ -1,11 +1,11 @@
-import { DomElementContainer } from "../dom/DomElement";
-import { Div } from "../dom/Div";
-import { Img } from "../dom/Img";
+import { DomElementContainer } from "../../common/dom/DomElement";
+import { Div } from "../../common/dom/Div";
+import { Img } from "../../common/dom/Img";
 import { ResizableDiv } from "./ResizableDiv";
-import { Rectangle } from "../trigo/Rectangle";
-import { Images } from "../images/Images";
-import { Square } from "../trigo/Square";
-import { Button } from "../dom/Button";
+import { Rectangle } from "../../common/trigo/Rectangle";
+import { Images } from "../../app/images/Images";
+import { Square } from "../../common/trigo/Square";
+import { Button } from "../../common/dom/Button";
 
 
 /**

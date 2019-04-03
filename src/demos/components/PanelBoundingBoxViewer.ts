@@ -1,10 +1,11 @@
-import { Div } from "../dom/Div";
-import { DomElementContainer } from "../dom/DomElement";
-import { Canvas } from "../dom/Canvas";
-import { Panel } from "../model/Panel";
-import { Rectangle } from "../trigo/Rectangle";
-import { PanelPainter } from "../paint/PanelPainter";
-import { PaintConfig, PaintStyleConfig } from "../paint/Paint.config";
+import { Div } from "../../common/dom/Div";
+import { DomElementContainer } from "../../common/dom/DomElement";
+import { Canvas } from "../../common/dom/Canvas";
+import { Panel } from "../../app/model/Panel";
+import { Rectangle } from "../../common/trigo/Rectangle";
+import { PanelPainter } from "../../app/paint/PanelPainter";
+import { PaintConfig } from "../../app/paint/Paint.config";
+import { PaintStyleConfig } from "../../common/style/PaintStyle";
 
 const enum Mode {
     PaintPanel,
@@ -23,8 +24,6 @@ export class PanelBoundingBoxViewer extends Div {
 
     panel: Panel;
     panelPainter: PanelPainter;
-
-    //  backgroundImageShape: Rectangle;
 
     constructor(container: DomElementContainer,
                 private width: number,
@@ -56,7 +55,7 @@ export class PanelBoundingBoxViewer extends Div {
         }
     }
 
-    paintBackgroundsPanelBBox(panel: Panel) {
+    paint(panel: Panel) {
         if (!panel) {
             return;
         }
@@ -74,6 +73,10 @@ export class PanelBoundingBoxViewer extends Div {
             this.paintSelectedPanel();
             this.paintCharacterBBox();
         }
+    }
+
+    repaint() {
+        this.paint(this.panel);
     }
 
     drawBackgroundImage() {

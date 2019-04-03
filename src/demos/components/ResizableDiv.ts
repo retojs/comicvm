@@ -1,9 +1,9 @@
-import { Div } from "../dom/Div";
-import { DomElementContainer } from "../dom/DomElement";
-import { Rectangle } from "../trigo/Rectangle";
-import { Offset } from "../trigo/Offset";
-import { Point } from "../trigo/Point";
-import { Square } from "../trigo/Square";
+import { Div } from "../../common/dom/Div";
+import { DomElementContainer } from "../../common/dom/DomElement";
+import { Rectangle } from "../../common/trigo/Rectangle";
+import { Offset } from "../../common/trigo/Offset";
+import { Point } from "../../common/trigo/Point";
+import { Square } from "../../common/trigo/Square";
 
 enum ResizeDirection {
     Horizontal,

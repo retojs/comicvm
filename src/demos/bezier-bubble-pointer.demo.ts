@@ -1,10 +1,10 @@
-import { Canvas } from "../app/dom/Canvas";
-import { Point } from "../app/trigo/Point";
-import { PaintStyleConfig } from "../app/paint/Paint.config";
-import { DomElementContainer } from "../app/dom/DomElement";
+import { Canvas } from "../common/dom/Canvas";
+import { Point } from "../common/trigo/Point";
+import { DomElementContainer } from "../common/dom/DomElement";
 import { LayoutConfig } from "../app/layout/Layout.config";
-import { Rectangle } from "../app/trigo/Rectangle";
+import { Rectangle } from "../common/trigo/Rectangle";
 import { Demo, DEMO_DEFAULT_WIDTH } from "./Demo";
+import { PaintStyleConfig } from "../common/style/PaintStyle";
 
 
 // TODO

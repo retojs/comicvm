@@ -1,7 +1,7 @@
 import { Point } from "./Point";
-import { MarginConfig } from "../layout/Layout.config";
 import { Dimensions } from "./Dimensions";
 import { Transform } from "./Transform";
+import { Margin } from "../style/Margin";
 
 export class Rectangle {
 
@@ -220,7 +220,7 @@ export class Rectangle {
         return this.expand(-margin);
     }
 
-    addMargin(margin: MarginConfig): Rectangle {
+    addMargin(margin: Margin): Rectangle {
         this.x -= margin.left;
         this.y -= margin.top;
         this.width += margin.horizontal;
@@ -230,10 +230,10 @@ export class Rectangle {
     }
 
     addMarginOf(width: number): Rectangle {
-        return this.addMargin(new MarginConfig(width));
+        return this.addMargin(new Margin(width));
     }
 
-    cutMargin(margin: MarginConfig): Rectangle {
+    cutMargin(margin: Margin): Rectangle {
         this.x += margin.left;
         this.y += margin.top;
         this.width -= margin.horizontal;
@@ -243,7 +243,7 @@ export class Rectangle {
     }
 
     cutMarginOf(width: number): Rectangle {
-        return this.cutMargin(new MarginConfig(width));
+        return this.cutMargin(new Margin(width));
     }
 
     contains(point: Point): boolean {

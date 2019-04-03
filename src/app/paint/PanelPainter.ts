@@ -1,8 +1,8 @@
 import { Panel } from "../model/Panel";
-import { Canvas } from "../dom/Canvas";
+import { Canvas } from "../../common/dom/Canvas";
 import { LayoutConfig } from "../layout/Layout.config";
-import { Rectangle } from "../trigo/Rectangle";
-import { Point } from "../trigo/Point";
+import { Rectangle } from "../../common/trigo/Rectangle";
+import { Point } from "../../common/trigo/Point";
 import { PaintConfig } from "./Paint.config";
 import { BubblePainter } from "./BubblePainter";
 import { Character } from "../model/Character";

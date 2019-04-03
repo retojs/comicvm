@@ -1,6 +1,6 @@
 import { Page } from "./Page";
 import { Panel } from "./Panel";
-import { Rectangle } from "../trigo/Rectangle";
+import { Rectangle } from "../../common/trigo/Rectangle";
 import { PanelWidthsConfig } from "../layout/Layout.config";
 
 export class Strip {

@@ -2,7 +2,7 @@ import { Scene } from "./Scene";
 import { Page } from "./Page";
 import { Strip } from "./Strip";
 import { Background } from "./Background";
-import { Rectangle } from "../trigo/Rectangle";
+import { Rectangle } from "../../common/trigo/Rectangle";
 import { PlotItem, STORY_TELLER } from "../plot/PlotItem";
 import { flatCharacters, PanelLayoutProperties } from "../layout/LayoutProperties";
 import { Character } from "./Character";
@@ -10,12 +10,13 @@ import { Qualifier } from "./Qualifier";
 import { Bubble } from "./Bubble";
 import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/Layout.config";
 import { Images } from "../images/Images";
-import { Img } from "../dom/Img";
+import { Img } from "../../common/dom/Img";
 import { ImageQuery } from "../images/ImageQuery";
 
 export class Panel {
 
-    index: number;
+    sceneIndex: number; // incremented per scene
+    stripIndex: number; // incremented per strip
 
     scene: Scene;
     page: Page;
@@ -42,8 +43,9 @@ export class Panel {
 
     animationTime = 0;
 
-    constructor(index: number) {
-        this.index = index;
+    constructor(stripIndex: number, sceneIndex: number) {
+        this.stripIndex = stripIndex;
+        this.sceneIndex = sceneIndex
     }
 
     setPlotItems(plotItems: PlotItem[]): void {
@@ -121,6 +123,7 @@ export class Panel {
     }
 
     extractBubbles(plotItems: PlotItem[]) {
+        this.bubbles = [];
         plotItems
             .filter(plotItem => !!plotItem.says)
             .forEach(plotItem => this.addBubble(plotItem));
@@ -286,10 +289,10 @@ export class Panel {
     }
 
     get qualifiedIndex(): string {
-        return `page-${this.page.index}-strip-${this.strip.index}-panel-${this.index}`;
+        return `page-${this.page.index}-strip-${this.strip.index}-panel-${this.stripIndex}`;
     }
 
     toString(): string {
-        return `panel ${this.index} in ${this.strip.toString()}`;
+        return `panel ${this.stripIndex} in ${this.strip.toString()}`;
     }
 }

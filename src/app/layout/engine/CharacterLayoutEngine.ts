@@ -1,8 +1,8 @@
 import { Panel } from "../../model/Panel";
 import { CharacterPositionLayoutLevel, LayoutConfig } from "../Layout.config";
-import { Square } from "../../trigo/Square";
-import { Rectangle } from "../../trigo/Rectangle";
-import { Point } from "../../trigo/Point";
+import { Square } from "../../../common/trigo/Square";
+import { Rectangle } from "../../../common/trigo/Rectangle";
+import { Point } from "../../../common/trigo/Point";
 import { ALL_CHARACTERS, CharacterLayoutProperties, CharacterPositionTransform } from "../LayoutProperties";
 
 const DEFAULT_ZOOM = 0.5 * (1.0 + Math.sqrt(5)) - 1; // golden ratio

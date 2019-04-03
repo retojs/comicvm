@@ -1,4 +1,4 @@
-import { Rectangle } from "../trigo/Rectangle";
+import { Rectangle } from "../../common/trigo/Rectangle";
 import { TextBox } from "./TextBox";
 import { STORY_TELLER } from "../plot/PlotItem";
 

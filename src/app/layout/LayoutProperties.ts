@@ -10,7 +10,7 @@
  */
 
 import { Qualifier } from "../model/Qualifier";
-import { Transform } from "../trigo/Transform";
+import { Transform } from "../../common/trigo/Transform";
 
 export enum PanelLayoutPropertyName {
     PlotItemCount = "plotItemCount",

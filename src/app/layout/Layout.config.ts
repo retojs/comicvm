@@ -1,52 +1,11 @@
-export enum TextAlign {
-    Left, Center, Right
-}
+import { Margin } from "../../common/style/Margin";
+
 
 export enum CharacterPositionLayoutLevel {
     DEFAULT = 0,
     SCENE = 1,
     BACKGROUND = 2,
     PANEL = 3
-}
-
-export interface Margin {
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
-}
-
-export class MarginConfig implements Margin {
-
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
-
-    initial: Margin;
-
-    constructor(top: number, right?: number, bottom?: number, left?: number) {
-        this.top = this.bottom = top;
-        this.right = this.left = right == null ? this.top : right;
-        this.bottom = bottom == null ? this.bottom : bottom;
-        this.left = left == null ? this.left : left;
-
-        this.initial = {top, right, bottom, left};
-    }
-
-    get horizontal() {
-        return this.right + this.left;
-    }
-
-    get vertical() {
-        return this.top + this.bottom;
-    }
-
-    get asString() {
-        return [this.initial.top, this.initial.right, this.initial.bottom, this.initial.left]
-            .filter(n => !!n)
-            .join(" ");
-    }
 }
 
 export class ProportionsConfig {
@@ -84,7 +43,7 @@ export class PageConfig {
     width = 2100;
     height = Math.round(2100 * Math.sqrt(2));
 
-    padding = new MarginConfig(50, 40);
+    padding = new Margin(50, 40);
 
     get innerWidth() {
         return this.width - this.padding.horizontal;
@@ -122,8 +81,8 @@ export class PanelWidthsConfig extends ProportionsConfig {
 }
 
 export class PanelConfig {
-    margin = new MarginConfig(30);
-    padding = new MarginConfig(30);
+    margin = new Margin(30);
+    padding = new Margin(30);
 }
 
 export class PointerConfig {
@@ -135,14 +94,14 @@ export class PointerConfig {
 }
 
 export class BubbleConfig {
-    margin = new MarginConfig(15);
-    padding = new MarginConfig(25, 35);
-    radius = new MarginConfig(45);
+    margin = new Margin(15);
+    padding = new Margin(25, 35);
+    radius = new Margin(45);
     maxWithPerHeight = 12;
     verticalAlign = 0.808;
-    pointer = new PointerConfig()
+    pointer = new PointerConfig();
     offScreen = {
-        padding: new MarginConfig(25, 20)
+        padding: new Margin(25, 20)
     };
 }
 

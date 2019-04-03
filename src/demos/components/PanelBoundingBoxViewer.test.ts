@@ -1,10 +1,10 @@
-import { Rectangle } from "../trigo/Rectangle";
-import { PaintStyleConfig } from "../paint/Paint.config";
-import { Canvas } from "../dom/Canvas";
+import { Rectangle } from "../../common/trigo/Rectangle";
+import { Canvas } from "../../common/dom/Canvas";
+import { PaintStyleConfig } from "../../common/style/PaintStyle";
 
 describe("should be a visual test", () => {
 
-    it("You can transform the canvas or the shape", ()=> {
+    xit("You can transform the canvas or the shape", () => {
         const canvas: Canvas = new Canvas(null);
         const shapeBounds: Rectangle = new Rectangle(10, 10, 100, 100);
         const test = new Rectangle(10, 10, 400, 400);

@@ -1,7 +1,7 @@
-import { Canvas } from "../dom/Canvas";
+import { Canvas } from "../../common/dom/Canvas";
 import { PanelPainter } from "./PanelPainter";
 import { Page } from "../model/Page";
-import { Point } from "../trigo/Point";
+import { Point } from "../../common/trigo/Point";
 import { PaintConfig } from "./Paint.config";
 
 export class PagePainter {

@@ -1,10 +1,10 @@
 import { Panel } from "../model/Panel";
 import { LayoutConfig } from "../layout/Layout.config";
 import { PaintConfig } from "./Paint.config";
-import { Point } from "../trigo/Point";
+import { Point } from "../../common/trigo/Point";
 import { Bubble } from "../model/Bubble";
 import { Character } from "../model/Character";
-import { Canvas } from "../dom/Canvas";
+import { Canvas } from "../../common/dom/Canvas";
 
 export class BubblePainter {
 

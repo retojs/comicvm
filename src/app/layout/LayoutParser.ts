@@ -9,7 +9,7 @@ import {
 } from "./LayoutProperties";
 import { BackgroundLayout, CharacterLayout, Layout, LayoutProperty, PageLayout, PanelLayout, StripLayout } from "./Layout";
 import { PanelWidthsConfig, StripHeightsConfig } from "./Layout.config";
-import { Square } from "../trigo/Square";
+import { Square } from "../../common/trigo/Square";
 import { Scene } from "../model/Scene";
 import { Page } from "../model/Page";
 import { Strip } from "../model/Strip";
@@ -25,6 +25,8 @@ export class LayoutParser {
     }
 
     layout: Layout;
+
+    private panelSceneIndex: number;
 
     constructor(input: string) {
         this.layout = YAML.parse(input);
@@ -48,6 +50,8 @@ export class LayoutParser {
                 this.createBackground(key, background, scene);
             });
         }
+
+        this.panelSceneIndex = 0;
 
         sceneLayout.pages.forEach((pageLayout: PageLayout, index) => {
             this.createPage(pageLayout, index, scene);
@@ -136,7 +140,7 @@ export class LayoutParser {
     }
 
     createPanel(panelLayout: PanelLayout, index: number, strip: Strip): Panel {
-        const panel = new Panel(index);
+        const panel = new Panel(index, this.panelSceneIndex++);
         strip.addPanel(panel);
 
         // convert array of layout properties to object of type PanelLayoutProperties

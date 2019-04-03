@@ -24,7 +24,7 @@ module.exports = function (config) {
         files: [
             'src/app/layout/engine/LayoutEngine.test.ts',
             'src/app/layout/engine/BubbleLayoutEngine.test.ts',
-            'src/app/components/PanelBoundingBoxViewer.test.ts'
+            'src/demos/components/PanelBoundingBoxViewer.test.ts'
         ],
         preprocessors: {
             'src/app/layout/engine/LayoutEngine.test.ts': ['webpack', 'sourcemap'],

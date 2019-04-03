@@ -1,7 +1,7 @@
-import { Canvas } from "../../dom/Canvas";
+import { Canvas } from "../../../common/dom/Canvas";
 import { Panel } from "../../model/Panel";
 import { LayoutConfig } from "../Layout.config";
-import { Rectangle } from "../../trigo/Rectangle";
+import { Rectangle } from "../../../common/trigo/Rectangle";
 import { Bubble } from "../../model/Bubble";
 import { TextBox } from "../../model/TextBox";
 

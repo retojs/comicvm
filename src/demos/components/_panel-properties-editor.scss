@@ -1,0 +1,14 @@
+@import "../../style/shared/index";
+
+.panel-properties-editor {
+  margin-top: $gap-size--double;
+
+  .parameter-input {
+    display: inline-block;
+    width: 5em;
+
+    input {
+      width: 4em;
+    }
+  }
+}

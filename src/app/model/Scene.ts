@@ -5,9 +5,9 @@ import { SceneLayoutProperties } from "../layout/LayoutProperties";
 import { LayoutParser } from "../layout/LayoutParser";
 import { Plot } from "../plot/Plot";
 import { LayoutEngine } from "../layout/engine/LayoutEngine";
-import { Canvas } from "../dom/Canvas";
+import { Canvas } from "../../common/dom/Canvas";
 import { Images } from "../images/Images";
-import { Point } from "../trigo/Point";
+import { Point } from "../../common/trigo/Point";
 
 export class Scene {
 

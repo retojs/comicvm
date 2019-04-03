@@ -1,10 +1,10 @@
-import { Canvas } from "../app/dom/Canvas";
-import { Point } from "../app/trigo/Point";
-import { Line } from "../app/trigo/Line";
-import { PaintStyleConfig } from "../app/paint/Paint.config";
+import { Canvas } from "../common/dom/Canvas";
+import { Point } from "../common/trigo/Point";
+import { Line } from "../common/trigo/Line";
 import { Demo, DEMO_DEFAULT_WIDTH } from "./Demo";
-import { DomElementContainer } from "../app/dom/DomElement";
+import { DomElementContainer } from "../common/dom/DomElement";
 import { LayoutConfig } from "../app/layout/Layout.config";
+import { PaintStyleConfig } from "../common/style/PaintStyle";
 
 const dotRadius = 5;
 const lineWidth = 1;

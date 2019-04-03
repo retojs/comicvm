@@ -28,6 +28,21 @@ describe("LayoutParser", () => {
         expect(scene.pages[0].strips.length).toBe(2);
         expect(scene.pages[0].strips[0].panels.length).toBe(3);
         expect(scene.pages[0].strips[1].panels.length).toBe(1);
+        expect(scene.pages[1].strips.length).toBe(1);
+        expect(scene.pages[1].strips[0].panels.length).toBe(2);
+
+        expect(scene.pages[0].strips[0].panels[0].qualifiedIndex).toBe("page-0-strip-0-panel-0");
+        expect(scene.pages[0].strips[0].panels[0].sceneIndex).toBe(0);
+        expect(scene.pages[0].strips[0].panels[1].qualifiedIndex).toBe("page-0-strip-0-panel-1");
+        expect(scene.pages[0].strips[0].panels[1].sceneIndex).toBe(1);
+        expect(scene.pages[0].strips[0].panels[2].qualifiedIndex).toBe("page-0-strip-0-panel-2");
+        expect(scene.pages[0].strips[0].panels[2].sceneIndex).toBe(2);
+        expect(scene.pages[0].strips[1].panels[0].qualifiedIndex).toBe("page-0-strip-1-panel-0");
+        expect(scene.pages[0].strips[1].panels[0].sceneIndex).toBe(3);
+        expect(scene.pages[1].strips[0].panels[0].qualifiedIndex).toBe("page-1-strip-0-panel-0");
+        expect(scene.pages[1].strips[0].panels[0].sceneIndex).toBe(4);
+        expect(scene.pages[1].strips[0].panels[1].qualifiedIndex).toBe("page-1-strip-0-panel-1");
+        expect(scene.pages[1].strips[0].panels[1].sceneIndex).toBe(5);
 
         checkPanelProps(scene.pages[0].strips[0].panels[0],
             new PanelLayoutProperties(
@@ -191,7 +206,7 @@ describe("LayoutParser", () => {
 
     it("connects all panels to a scene, a page, a trip and a background", () => {
         scene.panels.forEach(panel => {
-            expect(panel.index).toBeDefined();
+            expect(panel.stripIndex).toBeDefined();
             expect(panel.scene).toBeDefined();
             expect(panel.background).toBeDefined();
             expect(panel.page).toBeDefined();

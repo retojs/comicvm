@@ -1,19 +1,16 @@
-import { MarginConfig, TextAlign } from "../layout/Layout.config";
 import { Rectangle } from "../trigo/Rectangle";
 import { Point } from "../trigo/Point";
-import { FontConfig, PaintStyleConfig } from "../paint/Paint.config";
 import { Line } from "../trigo/Line";
+import { Transform } from "../trigo/Transform";
+import { Margin } from "../style/Margin";
+import { TextAlign } from "../style/TextAlign";
+import { Font } from "../style/Font";
+import { PaintStyleConfig } from "../style/PaintStyle";
 import { DomElement, DomElementContainer } from "./DomElement";
 import { Img } from "./Img";
-import { Transform } from "../trigo/Transform";
 
-export const enum LineCap {
-    Butt = "butt",
-    Round = "round",
-    Square = "square"
-}
 
-export const defaultCanvasFont = new FontConfig(14, "Roboto");
+export const defaultCanvasFont = new Font(14, "Roboto");
 
 export class Canvas extends DomElement<HTMLCanvasElement> {
 
@@ -24,7 +21,7 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
 
     private scale: number;
 
-    private font: FontConfig;
+    private font: Font;
 
     // a cache for line heights per font
     private lineHeights: number[] = [];
@@ -61,7 +58,7 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
         this.setFont(this.font); // TODO why do we need this for correct font size?
     }
 
-    setFont(font: FontConfig) {
+    setFont(font: Font) {
         this.font = font || defaultCanvasFont;
         this.ctx.font = this.font.toString();
     }
@@ -165,7 +162,7 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
         this.end();
     }
 
-    roundRect(rectangle: Rectangle, radius: MarginConfig, config: PaintStyleConfig) {
+    roundRect(rectangle: Rectangle, radius: Margin, config: PaintStyleConfig) {
         if (!config.enabled) { return; }
         this.begin();
         this.ctx.beginPath();
@@ -253,7 +250,7 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
         this.end();
     }
 
-    getTextWidth(text: string, font?: FontConfig): number {
+    getTextWidth(text: string, font?: Font): number {
         this.begin();
         if (font) {
             this.ctx.font = font.toString();
@@ -263,7 +260,7 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
         return textWidth;
     }
 
-    getLineHeight(font?: FontConfig): number {
+    getLineHeight(font?: Font): number {
         this.begin();
         if (font) {
             this.ctx.font = font.toString();

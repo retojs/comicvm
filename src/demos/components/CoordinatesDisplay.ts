@@ -1,6 +1,6 @@
-import { Div } from "../dom/Div";
-import { DomElementContainer } from "../dom/DomElement";
-import { Point } from "../trigo/Point";
+import { Div } from "../../common/dom/Div";
+import { DomElementContainer } from "../../common/dom/DomElement";
+import { Point } from "../../common/trigo/Point";
 
 export class CoordinatesDisplay {
 

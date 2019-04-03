@@ -1,5 +1,5 @@
 import { BubbleLayoutEngine } from "./BubbleLayoutEngine";
-import { Canvas } from "../../dom/Canvas";
+import { Canvas } from "../../../common/dom/Canvas";
 import { LayoutEngine } from "./LayoutEngine";
 import { SAMPLE_PLOT } from "../../plot/sample.plot";
 import { SAMPLE_LAYOUT } from "../sample.layout";

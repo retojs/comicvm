@@ -1,9 +1,9 @@
 import { Story } from "./model/Story";
 import { Scene } from "./model/Scene";
 import { ScenePainter } from "./paint/ScenePainter";
-import { DomElementContainer } from "./dom/DomElement";
+import { DomElementContainer } from "../common/dom/DomElement";
 import { ComicVmCanvas } from "./paint/ComicVmCanvas";
-import { Canvas } from "./dom/Canvas";
+import { Canvas } from "../common/dom/Canvas";
 
 // TODO
 // - generate documentation with jsdoc
@@ -41,14 +41,19 @@ export class ComicVM {
         } else {
             this.canvas = new ComicVmCanvas(container);
         }
-        this.repaintScene();
+        this.repaintScene(true);
     }
 
-    repaintScene(): void {
-        if (!this.currentScene) { return; }
+    repaintScene(setupScene?: boolean): void {
+        if (!this.currentScene) {
+            throw new Error("No current scene to repaint")
+        }
+        if (setupScene) {
+            this.currentScene.setup(this.canvas, this.story.images);
+        }
         this.canvas.clear();
         ScenePainter.paintScene(
-            this.currentScene.setup(this.canvas, this.story.images),
+            this.currentScene,
             this.canvas
         );
     }

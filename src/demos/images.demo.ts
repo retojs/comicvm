@@ -1,13 +1,13 @@
 import { Endpoints } from "../app/backend/Endpoints";
-import { Img } from "../app/dom/Img";
-import { TextArea } from "../app/dom/TextArea";
-import { Div } from "../app/dom/Div";
-import { ImageUpload } from "../app/components/ImageUpload";
+import { Img } from "../common/dom/Img";
+import { TextArea } from "../common/dom/TextArea";
+import { Div } from "../common/dom/Div";
+import { ImageUpload } from "./components/ImageUpload";
 import { Demo } from "./Demo";
-import { DomElementContainer } from "../app/dom/DomElement";
+import { DomElementContainer } from "../common/dom/DomElement";
 import { ImageType } from "../app/images/ImageType";
-import { ImageEditor } from "../app/components/ImageEditor";
-import { Button } from "../app/dom/Button";
+import { ImageEditor } from "./components/ImageEditor";
+import { Button } from "../common/dom/Button";
 import { Images, SIZE_STRING_REG_EXP } from "../app/images/Images";
 import { Story } from "../app/model/Story";
 

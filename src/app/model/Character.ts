@@ -1,9 +1,9 @@
-import { Square } from "../trigo/Square";
+import { Square } from "../../common/trigo/Square";
 import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/Layout.config";
-import { Img } from "../dom/Img";
+import { Img } from "../../common/dom/Img";
 import { Images } from "../images/Images";
 import { ImageQuery } from "../images/ImageQuery";
-import { Rectangle } from "../trigo/Rectangle";
+import { Rectangle } from "../../common/trigo/Rectangle";
 
 export class Character {
 

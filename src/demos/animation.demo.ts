@@ -1,12 +1,12 @@
 import { Demo } from "./Demo";
-import { Div } from "../app/dom/Div";
+import { Div } from "../common/dom/Div";
 import { Endpoints } from "../app/backend/Endpoints";
-import { DomElementContainer } from "../app/dom/DomElement";
+import { DomElementContainer } from "../common/dom/DomElement";
 import { PanelPlayer } from "../app/play/PanelPlayer";
 import { ComicVM } from "../app/ComicVM";
 import { PanelPainter } from "../app/paint/PanelPainter";
-import { Canvas } from "../app/dom/Canvas";
-import { Button } from "../app/dom/Button";
+import { Canvas } from "../common/dom/Canvas";
+import { Button } from "../common/dom/Button";
 import { ComicVmCanvas } from "../app/paint/ComicVmCanvas";
 
 export class AnimationDemo implements Demo {

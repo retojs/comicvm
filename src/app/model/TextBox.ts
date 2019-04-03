@@ -1,4 +1,4 @@
-import { Rectangle } from "../trigo/Rectangle";
+import { Rectangle } from "../../common/trigo/Rectangle";
 
 export class TextBox {
 

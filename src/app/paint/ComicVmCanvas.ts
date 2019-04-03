@@ -1,6 +1,6 @@
-import { Canvas } from "../dom/Canvas";
+import { Canvas } from "../../common/dom/Canvas";
 import { LayoutConfig } from "../layout/Layout.config";
-import { DomElementContainer } from "../dom/DomElement";
+import { DomElementContainer } from "../../common/dom/DomElement";
 import { PaintConfig } from "./Paint.config";
 
 export class ComicVmCanvas extends Canvas {

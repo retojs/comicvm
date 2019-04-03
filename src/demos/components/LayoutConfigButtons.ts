@@ -1,7 +1,7 @@
-import { CharacterPositionLayoutLevel, LayoutConfig } from "../app/layout/Layout.config";
-import { Button } from "../app/dom/Button";
-import { DomElementContainer } from "../app/dom/DomElement";
-import { Div } from "../app/dom/Div";
+import { CharacterPositionLayoutLevel, LayoutConfig } from "../../app/layout/Layout.config";
+import { Button } from "../../common/dom/Button";
+import { DomElementContainer } from "../../common/dom/DomElement";
+import { Div } from "../../common/dom/Div";
 
 export function create(container: DomElementContainer, repaintFn: () => void) {
 

@@ -1,12 +1,13 @@
 import { ComicVM } from "../app/ComicVM";
 import { Demo } from "./Demo";
-import { DomElementContainer } from "../app/dom/DomElement";
-import { Div } from "../app/dom/Div";
-import { PanelBoundingBoxViewer } from "../app/components/PanelBoundingBoxViewer";
+import { DomElementContainer } from "../common/dom/DomElement";
+import { Div } from "../common/dom/Div";
+import { PanelBoundingBoxViewer } from "./components/PanelBoundingBoxViewer";
 import { Scene } from "../app/model/Scene";
-import { CoordinatesDisplay } from "../app/components/CoordinatesDisplay";
+import { CoordinatesDisplay } from "./components/CoordinatesDisplay";
 import { ComicVmCanvas } from "../app/paint/ComicVmCanvas";
-import { Heading } from "../app/dom/Heading";
+import { Heading } from "../common/dom/Heading";
+import { PanelPropertiesEditor } from "./components/PanelPropertiesEditor";
 
 export class BackgroundImageSizeDemo implements Demo {
 
@@ -18,6 +19,7 @@ export class BackgroundImageSizeDemo implements Demo {
 
     panelBBoxViewer: PanelBoundingBoxViewer;
     coordsDisplay: CoordinatesDisplay;
+    panelPropertiesEditor: PanelPropertiesEditor;
 
     comicWidth = 360;
     panelBBoxViewerWidth = 700;
@@ -48,10 +50,18 @@ export class BackgroundImageSizeDemo implements Demo {
                     Math.round(this.comicWidth * Math.sqrt(2))
                 );
 
+                this.panelPropertiesEditor = new PanelPropertiesEditor(this.panelBBoxViewer,
+                    () => {
+                        this.scene.executeLayout(comicVmCanvas).setupImages(comicVM.story.images);
+                        comicVM.currentScene.executeLayout(comicVmCanvas).setupImages(comicVM.story.images);
+                        comicVM.repaintScene();
+                        this.panelBBoxViewer.repaint();
+                    }
+                );
+
                 this.coordsDisplay = new CoordinatesDisplay(window.document.body);
 
                 this.setupPanelSelection();
-
             })
             .catch(showError);
 
@@ -70,7 +80,8 @@ export class BackgroundImageSizeDemo implements Demo {
 
             const panel = this.scene.getPanelAtPosition(mousePos);
             if (panel) {
-                this.panelBBoxViewer.paintBackgroundsPanelBBox(panel);
+                this.panelPropertiesEditor.setPanel(panel);
+                this.panelBBoxViewer.paint(panel);
             }
         };
     }

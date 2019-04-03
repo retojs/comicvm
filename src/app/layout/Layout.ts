@@ -1,6 +1,6 @@
-import { Transform } from "../trigo/Transform";
+import { Transform } from "../../common/trigo/Transform";
 import { PanelAnimationProperties, PanelLayoutPropertyName } from "./LayoutProperties";
-import { Square } from "../trigo/Square";
+import { Square } from "../../common/trigo/Square";
 
 export type LayoutProperty = number | number[] | string | string | Transform | PanelAnimationProperties
 

@@ -1,4 +1,4 @@
-import { Canvas } from "../dom/Canvas";
+import { Canvas } from "../../common/dom/Canvas";
 import { LayoutEngine } from "../layout/engine/LayoutEngine";
 import { PagePainter } from "./PagePainter";
 import { Scene } from "../model/Scene";

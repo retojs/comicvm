@@ -10,7 +10,7 @@ describe("Panel", () => {
     let plotItems: PlotItem[];
 
     beforeEach(() => {
-        panel = new Panel(0);
+        panel = new Panel(0, 0);
         panel.scene = new Scene("", "", "");
         panel.scene.characters = ["Walt", "Mickey", "Minnie", "Goofy", "Weirdo"];
 

@@ -1,16 +1,16 @@
-import { Select } from "../app/dom/Select";
-import { Label } from "../app/dom/Label";
-import { Div } from "../app/dom/Div";
-import { ImagesDemo } from "./images.demo";
-import { DomElementContainer } from "../app/dom/DomElement";
-import { BezierBubblePointerDemo } from "./bezier-bubble-pointer.demo";
-import { Demo } from "./Demo";
-import { BubbleDemo } from "./bubble.demo";
-import { CharacterPositionDemo } from "./character-position.demo";
-import { ComicVmDemo } from "./comic-vm.demo";
-import { IntersectionDemo } from "./intersection.demo";
-import { AnimationDemo } from "./animation.demo";
-import { BackgroundImageSizeDemo } from "./background-image-size.demo";
+import { Select } from "../../common/dom/Select";
+import { Label } from "../../common/dom/Label";
+import { Div } from "../../common/dom/Div";
+import { ImagesDemo } from "../images.demo";
+import { DomElementContainer } from "../../common/dom/DomElement";
+import { BezierBubblePointerDemo } from "../bezier-bubble-pointer.demo";
+import { Demo } from "../Demo";
+import { BubbleDemo } from "../bubble.demo";
+import { CharacterPositionDemo } from "../character-position.demo";
+import { ComicVmDemo } from "../comic-vm.demo";
+import { IntersectionDemo } from "../intersection.demo";
+import { AnimationDemo } from "../animation.demo";
+import { BackgroundImageSizeDemo } from "../background-image-size.demo";
 
 const LOCAL_STORAGE_KEY = 'comic-vm--selected-demo';
 

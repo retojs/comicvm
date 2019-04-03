@@ -1,10 +1,10 @@
 import { ImageStore } from "./ImageStore";
 import { Endpoints } from "../backend/Endpoints";
-import { Img } from "../dom/Img";
+import { Img } from "../../common/dom/Img";
 import { BackendConfig } from "../backend/Backend.config";
 import { ImageQuery } from "./ImageQuery";
-import { Rectangle } from "../trigo/Rectangle";
-import { Square } from "../trigo/Square";
+import { Rectangle } from "../../common/trigo/Rectangle";
+import { Square } from "../../common/trigo/Square";
 
 export const SIZE_STRING_REG_EXP = /_x=-?\d*y=-?\d*size=\d*/;
 
