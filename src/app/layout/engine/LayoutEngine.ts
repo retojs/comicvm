@@ -52,8 +52,7 @@ export class LayoutEngine {
         if (this.scene && this.scene.pages) {
             this.scene.pages.forEach(page => this.layoutPage(page));
         }
-        this.characterLayoutEngine.layout(this.scene.panels);
-        this.bubbleLayoutEngine.layout(this.scene.panels, canvas);
+        this.layoutPanelsContent(this.scene.panels, canvas);
 
         return this;
     }
@@ -84,10 +83,10 @@ export class LayoutEngine {
         if (!(strip.panelConfig && strip.panelConfig.hasProportions)) {
             strip.panelConfig = PanelWidthsConfig.createDefault(strip.panels.length);
         }
-        strip.panels.forEach(panel => this.layoutPanel(panel, strip.panelConfig));
+        strip.panels.forEach(panel => this.layoutPanelShape(panel, strip.panelConfig));
     }
 
-    layoutPanel(panel: Panel, panelConfig: PanelWidthsConfig) {
+    layoutPanelShape(panel: Panel, panelConfig: PanelWidthsConfig) {
         const proportionPreviousPanels = panelConfig.getSum(panel.stripIndex);
         const proportionThisPanel = panelConfig.proportions[panel.stripIndex] || panelConfig.remainder;
 
@@ -106,5 +105,15 @@ export class LayoutEngine {
             return;
         }
         panel.shape = new Rectangle(x, y, width, height);
+    }
+
+    layoutPanelsContent(panels: Panel[], canvas: Canvas) {
+        this.characterLayoutEngine.layout(this.scene.panels);
+        this.bubbleLayoutEngine.layout(this.scene.panels, canvas);
+    }
+
+    layoutPanelContent(panel: Panel, canvas: Canvas){
+        this.characterLayoutEngine.layoutCharacters(panel);
+        this.bubbleLayoutEngine.layoutPanel(panel, canvas);
     }
 }

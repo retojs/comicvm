@@ -10,3 +10,15 @@ Mickey:
     Hey Minnie?
 Minnie:
     What's up, Mickey?
+Mickey:
+    How about some ice cream?
+Minnie:
+    I'd love that!
+Mickey:
+    Let's go then!
+Mickey:
+(laughing)
+    Let's go for some ice cream!
+Minnie:
+    Hihi!
+

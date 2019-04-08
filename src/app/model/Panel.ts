@@ -12,6 +12,7 @@ import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/Layout.con
 import { Images } from "../images/Images";
 import { Img } from "../../common/dom/Img";
 import { ImageQuery } from "../images/ImageQuery";
+import { PanelTimelineProperties } from "../play/PanelTimelineProperties";
 
 export class Panel {
 
@@ -41,7 +42,17 @@ export class Panel {
     shape: Rectangle;
     backgroundImageShape: Rectangle;
 
-    animationTime = 0;
+    timelineProperties: PanelTimelineProperties;
+
+    _animationTime: number;
+
+    set animationTime(time: number) {
+        this._animationTime = time;
+    }
+
+    get animationTime(): number {
+        return Math.min(1.0, Math.max(0.0, this._animationTime || 0.0));
+    }
 
     constructor(stripIndex: number, sceneIndex: number) {
         this.stripIndex = stripIndex;

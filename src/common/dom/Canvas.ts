@@ -19,9 +19,11 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
     width: number;
     height: number;
 
-    private scale: number;
+    scale: number;
 
-    private font: Font;
+    font: Font;
+
+    backgroundColor = PaintStyleConfig.fill("white");
 
     // a cache for line heights per font
     private lineHeights: number[] = [];
@@ -39,28 +41,34 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
     createCanvasElement(width?: number, height?: number): HTMLCanvasElement {
         this.domElement = document.createElement("canvas");
         this.setDimensions(width, height);
+        this.setFont(this.font);
         return this.domElement;
     }
 
-    setDimensions(width: number, height: number) {
-        const newScale = this.scale * width / this.width;
-        this.width = width;
-        this.height = height;
-        this.domElement.width = width;
-        this.domElement.height = height;
-        this.setScale(newScale);
+    setDimensions(width: number, height: number): Canvas {
+        if (width != null && height != null) {
+            const newScale = this.scale * width / this.width;
+            this.width = width;
+            this.height = height;
+            this.domElement.width = width;
+            this.domElement.height = height;
+            this.setScale(newScale);
+        }
+        return this;
     }
 
-    setScale(scale: number) {
+    setScale(scale: number): Canvas {
         this.scale = scale || 1;
         this.resetTransform();
         this.ctx.scale(this.scale, this.scale);
-        this.setFont(this.font); // TODO why do we need this for correct font size?
+        this.setFont(this.font);
+        return this;
     }
 
-    setFont(font: Font) {
+    setFont(font: Font): Canvas {
         this.font = font || defaultCanvasFont;
         this.ctx.font = this.font.toString();
+        return this;
     }
 
     setClip(clip: Rectangle) {
@@ -84,7 +92,8 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
      * @param shape: the rectangle that should fit the target
      * @param target: the target rectangle
      */
-    transformTo(shape: Rectangle, target: Rectangle) {
+    transformTo(shape: Rectangle, target?: Rectangle) {
+        target = target || this.shape.translateToOrigin();
         const scale = Rectangle.getMinScale(shape, target);
         this.setScale(scale);
 
@@ -99,7 +108,10 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
     }
 
     clear() {
-        this.ctx.clearRect(0, 0, this.width / this.scale, this.height / this.scale);
+        this.rect(new Rectangle(0, 0,
+            this.width / this.scale,
+            this.height / this.scale
+        ), this.backgroundColor);
     }
 
     begin() {

@@ -13,4 +13,18 @@ export class Dimensions {
     static fromRectangle(shape: Rectangle): Dimensions {
         return new Dimensions(shape.width, shape.height);
     }
+
+    clone(): Dimensions {
+        return new Dimensions(this.width, this.height);
+    }
+
+    scale(scale: number): Dimensions {
+        this.width *= scale;
+        this.height *= scale;
+        return this;
+    }
+
+    scaleTo(width: number) {
+        this.scale(width / this.width)
+    }
 }

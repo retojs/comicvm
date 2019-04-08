@@ -24,6 +24,16 @@ export class PanelPainter {
         this.bubblePainter = new BubblePainter(canvas);
     }
 
+    paintPanelWithTransitions(panel: Panel, time: number) {
+        panel.timelineProperties.startTransition.applyAfter(this.canvas, panel, time);
+        panel.timelineProperties.endTransition.applyAfter(this.canvas, panel, time);
+
+        this.paintPanel(panel);
+
+        panel.timelineProperties.startTransition.applyAfter(this.canvas, panel, time);
+        panel.timelineProperties.endTransition.applyAfter(this.canvas, panel, time);
+    }
+
     paintPanel(panel: Panel) {
         this.canvas.begin();
         this.canvas.setClip(panel.shape);

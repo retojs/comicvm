@@ -20,7 +20,8 @@ export class ComicVmDemo implements Demo {
             .then(comicVM => {
                 console.log("comicVM created:", comicVM);
 
-                this.scene = comicVM.getScene("background-demo");
+                //this.scene = comicVM.getScene("background-demo");
+                this.scene = comicVM.getScene("animation-demo");
                 comicVM.paintScene(this.scene, container);
 
                 layoutConfigButtons.create(container, () => comicVM.repaintScene(true));

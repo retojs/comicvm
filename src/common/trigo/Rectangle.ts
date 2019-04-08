@@ -18,7 +18,7 @@ export class Rectangle {
             Math.abs(p1.y - p2.y));
     }
 
-    static fromDimensions(x: number, y: number, dimensions: Dimensions): Rectangle {
+    static fromDimensions(dimensions: Dimensions, x: number = 0, y: number = 0): Rectangle {
         return new Rectangle(x, y, dimensions.width, dimensions.height);
     }
 
@@ -140,6 +140,12 @@ export class Rectangle {
     translateInvert(dx?: number, dy?: number): Rectangle {
         this.x = dx ? this.x - dx : this.x;
         this.y = dy ? this.y - dy : this.y;
+        return this;
+    }
+
+    translateTo(position: Point): Rectangle {
+        this.x = position.x;
+        this.y = position.y;
         return this;
     }
 

@@ -52,8 +52,8 @@ export class BackgroundImageSizeDemo implements Demo {
 
                 this.panelPropertiesEditor = new PanelPropertiesEditor(this.panelBBoxViewer,
                     () => {
-                        this.scene.executeLayout(comicVmCanvas).setupImages(comicVM.story.images);
-                        comicVM.currentScene.executeLayout(comicVmCanvas).setupImages(comicVM.story.images);
+                        this.scene.executeLayout(comicVmCanvas).setupImages(comicVM.images);
+                        comicVM.currentScene.executeLayout(comicVmCanvas).setupImages(comicVM.images);
                         comicVM.repaintScene();
                         this.panelBBoxViewer.repaint();
                     }

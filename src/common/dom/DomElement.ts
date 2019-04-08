@@ -59,6 +59,16 @@ export abstract class DomElement<T extends HTMLElement> {
         this.domElement.classList.remove(styleClass);
     }
 
+    get clientOffset(): [number, number]{
+        const clientRect = this.domElement.getBoundingClientRect();
+        return [clientRect.left, clientRect.top];
+    }
+
+    get clientOffsetInv(): [number, number]{
+        const clientRect = this.domElement.getBoundingClientRect();
+        return [-clientRect.left, -clientRect.top];
+    }
+
     get parentOffset(): [number, number] {
         return [
             this.domElement.offsetLeft,
@@ -71,7 +81,7 @@ export abstract class DomElement<T extends HTMLElement> {
     }
 
     get shape(): Rectangle {
-        return Rectangle.fromDimensions(0, 0, this.dimensions).translate(...this.parentOffset);
+        return Rectangle.fromDimensions( this.dimensions).translate(...this.parentOffset);
     }
 
     set shape(shape: Rectangle) {

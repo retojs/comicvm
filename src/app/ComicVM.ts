@@ -4,6 +4,7 @@ import { ScenePainter } from "./paint/ScenePainter";
 import { DomElementContainer } from "../common/dom/DomElement";
 import { ComicVmCanvas } from "./paint/ComicVmCanvas";
 import { Canvas } from "../common/dom/Canvas";
+import { Images } from "./images/Images";
 
 // TODO
 // - generate documentation with jsdoc
@@ -26,6 +27,10 @@ export class ComicVM {
             .then(story => new ComicVM(story));
     }
 
+    get images(): Images {
+        return this.story.images;
+    }
+
     getSceneAt(index: number): Scene {
         return this.story.scenes[index];
     }
@@ -34,14 +39,24 @@ export class ComicVM {
         return this.story.scenes.find(scene => scene.name === name);
     }
 
-    paintScene(scene: Scene, container: DomElementContainer | Canvas): void {
-        this.currentScene = scene;
+    setupScene(scene: Scene | string, container: DomElementContainer | Canvas): Scene {
+        if (typeof scene === 'string') {
+            this.currentScene = this.getScene(scene as string);
+        } else {
+            this.currentScene = scene;
+        }
         if (container instanceof Canvas) {
             this.canvas = container as Canvas;
         } else {
             this.canvas = new ComicVmCanvas(container);
         }
-        this.repaintScene(true);
+        this.currentScene.setup(this.canvas, this.images);
+        return this.currentScene;
+    }
+
+    paintScene(scene: Scene, container: DomElementContainer | Canvas): void {
+        this.setupScene(scene, container);
+        this.repaintScene();
     }
 
     repaintScene(setupScene?: boolean): void {
