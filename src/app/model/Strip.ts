@@ -25,6 +25,6 @@ export class Strip {
     }
 
     toString(): string {
-        return `strip ${this.index} in ${this.page.toString()}`;
+        return `strip ${this.index + 1} in ${this.page.toString()}`;
     }
 }

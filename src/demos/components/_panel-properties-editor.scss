@@ -3,6 +3,11 @@
 .panel-properties-editor {
   margin-top: $gap-size--double;
 
+  .property-section {
+    display: inline-block;
+    vertical-align: top;
+  }
+
   .parameter-input {
     display: inline-block;
     width: 5em;

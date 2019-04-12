@@ -1,6 +1,6 @@
 import { Demo } from "./Demo";
 import { DomElementContainer } from "../common/dom/DomElement";
-import { TimelineEditor } from "../app/play/TimelineEditor";
+import { TimelineEditor } from "./components/TimelineEditor";
 import { ComicVM } from "../app/ComicVM";
 import { Scene } from "../app/model/Scene";
 import { Div } from "../common/dom/Div";

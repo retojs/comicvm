@@ -51,7 +51,7 @@ export class LayoutParser {
             });
         }
 
-        this.panelSceneIndex = 0;
+        this.panelSceneIndex = 1;
 
         sceneLayout.pages.forEach((pageLayout: PageLayout, index) => {
             this.createPage(pageLayout, index, scene);

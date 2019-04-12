@@ -12,6 +12,8 @@ export class Character {
 
     defaultPosition?: Square;
     backgroundPosition?: Square;
+    backgroundPositionStart?: Square;
+    backgroundPositionEnd?: Square;
     panelPosition?: Square;
 
     image: Img;

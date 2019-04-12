@@ -25,8 +25,8 @@ export class PanelPainter {
     }
 
     paintPanelWithTransitions(panel: Panel, time: number) {
-        panel.timelineProperties.startTransition.applyAfter(this.canvas, panel, time);
-        panel.timelineProperties.endTransition.applyAfter(this.canvas, panel, time);
+        panel.timelineProperties.startTransition.applyBefore(this.canvas, panel, time);
+        panel.timelineProperties.endTransition.applyBefore(this.canvas, panel, time);
 
         this.paintPanel(panel);
 

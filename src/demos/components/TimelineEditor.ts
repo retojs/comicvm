@@ -1,22 +1,22 @@
 import { Div } from "../../common/dom/Div";
 import { Canvas } from "../../common/dom/Canvas";
-import { Scene } from "../model/Scene";
+import { Scene } from "../../app/model/Scene";
 import { DomElementContainer } from "../../common/dom/DomElement";
-import { isPlayingPanel, setPanelAnimationTime, Timeline } from "./Timeline";
-import { PanelPainter } from "../paint/PanelPainter";
+import { isPlayingPanel, setPanelAnimationTime, Timeline } from "../../app/play/Timeline";
+import { PanelPainter } from "../../app/paint/PanelPainter";
 import { Rectangle } from "../../common/trigo/Rectangle";
 import { Dimensions } from "../../common/trigo/Dimensions";
 import { Line } from "../../common/trigo/Line";
 import { Point } from "../../common/trigo/Point";
 import { PaintStyleConfig } from "../../common/style/PaintStyle";
-import { Player } from "./Player";
+import { Player } from "../../app/play/Player";
 import { Font } from "../../common/style/Font";
-import { Images } from "../images/Images";
+import { Images } from "../../app/images/Images";
 import { TimelinePlayer } from "./TimelinePlayer";
-import { PaintConfig } from "../paint/Paint.config";
+import { PaintConfig } from "../../app/paint/Paint.config";
 import { Button } from "../../common/dom/Button";
-import { Panel } from "../model/Panel";
-import { LayoutEngine } from "../layout/engine/LayoutEngine";
+import { Panel } from "../../app/model/Panel";
+import { LayoutEngine } from "../../app/layout/engine/LayoutEngine";
 
 const FRAME_BOUNDS = new Dimensions(50, 50);
 const TIMELINE_PLAYER_WIDTH = 600;
@@ -56,7 +56,7 @@ export class TimelineEditor {
 
     constructor(container: DomElementContainer, scene: Scene, onTimeChange?: TimeChangeListener) {
         this.root = new Div(container, "timeline-editor");
-        this.timelinePlayerPanel = new Div(this.root, "panel-player");
+        this.timelinePlayerPanel = new Div(this.root);
         this.timelinePanel = new Div(this.root, "timeline");
         this.canvas = new Canvas(this.timelinePanel);
         this.panelPainter = new PanelPainter(this.canvas);
@@ -127,7 +127,7 @@ export class TimelineEditor {
     setupTimeDisplay() {
         this.timeDisplay = new Div(this.timelinePanel, "time-display");
         this.onTimeChange = (time: number) => {
-            this.timeDisplay.setContent((time / 1000).toFixed(2) + " sec");
+            this.timeDisplay.setContent((time / 1000).toFixed(2) + "s / " + (this.timeline.duration / 1000).toFixed(2) + "s");
         }
     }
 
@@ -137,6 +137,8 @@ export class TimelineEditor {
             this.timelinePlayerPanel,
             this.scene
         ).setup(TIMELINE_PLAYER_WIDTH, TIMELINE_PLAYER_HEIGHT, PaintConfig.canvas.font, images);
+
+        this.timelinePlayer.renderAtTime(0);
 
         this.setupPlayButton();
     }
@@ -187,9 +189,9 @@ export class TimelineEditor {
     paint() {
         this.canvas.clear();
         for (let x = 0; x < this.canvas.shape.width; x += this.frameBounds.width) {
-            const time = this.getFrameTime(x);
             const frameShape = this.getFrameShape(x);
-            const panel = this.getPanelAt(x);
+            const time = this.getFrameTime(x);
+            const panel = this.getPanelAt(this.getPixelAt(time));
             if (panel) {
                 this.layoutPanel(panel, time);
                 this.canvas.begin();

@@ -213,19 +213,6 @@ export class Rectangle {
         return this;
     }
 
-    expand(margin: number): Rectangle {
-        this.x -= margin;
-        this.y -= margin;
-        this.width += margin * 2;
-        this.height += margin * 2;
-
-        return this;
-    }
-
-    shrink(margin: number): Rectangle {
-        return this.expand(-margin);
-    }
-
     addMargin(margin: Margin): Rectangle {
         this.x -= margin.left;
         this.y -= margin.top;

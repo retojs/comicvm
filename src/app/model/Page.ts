@@ -32,6 +32,6 @@ export class Page {
     }
 
     toString(): string {
-        return `page ${this.index}`;
+        return `page ${this.index + 1}`;
     }
 }

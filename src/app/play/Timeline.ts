@@ -53,7 +53,7 @@ export function getPlayingPanels(panels: Panel[], time: number) {
 }
 
 export function isPlayingPanel(panel: Panel, time: number): boolean {
-    return panel.timelineProperties.start <= time && time < panel.timelineProperties.end
+    return panel.timelineProperties.start <= time && time <= panel.timelineProperties.end
 }
 
 export function getPanelBoundTime(panel: Panel, time: number): number {

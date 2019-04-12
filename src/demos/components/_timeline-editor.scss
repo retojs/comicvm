@@ -1,0 +1,46 @@
+@import "../../style/shared/index";
+
+$label-width: 80px;
+
+.timeline-editor {
+
+  .timeline,
+  .timeline-player {
+    position: relative;
+  }
+
+  .time-display {
+    position: absolute;
+    top: -25px;
+    right: 0;
+    width: 150px;
+    font-size: 14px;
+    text-align: right;
+  }
+
+  .animation-display {
+    position: absolute;
+    top: 0px;
+    right: 100px;
+    width: 200px;
+    font-size: 14px;
+    line-height: 20px;
+    white-space: nowrap;
+
+    &__heading {
+      margin-bottom: $gap-size--half;
+      font-weight: 600;
+    }
+
+    &__prop {
+      margin-left: $gap-size;
+      display: inline-block;
+      width: $label-width;
+      white-space: nowrap;
+
+      .animation-display__prop {
+        width: $label-width - $gap-size;
+      }
+    }
+  }
+}

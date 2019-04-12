@@ -29,6 +29,7 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
     private debounceInterval = 500;
     private lastKeyUp: number;
     private arrowKeyTimeoutId: any;
+    private isRepeatingKeyDown = false;
 
     static createMarginConfigInput(container: DomElementContainer, name: string, value: Margin, onKeyUp: ParameterListener<Margin>): ParameterInput {
         return new ParameterInput(
@@ -71,15 +72,13 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
 
     setupKeyboardListeners(onChange: ParameterListener<string>) {
         this.input.onKeyDown = (event: KeyboardEvent) => {
-            if (!this.arrowKeyTimeoutId) {
-                this.arrowKeyTimeoutId = setTimeout(
-                    () => this.repeatKeyDown(event, onChange),
-                    event.ctrlKey ? KEY_DOWN_REPEAT_INTERVAL : KEY_DOWN_DEBOUNCE_INTERVAL);
+            if (isArrowKeyPressed(event) && !this.isRepeatingKeyDown) {
+                this.startRepeatingKeyDown(event, onChange);
             }
         };
         this.input.onKeyUp = (event: KeyboardEvent) => {
-            if (this.arrowKeyTimeoutId) {
-                this.clearArrowKeyTimeout();
+            if (this.isRepeatingKeyDown) {
+                this.stopRepeatingKeyDown();
                 this.handleArrowKeys(event);
                 onChange(this.value);
             } else {
@@ -88,23 +87,38 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
         }
     }
 
-    clearArrowKeyTimeout() {
+    startRepeatingKeyDown(event: KeyboardEvent, onChange: ParameterListener<string>) {
+        this.isRepeatingKeyDown = true;
+        this.arrowKeyTimeoutId = setTimeout(
+            () => this.repeatKeyDown(event, onChange),
+            event.ctrlKey ? KEY_DOWN_REPEAT_INTERVAL : KEY_DOWN_DEBOUNCE_INTERVAL);
+    }
+
+    stopRepeatingKeyDown() {
+        this.isRepeatingKeyDown = false;
+        this.stopArrowKeyTimeout();
+    }
+
+    stopArrowKeyTimeout() {
         clearTimeout(this.arrowKeyTimeoutId);
         this.arrowKeyTimeoutId = null;
     }
 
     repeatKeyDown(event: KeyboardEvent, onKeyUp: ParameterListener<string>) {
-        this.clearArrowKeyTimeout();
         this.handleArrowKeys(event);
         onKeyUp(this.value);
-        this.arrowKeyTimeoutId = setTimeout(
-            () => this.repeatKeyDown(event, onKeyUp),
-            KEY_DOWN_REPEAT_INTERVAL
-        );
+
+        this.stopArrowKeyTimeout();
+        if (this.isRepeatingKeyDown) {
+            this.arrowKeyTimeoutId = setTimeout(
+                () => this.repeatKeyDown(event, onKeyUp),
+                KEY_DOWN_REPEAT_INTERVAL
+            );
+        }
     }
 
     handleArrowKeys(event: KeyboardEvent): void {
-        if (!this.value) {
+        if (!this.value || !isArrowKeyPressed(event)) {
             return;
         }
         const value = parseFloat(this.value);
@@ -124,8 +138,7 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
 
     getDebounced(onChange: ParameterListener<string>) {
         return (event: KeyboardEvent) => {
-            if (event.code !== "ArrowUp" && event.code !== "ArrowDown"
-            && event.code !== "ArrowLeft" && event.code !== "ArrowRight") {
+            if (!isArrowKeyPressed(event)) {
                 this.lastKeyUp = Date.now();
                 setTimeout(() => {
                     if (Date.now() >= this.lastKeyUp + this.debounceInterval) {
@@ -139,4 +152,9 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
     focus() {
         this.input.domElement.focus();
     }
+}
+
+function isArrowKeyPressed(event: KeyboardEvent) {
+    return event.code === "ArrowUp" || event.code === "ArrowDown"
+        || event.code === "ArrowLeft" || event.code === "ArrowRight"
 }

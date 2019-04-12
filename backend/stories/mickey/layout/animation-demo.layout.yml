@@ -9,11 +9,20 @@ pages:
       - panels:
           - - 1
             - { zoom: 1, pan: [] }
+          - - 1
+            - { zoom: -0.5, pan: [] }
       - panels:
           - - 2
-            - { zoom: 0, pan: [0.5, 0]}
+            - { zoom: 0, pan: [1, 0]}
           - - 2
-            - { zoom: 0, pan: [0, 0.5]}
+            - { zoom: 0, pan: [0, 1]}
       - panels:
           - - 1
-            - { zoom: 1, pan: [] }
+            - { zoom: 0, pan: [-0.5, -0.5] }
+          - - 1
+            - { zoom: 0, pan: [0, -0.5] }
+      - panels:
+          - - 1
+            - { zoom: 0.5, pan: [1, 0] }
+          - - 1
+            - { zoom: -0.5, pan: [0, 0.5] }

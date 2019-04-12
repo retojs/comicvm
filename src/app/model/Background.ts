@@ -28,18 +28,32 @@ export class Background {
 
     setupImage(images: Images) {
         this.image = this.chooseImage(images);
-        this.panels.forEach(panel => panel.backgroundImageShape = this.getImageShape(panel))
+        this.panels.forEach(panel => panel.backgroundImageShape = this.getPanelBackgroundImageShape(panel))
     }
 
     chooseImage(images: Images): Img {
         return images ? images.chooseBackgroundImage(new ImageQuery([this.id])) : null;
     }
 
-    getImageShape(panel: Panel): Rectangle {
+    getPanelBackgroundImageShape(panel: Panel): Rectangle {
         const charactersBBox = panel.getCharactersBackgroundBBox();
+        return this.getBackgroundImageShape(panel.background.image, charactersBBox);
+    }
+
+    getPanelBackgroundImageShapeStart(panel: Panel): Rectangle {
+        const charactersBBox = panel.getCharactersBackgroundBBoxStart();
+        return this.getBackgroundImageShape(panel.background.image, charactersBBox);
+    }
+
+    getPanelBackgroundImageShapeEnd(panel: Panel): Rectangle {
+        const charactersBBox = panel.getCharactersBackgroundBBoxEnd();
+        return this.getBackgroundImageShape(panel.background.image, charactersBBox);
+    }
+
+    getBackgroundImageShape(image: Img, charactersBBox: Rectangle) {
         const backgroundShape = this.getBackgroundShape(charactersBBox);
-        if (panel.background.image && panel.background.image.bitmapShape) {
-            return Rectangle.fitAroundBounds(panel.background.image.bitmapShape.clone(), backgroundShape);
+        if (image && image.bitmapShape) {
+            return Rectangle.fitAroundBounds(image.bitmapShape.clone(), backgroundShape);
         } else {
             return backgroundShape.clone();
         }
@@ -52,7 +66,12 @@ export class Background {
      * @param charactersBBox
      */
     getBackgroundShape(charactersBBox: Rectangle): Rectangle {
-        const panelsBBox = this.getPanelsBBox();
+        const start = this.scalePanelsBboxToCharactersBBox(charactersBBox, this.getPanelBBoxStart());
+        const end = this.scalePanelsBboxToCharactersBBox(charactersBBox, this.getPanelBBoxEnd());
+        return Rectangle.getBoundingBox([start, end]);
+    }
+
+    scalePanelsBboxToCharactersBBox(charactersBBox: Rectangle, panelsBBox: Rectangle) {
         return new Rectangle(
             charactersBBox.x + panelsBBox.x * charactersBBox.width,
             charactersBBox.y + panelsBBox.y * charactersBBox.width,
@@ -72,12 +91,9 @@ export class Background {
      * in all panels to calculate the minimal shape of the background image.
      *
      */
-    getPanelsBBox(): Rectangle {
+    getPanelsBBox(isStart: boolean, isEnd: boolean): Rectangle {
         return Rectangle.getBoundingBox(
             this.panels.map(panel => {
-
-                const animationTime = panel.animationTime;
-                panel.animationTime = 0;
 
                 // move all panels such that their character bounding boxes are at the coordinate system's origin (0,0)
                 // the bounding box of these panels is now the required size of the background image
@@ -85,15 +101,22 @@ export class Background {
                 //  - cover all panels completely
                 //  - stay at the same position relative to the characters
 
-                const charactersBBox = panel.getCharactersBackgroundBBox();
+                let charactersBBox: Rectangle;
+                if (isStart && isEnd) {
+                    charactersBBox = panel.getCharactersBackgroundBBoxStartToEnd();
+                } else if (isStart) {
+                    charactersBBox = panel.getCharactersBackgroundBBoxStart();
+                } else if (isEnd) {
+                    charactersBBox = panel.getCharactersBackgroundBBoxEnd();
+                } else {
+                    charactersBBox = panel.getCharactersBackgroundBBox();
+                }
 
                 // The shape of the frame is transformed into a coordinate system with
                 //     origin = charactersBBox.(x,y) and
                 //     unit = charactersBBox.width
                 // This makes sense since the character's position and size must be equal
                 // in all panels to calculate the minimal shape of the background image.
-
-                panel.animationTime = animationTime;
 
                 return new Rectangle(
                     (panel.shape.x - charactersBBox.x) / charactersBBox.width,
@@ -103,5 +126,17 @@ export class Background {
                 );
             })
         );
+    }
+
+    getPanelBBoxStartToEnd(): Rectangle {
+        return this.getPanelsBBox(true, true);
+    }
+
+    getPanelBBoxStart(): Rectangle {
+        return this.getPanelsBBox(true, false);
+    }
+
+    getPanelBBoxEnd(): Rectangle {
+        return this.getPanelsBBox(false, true);
     }
 }

@@ -5,8 +5,6 @@ import { Rectangle } from "../../../common/trigo/Rectangle";
 import { Point } from "../../../common/trigo/Point";
 import { ALL_CHARACTERS, CharacterLayoutProperties, CharacterPositionTransform } from "../LayoutProperties";
 
-const DEFAULT_ZOOM = 0.5 * (1.0 + Math.sqrt(5)) - 1; // golden ratio
-
 export class CharacterLayoutEngine {
 
     constructor() {}
@@ -56,7 +54,11 @@ export class CharacterLayoutEngine {
         // Character's positions can be configured for the whole scene or for a background
         // After these configurations have been applied, the bounding box of all acting characters is fit into each panel.
 
-        panel.characters.forEach(character => character.backgroundPosition = character.defaultPosition.clone());
+        panel.characters.forEach(character => {
+            character.backgroundPosition = character.defaultPosition.clone();
+            character.backgroundPositionStart = character.defaultPosition.clone();
+            character.backgroundPositionEnd = character.defaultPosition.clone();
+        });
 
         if (CharacterPositionLayoutLevel.DEFAULT === LayoutConfig.characterPositionLayoutLevel) { return; }
 
@@ -76,7 +78,7 @@ export class CharacterLayoutEngine {
 
         // define the area to fit the visible characters into
         const panelMargin = panel.characters[0].defaultPosition.size / 2;
-        const actorsArea = panel.shape.clone().shrink(panelMargin);
+        const actorsArea = panel.shape.clone().cutMarginOf(panelMargin);
 
         // fit visible characters into the defined area
         const bounds = Rectangle.getBoundingBox(visibleCharacters.map(character => character.backgroundPosition));
@@ -85,7 +87,9 @@ export class CharacterLayoutEngine {
         panel.characters.forEach(character => {
             character.backgroundPosition.translate(fitBounds.x - bounds.x, fitBounds.y - bounds.y);
             character.backgroundPosition.scale(fitBounds.width / bounds.width, fitBoundsPos);
-        })
+            character.backgroundPositionStart = character.backgroundPosition.clone();
+            character.backgroundPositionEnd = character.backgroundPosition.clone();
+        });
     }
 
     setCharacterPanelPositions(panel: Panel) {
@@ -142,29 +146,17 @@ export class CharacterLayoutEngine {
 
         if (!LayoutConfig.applyZoom) { return; }
 
-        let zoom = panel.zoom;
-        if (panel.layoutProperties.animation) {
-
-            // TODO set zoom
-            // animation.zoom = 1 means
-            //  - at duration = 0 zoom is zoom - 0.5 * DEFAULT_ZOOM
-            //  - at duration = 1 zoom is zoom + 0.5 * DEFAULT_ZOOM
-            // --> zoom factor increase is linear, just add delta to zoom
-
-            zoom += panel.animationTime - 0.5 * panel.layoutProperties.animation.zoom * DEFAULT_ZOOM;
-
-            // TODO transition function (ease in / out etc.)
-        }
-
         panel.characters.forEach(ch => {
             if (ch.defaultPosition) {
-                ch.defaultPosition.scale(zoom, panel.shape.center);
+                ch.defaultPosition.scale(panel.staticZoom, panel.shape.center);
             }
             if (ch.backgroundPosition) {
-                ch.backgroundPosition.scale(zoom, panel.shape.center);
+                ch.backgroundPositionStart.scale(panel.zoomStart, panel.shape.center);
+                ch.backgroundPositionEnd.scale(panel.zoomEnd, panel.shape.center);
+                ch.backgroundPosition.scale(panel.zoom, panel.shape.center);
             }
             if (ch.panelPosition) {
-                ch.panelPosition.scale(zoom, panel.shape.center);
+                ch.panelPosition.scale(panel.zoom, panel.shape.center);
             }
         })
     }
@@ -173,30 +165,22 @@ export class CharacterLayoutEngine {
 
         if (!LayoutConfig.applyPanning) { return; }
 
-        let panning = panel.panning;
-        if (panel.layoutProperties.animation) {
-
-            // TODO set panning
-            // animation.pan = [1, 0] means
-            //  - at duration 0 pan is pan - 0.5
-            //  - at duration 1 pan is pan + 0.5
-            panning[0] += panel.animationTime - 0.5 * panel.layoutProperties.animation.pan[0];
-            panning[1] += panel.animationTime - 0.5 * panel.layoutProperties.animation.pan[1];
-
-            // TODO transition function (ease in / out etc.)
-        }
-
         const characterSize = panel.characters[0].defaultPosition.size;
+        const panning = panel.panning.map(comp => comp * characterSize);
+        const panningStart = panel.panningStart.map(comp => comp * characterSize);
+        const panningEnd = panel.panningEnd.map(comp => comp * characterSize);
 
         panel.characters.forEach(ch => {
             if (ch.defaultPosition) {
-                ch.defaultPosition.translate(panning[0] * characterSize, panning[1] * characterSize);
+                ch.defaultPosition.translate(...panning);
             }
             if (ch.backgroundPosition) {
-                ch.backgroundPosition.translate(panning[0] * characterSize, panning[1] * characterSize);
+                ch.backgroundPositionStart.translate(...panningStart);
+                ch.backgroundPositionEnd.translate(...panningEnd);
+                ch.backgroundPosition.translate(...panning);
             }
             if (ch.panelPosition) {
-                ch.panelPosition.translate(panning[0] * characterSize, panning[1] * characterSize);
+                ch.panelPosition.translate(...panning);
             }
         })
     }

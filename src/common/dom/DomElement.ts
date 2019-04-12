@@ -44,7 +44,10 @@ export abstract class DomElement<T extends HTMLElement> {
     }
 
     clearContent() {
-        this.domElement.innerHTML = '';
+        while (this.domElement.firstChild) {
+            this.domElement.removeChild(this.domElement.firstChild);
+        }
+        // slower: this.domElement.innerHTML = '';
     }
 
     set class(styleClass: string) {
@@ -59,12 +62,12 @@ export abstract class DomElement<T extends HTMLElement> {
         this.domElement.classList.remove(styleClass);
     }
 
-    get clientOffset(): [number, number]{
+    get clientOffset(): [number, number] {
         const clientRect = this.domElement.getBoundingClientRect();
         return [clientRect.left, clientRect.top];
     }
 
-    get clientOffsetInv(): [number, number]{
+    get clientOffsetInv(): [number, number] {
         const clientRect = this.domElement.getBoundingClientRect();
         return [-clientRect.left, -clientRect.top];
     }
@@ -81,7 +84,7 @@ export abstract class DomElement<T extends HTMLElement> {
     }
 
     get shape(): Rectangle {
-        return Rectangle.fromDimensions( this.dimensions).translate(...this.parentOffset);
+        return Rectangle.fromDimensions(this.dimensions).translate(...this.parentOffset);
     }
 
     set shape(shape: Rectangle) {

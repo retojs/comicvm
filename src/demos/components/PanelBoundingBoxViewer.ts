@@ -13,7 +13,12 @@ const enum Mode {
 }
 
 const PANEL_BORDER_STYLE = PaintStyleConfig.stroke("white", 1);
-const PANEL_BBOX_STYLE = PaintStyleConfig.fillAndStroke("rgba(250, 0, 250, 0.3)", "magenta", 2);
+const PANEL_BBOX_BGR_STYLE = PaintStyleConfig.fill("rgba(250, 0, 250, 0.25)");
+const PANEL_BBOX_BORDER_STYLE = PaintStyleConfig.stroke("magenta", 2);
+
+const PANEL_START_SHAPE_STYLE = PaintStyleConfig.stroke("white", 2.5);
+const PANEL_END_SHAPE_STYLE = PaintStyleConfig.stroke("white", 2.5);
+const PANEL_START_END_SHAPE_CONNECTIONS_STYLE = PaintStyleConfig.stroke("white", 1);
 
 export class PanelBoundingBoxViewer extends Div {
 
@@ -70,8 +75,10 @@ export class PanelBoundingBoxViewer extends Div {
             this.drawBackgroundImage();
             this.paintPanels();
             this.paintPanelBorders();
+            this.paintCharacterBBoxBackground();
             this.paintSelectedPanel();
-            this.paintCharacterBBox();
+            this.paintCharacterBBoxBorder();
+            this.paintPanelStartAndEndShapes(this.panel);
         }
     }
 
@@ -116,6 +123,32 @@ export class PanelBoundingBoxViewer extends Div {
         );
     }
 
+    paintPanelStartAndEndShapes(panel: Panel) {
+        this.canvas.ctx.globalAlpha = 1;
+        this.canvas.resetTransform();
+
+        const backgroundImageStartShape = panel.backgroundImageStartShape;
+        const startShapeTransform = backgroundImageStartShape.getShapeTransformTo(this.paintArea);
+        const panelStartShape = panel.shape.clone().transformAsPartOf(backgroundImageStartShape, startShapeTransform);
+        this.canvas.rect(
+            panelStartShape,
+            PANEL_START_SHAPE_STYLE
+        );
+
+        const backgroundImageEndShape = panel.backgroundImageEndShape;
+        const endShapeTransform = backgroundImageEndShape.getShapeTransformTo(this.paintArea);
+        const panelEndShape = panel.shape.clone().transformAsPartOf(backgroundImageEndShape, endShapeTransform);
+        this.canvas.rect(
+            panelEndShape,
+            PANEL_END_SHAPE_STYLE
+        );
+
+        this.canvas.lineFromTo(panelStartShape.topLeft, panelEndShape.topLeft, PANEL_START_END_SHAPE_CONNECTIONS_STYLE);
+        this.canvas.lineFromTo(panelStartShape.topRight, panelEndShape.topRight, PANEL_START_END_SHAPE_CONNECTIONS_STYLE);
+        this.canvas.lineFromTo(panelStartShape.bottomLeft, panelEndShape.bottomLeft, PANEL_START_END_SHAPE_CONNECTIONS_STYLE);
+        this.canvas.lineFromTo(panelStartShape.bottomRight, panelEndShape.bottomRight, PANEL_START_END_SHAPE_CONNECTIONS_STYLE);
+    }
+
     paintSelectedPanel() {
         this.canvas.ctx.globalAlpha = 1;
 
@@ -126,14 +159,27 @@ export class PanelBoundingBoxViewer extends Div {
         this.paintPanelBorderUnscaled(this.panel);
     }
 
-    paintCharacterBBox() {
+    paintCharacterBBoxBackground() {
+        this.paintCharacterBBox(charactersBBox => this.canvas.rect(charactersBBox, PANEL_BBOX_BGR_STYLE))
+    }
+
+    paintCharacterBBoxBorder() {
+        this.paintCharacterBBox(charactersBBox => this.canvas.rect(charactersBBox, PANEL_BBOX_BORDER_STYLE))
+    }
+
+    paintCharacterBBox(paintFn: (charactersBBox: Rectangle) => void) {
+        if (paintFn == null || typeof paintFn !== 'function') {
+            return;
+        }
         this.canvas.ctx.globalAlpha = 0.8;
         this.canvas.resetTransform();
 
         const shapeTransform = this.panel.backgroundImageShape.getShapeTransformTo(this.paintArea);
-        const characterBBox = this.panel.getCharactersBackgroundBBox().transformAsPartOf(this.panel.backgroundImageShape, shapeTransform);
-        this.canvas.rect(characterBBox, PANEL_BBOX_STYLE);
-        // this.canvas.rect(this.panel.backgroundImageShape.clone().transform(shapeTransform), PaintStyleConfig.stroke("lime", 5));
+        const charactersBBox = this.panel.getCharactersBackgroundBBox().transformAsPartOf(this.panel.backgroundImageShape, shapeTransform);
+        paintFn(charactersBBox);
+
+        // paint background image shape
+        // this.canvas.rect(this.panel.backgroundImageShape.clone().transform(shapeTransform), PaintStyleConfig.stroke("lime", 3));
     }
 }
 

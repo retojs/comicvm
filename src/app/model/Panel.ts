@@ -54,6 +54,14 @@ export class Panel {
         return Math.min(1.0, Math.max(0.0, this._animationTime || 0.0));
     }
 
+    get backgroundImageStartShape(): Rectangle {
+        return this.background.getPanelBackgroundImageShapeStart(this);
+    }
+
+    get backgroundImageEndShape(): Rectangle {
+        return this.background.getPanelBackgroundImageShapeEnd(this);
+    }
+
     constructor(stripIndex: number, sceneIndex: number) {
         this.stripIndex = stripIndex;
         this.sceneIndex = sceneIndex
@@ -191,14 +199,30 @@ export class Panel {
     }
 
     /**
-     * Returns the bounding box of all characters' background positions.
+     * Returns the bounding box of all characters' background positions
+     * at the current animation time.
      */
-    getCharactersBackgroundBBox() {
-        const animationTime = this.animationTime;
-        //  this.animationTime = 0;
-        const bbox = Rectangle.getBoundingBox(this.characters.map(c => c.backgroundPosition));
-        this.animationTime = animationTime;
-        return bbox;
+    getCharactersBackgroundBBox(): Rectangle {
+        return Rectangle.getBoundingBox(this.characters.map(c => c.backgroundPosition));
+    }
+
+    getCharactersBackgroundBBoxStart(): Rectangle {
+        return Rectangle.getBoundingBox(this.characters.map(c => c.backgroundPositionStart));
+    }
+
+    getCharactersBackgroundBBoxEnd(): Rectangle {
+        return Rectangle.getBoundingBox(this.characters.map(c => c.backgroundPositionEnd));
+    }
+
+    /**
+     * Returns the bounding box of all characters' background positions
+     * from start to end of the animation.
+     */
+    getCharactersBackgroundBBoxStartToEnd(): Rectangle {
+        return Rectangle.getBoundingBox([
+            this.getCharactersBackgroundBBoxStart(),
+            this.getCharactersBackgroundBBoxEnd()
+        ]);
     }
 
     /**
@@ -207,7 +231,7 @@ export class Panel {
      * Returns the answer to the question: At what index is the first actor in this panel's characters array?
      * It matters for positioning the characters in the panel you know...
      */
-    get firstActorIndex() {
+    get firstActorIndex(): number {
         if (!this.actors) { return -1;}
 
         return this.actors.reduce((mostLeftIndex, character) => {
@@ -223,7 +247,7 @@ export class Panel {
         this.actorsByName = {};
     }
 
-    setupCharacterImages(images: Images) {
+    setupCharacterImages(images: Images): void {
         this.characterGroups.forEach((group: string | string[]) => {
             if (typeof group === 'string') {
                 const character: Character = this.getCharacter(group);
@@ -235,7 +259,7 @@ export class Panel {
         });
     }
 
-    setupCharacterGroupImage(group: string[], images: Images) {
+    setupCharacterGroupImage(group: string[], images: Images): void {
         const image: Img = this.chooseCharacterGroupImage(group, images);
         const characterBBox = Rectangle.getBoundingBox(group.map(name => this.getCharacter(name).getPosition()));
         group.forEach(name => {
@@ -255,7 +279,18 @@ export class Panel {
     }
 
     get zoom(): number {
+        return this.animateZoom(this.animationTime, this.staticZoom);
+    }
 
+    get zoomStart(): number {
+        return this.animateZoom(0, this.staticZoom);
+    }
+
+    get zoomEnd(): number {
+        return this.animateZoom(1, this.staticZoom);
+    }
+
+    get staticZoom(): number {
         let zoom = 1.0;
 
         if (CharacterPositionLayoutLevel.DEFAULT < LayoutConfig.characterPositionLayoutLevel
@@ -270,10 +305,37 @@ export class Panel {
             && this.layoutProperties) {
             zoom *= this.layoutProperties.zoom || 1;
         }
+
         return zoom;
     }
 
-    get panning(): number[] {
+    animateZoom(time: number, zoom: number): number {
+        if (this.layoutProperties.animation) {
+            const animZoom = this.layoutProperties.animation.zoom;
+
+            // animated zoom requirement:
+            // if (layoutProperties.animation.zoom = 0) then zoom = zoom during the whole animation
+
+            zoom *= Math.max(0, 1 + time * animZoom - animZoom / 2);
+
+            // TODO transition function (ease in / out etc.)
+        }
+        return zoom;
+    }
+
+    get panning(): [number, number] {
+        return this.animatePanning(this.animationTime, ...this.staticPanning);
+    }
+
+    get panningStart(): [number, number] {
+        return this.animatePanning(0, ...this.staticPanning);
+    }
+
+    get panningEnd(): [number, number] {
+        return this.animatePanning(1, ...this.staticPanning);
+    }
+
+    get staticPanning(): [number, number] {
 
         let panning = {x: 0, y: 0};
 
@@ -299,11 +361,27 @@ export class Panel {
         }
     }
 
+    animatePanning(time: number, x: number, y: number): [number, number] {
+        if (this.layoutProperties.animation) {
+
+            // animation.pan = [1, 0] means
+            //  - at duration 0 pan.x := pan.x - 0.5
+            //  - at duration 1 pan.x := pan.x + 0.5
+            //  - pan.y := pan.y at any time
+
+            x += (time - 0.5) * this.layoutProperties.animation.pan[0] || 0;
+            y += (time - 0.5) * this.layoutProperties.animation.pan[1] || 0;
+
+            // TODO transition function (ease in / out etc.)
+        }
+        return [x, y];
+    }
+
     get qualifiedIndex(): string {
-        return `page-${this.page.index}-strip-${this.strip.index}-panel-${this.stripIndex}`;
+        return `page-${this.page.index + 1}-strip-${this.strip.index + 1}-panel-${this.stripIndex + 1}`;
     }
 
     toString(): string {
-        return `panel ${this.stripIndex} in ${this.strip.toString()}`;
+        return `panel ${this.stripIndex + 1} in ${this.strip.toString()}`;
     }
 }

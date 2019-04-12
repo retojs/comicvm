@@ -39,6 +39,11 @@ export class ComicVM {
         return this.story.scenes.find(scene => scene.name === name);
     }
 
+    setCurrentScene(name: string): Scene {
+        this.currentScene = this.getScene(name);
+        return this.currentScene;
+    }
+
     setupScene(scene: Scene | string, container: DomElementContainer | Canvas): Scene {
         if (typeof scene === 'string') {
             this.currentScene = this.getScene(scene as string);
@@ -52,6 +57,10 @@ export class ComicVM {
         }
         this.currentScene.setup(this.canvas, this.images);
         return this.currentScene;
+    }
+
+    paintCurrentScene(container: DomElementContainer | Canvas) {
+        this.paintScene(this.currentScene, container);
     }
 
     paintScene(scene: Scene, container: DomElementContainer | Canvas): void {
