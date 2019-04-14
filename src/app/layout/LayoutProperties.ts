@@ -11,6 +11,7 @@
 
 import { Qualifier } from "../model/Qualifier";
 import { Transform } from "../../common/trigo/Transform";
+import { Background } from "../model/Background";
 
 export enum PanelLayoutPropertyName {
     PlotItemCount = "plotItemCount",
@@ -48,6 +49,7 @@ export class CharacterLayoutProperties {
 }
 
 export interface SceneLayoutProperties {
+    backgroundId: string;
     zoom?: number;
     pan: number[];
     characters: (string | string[])[];
@@ -56,6 +58,7 @@ export interface SceneLayoutProperties {
 
 export function createSceneLayout(config?: Partial<SceneLayoutProperties>): SceneLayoutProperties {
     return {
+        backgroundId: Background.defaultId,
         zoom: 1,
         pan: [0, 0],
         characters: undefined,

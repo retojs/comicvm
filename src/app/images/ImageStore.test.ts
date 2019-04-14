@@ -20,7 +20,9 @@ describe("ImageStore", () => {
         "b.c.d",
         "a.b.c.d",
         "q.r.s.t.u.v",
-        "u.v.w.x.y.z"
+        "u.v.w.x.y.z",
+        "background.png",
+        "background_distance=2.5.png",
     ];
 
     let imageStore: ImageStore;
@@ -74,6 +76,11 @@ describe("ImageStore", () => {
             const defaultQ = new ImageQuery(["q"], null, ["a", "b", "c", "d"]);
             expect(imageStore.getBestMatchImageName(secondaryABCD)).toBe("a.b.c.d");
             expect(imageStore.getBestMatchImageName(defaultQ)).toBe("q.r.s.t.u.v");
+        });
+
+        it("prefers the shorter image name of two equal matches", () => {
+            const bgrQuery = new ImageQuery(["background"]);
+            expect(imageStore.getBestMatchImageName(bgrQuery)).toBe("background.png");
         });
     });
 });

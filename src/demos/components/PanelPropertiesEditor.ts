@@ -22,14 +22,17 @@ export class PanelPropertiesEditor {
     animationPanX: ParameterInput;
     animationPanY: ParameterInput;
 
-    animationTimeContainer: Div;
+    animationTimeValues: Div;
     animationTime: ParameterInput;
+    currentZoom: ParameterInput;
+    currentPanX: ParameterInput;
+    currentPanY: ParameterInput;
 
     constructor(container, onChange: ParameterListener<any>) {
         this.root = new Div(container, "panel-properties-editor");
         this.layoutProps = new Div(this.root, "property-section");
         this.animationProps = new Div(this.root, "property-section");
-        this.animationTimeContainer = new Div(this.root, "property-section");
+        this.animationTimeValues = new Div(this.root, "property-section");
         this.changeListener = onChange;
     }
 
@@ -100,16 +103,35 @@ export class PanelPropertiesEditor {
     }
 
     createAnimationTimeInput() {
-        this.animationTimeContainer.clearContent();
-        this.animationTimeContainer.addContent(new Heading(null, 4, "Animation Time"));
+        this.animationTimeValues.clearContent();
+        this.animationTimeValues.addContent(new Heading(null, 4, "Animation Time Values"));
 
-        this.animationTime = this.createNumberInput(this.animationTimeContainer, "time", this.panel.animationTime,
+        this.animationTime = this.createAnimationTimeValueInput("time", this.panel.animationTime,
             value => {
                 const constrainedValue = Math.min(1, Math.max(0, value));
                 this.panel.animationTime = constrainedValue;
                 this.animationTime.value = constrainedValue.toFixed(2);
+                this.currentZoom.value = this.panel.zoom.toFixed(2);
+                this.currentPanX.value = this.panel.panning[0].toFixed(2);
+                this.currentPanY.value = this.panel.panning[1].toFixed(2);
             }
         );
+        this.animationTime.class = "margin-right";
+
+        this.currentZoom = this.createAnimationTimeValueReadOnlyInput("zoom", this.panel.zoom);
+        this.currentPanX = this.createAnimationTimeValueReadOnlyInput("pan.x", this.panel.panning[0]);
+        this.currentPanY = this.createAnimationTimeValueReadOnlyInput("pan.y", this.panel.panning[1]);
+    }
+
+
+    createAnimationTimeValueInput(name: string, value: number, onChange: ParameterListener<number>): ParameterInput {
+        return this.createNumberInput(this.animationTimeValues, name, value, onChange);
+    }
+
+    createAnimationTimeValueReadOnlyInput(name: string, value: number): ParameterInput {
+        const input = this.createNumberInput(this.animationTimeValues, name, value, () => {});
+        input.input.domElement.readOnly = true;
+        return input;
     }
 
     /**

@@ -93,8 +93,13 @@ module.exports.setupEndpoints = function (app, rootDir) {
                                 if (!--pending) cb(result);
                             }
 
-                        } else if (stat && stat.isFile() && file !== 'Thumbs.db') {
-                            result.push(`${urlPrefix}${subPath}/${file}`);
+                        } else if (stat && stat.isFile()) {
+                            if (file !== 'Thumbs.db'
+                                && (file.indexOf(".png") > 0
+                                    || file.indexOf(".jpg") > 0
+                                    || file.indexOf(".txt") > 0)) {
+                                result.push(`${urlPrefix}${subPath}/${file}`);
+                            }
                             if (!--pending) cb(result);
                         }
                     });

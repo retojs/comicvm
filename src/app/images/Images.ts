@@ -7,6 +7,12 @@ import { Rectangle } from "../../common/trigo/Rectangle";
 import { Square } from "../../common/trigo/Square";
 
 export const SIZE_STRING_REG_EXP = /_x=-?\d*y=-?\d*size=\d*/;
+export const BACKGROUND_DISTANCE_REG_EXP = /_distance=(\d*(.\d*)?)/;
+
+export interface DistantImage {
+    image: Img;
+    distance: number;
+}
 
 export class Images {
 
@@ -69,6 +75,14 @@ export class Images {
         }
     }
 
+    static getDistance(name: string): number {
+        const matches = name.match(BACKGROUND_DISTANCE_REG_EXP);
+        if (matches && matches[1]) {
+            return parseFloat(matches[1]);
+        }
+        return 1;
+    }
+
     constructor(story: string) {
         this.story = story;
         this._backend = new Endpoints();
@@ -124,6 +138,19 @@ export class Images {
 
     getImage(name: string): Img {
         return this.imagesByName[name];
+    }
+
+    getDistantBackgroundImages(image: Img): DistantImage[] {
+        let backgroundImageName = Images.getName(image.src);
+        backgroundImageName = backgroundImageName.substring(0, backgroundImageName.lastIndexOf("."));
+
+        return this.imageNames
+            .filter(name => BACKGROUND_DISTANCE_REG_EXP.test(name) || name.indexOf(backgroundImageName) >= 0)
+            .filter(name => name.indexOf(backgroundImageName) >= 0)
+            .map(name => ({
+                image: this.getImage(name),
+                distance: Images.getDistance(name)
+            }));
     }
 
     /**

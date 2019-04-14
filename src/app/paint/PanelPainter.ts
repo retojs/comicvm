@@ -6,6 +6,7 @@ import { Point } from "../../common/trigo/Point";
 import { PaintConfig } from "./Paint.config";
 import { BubblePainter } from "./BubblePainter";
 import { Character } from "../model/Character";
+import { DistantImage } from "../images/Images";
 
 interface CharacterPaintOptions {
     paintImage?: boolean,
@@ -119,7 +120,20 @@ export class PanelPainter {
 
     paintBackground(panel: Panel) {
         if (panel.background.image) {
-            this.canvas.drawImage(panel.background.image, panel.backgroundImageShape);
+            if (panel.background.distantImages && panel.background.distantImages.length) {
+                panel.background.distantImages.sort((a: DistantImage, b: DistantImage) => b.distance - a.distance);
+                panel.background.distantImages.forEach((img: DistantImage) => {
+                    const characterSize = panel.characters[0].defaultPosition.size;
+                    const distantBackgroundImageShape = Rectangle.fitAroundBounds(img.image.bitmapShape.clone(), panel.backgroundImageShape)
+                        .translateInvert(
+                            (1 - 1 / img.distance) * panel.panning[0] * characterSize,
+                            (1 - 1 / img.distance) * panel.panning[1] * characterSize
+                        );
+                    this.canvas.drawImage(img.image, distantBackgroundImageShape);
+                })
+            } else {
+                this.canvas.drawImage(panel.background.image, panel.backgroundImageShape);
+            }
         } else if (panel.backgroundImageShape) {
             this.paintBackgroundImagePlaceholder(panel);
         }

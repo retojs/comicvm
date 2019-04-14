@@ -24,6 +24,8 @@ export type BackgroundLayout = {
     pan?: number[];
 }
 
+export type SceneLayout = BackgroundLayout & {backgroundId: string};
+
 export type CharacterLayout = {
     how?: string[];
     pos?: Square;
@@ -33,5 +35,5 @@ export type Layout = {
     panelProperties: PanelLayoutPropertyName[];
     pages: PageLayout[];
     backgrounds?: { [backgroundId: string]: BackgroundLayout };
-    scene?: BackgroundLayout;
+    scene?: SceneLayout;
 }

@@ -89,10 +89,13 @@ export class PanelBoundingBoxViewer extends Div {
     drawBackgroundImage() {
         this.canvas.ctx.globalAlpha = 0.3;
         this.canvas.resetTransform();
+        this.canvas.transformTo(this.panel.backgroundImageShape, this.paintArea);
 
-        this.canvas.drawImage(this.panel.background.image, this.paintArea);
-        // this.canvas.rect(this.paintArea, PaintStyleConfig.stroke("lime", 5));
-    }
+        const t = this.panel.animationTime;
+        this.panel.animationTime = 0.5;
+        this.panelPainter.paintBackground(this.panel);
+        this.panel.animationTime = t;
+     }
 
     paintPanels() {
         this.canvas.ctx.globalAlpha = 0.3;

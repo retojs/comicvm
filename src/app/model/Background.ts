@@ -1,7 +1,7 @@
 import { Scene } from "./Scene";
 import { Panel } from "./Panel";
 import { BackgroundLayoutProperties } from "../layout/LayoutProperties";
-import { Images } from "../images/Images";
+import { DistantImage, Images } from "../images/Images";
 import { Img } from "../../common/dom/Img";
 import { ImageQuery } from "../images/ImageQuery";
 import { Rectangle } from "../../common/trigo/Rectangle";
@@ -16,6 +16,7 @@ export class Background {
     panels: Panel[] = [];
     layoutProperties: BackgroundLayoutProperties;
     image: Img;
+    distantImages: DistantImage[];
 
     constructor(id: string) {
         this.id = id;
@@ -28,7 +29,8 @@ export class Background {
 
     setupImage(images: Images) {
         this.image = this.chooseImage(images);
-        this.panels.forEach(panel => panel.backgroundImageShape = this.getPanelBackgroundImageShape(panel))
+        this.distantImages = images.getDistantBackgroundImages(this.image);
+        this.panels.forEach(panel => panel.backgroundImageShape = this.getPanelBackgroundImageShape(panel));
     }
 
     chooseImage(images: Images): Img {

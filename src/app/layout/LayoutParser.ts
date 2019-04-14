@@ -37,6 +37,7 @@ export class LayoutParser {
 
         if (sceneLayout.scene) {
             scene.layoutProperties = createSceneLayout({
+                backgroundId: sceneLayout.scene.backgroundId,
                 zoom: sceneLayout.scene.zoom,
                 pan: sceneLayout.scene.pan,
                 characters: sceneLayout.scene.characters
@@ -59,8 +60,9 @@ export class LayoutParser {
 
         // connect panels with their background
         scene.panels.forEach(panel => {
+            const defaultBackground = scene.layoutProperties.backgroundId;
             if (!panel.layoutProperties.backgroundId) {
-                panel.layoutProperties.backgroundId = Background.defaultId;
+                panel.layoutProperties.backgroundId = defaultBackground;
             }
             let background: Background = scene.backgrounds.find(bgr => bgr.id === panel.layoutProperties.backgroundId);
             if (!background) {

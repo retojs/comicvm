@@ -4,7 +4,7 @@ import { FadeInTransition } from "./transitions/FadeInTransition";
 import { PanelTimelineProperties } from "./PanelTimelineProperties";
 import { FadeOutTransition } from "./transitions/FadeOutTransition";
 
-const PANEL_BASIC_DURATION = 1000;
+const PANEL_BASIC_DURATION = 3000;
 const LETTER_DURATION = 10;
 const TRANSITION_DURATION = 500;
 
