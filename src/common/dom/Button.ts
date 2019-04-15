@@ -4,12 +4,13 @@ export class Button extends DomElement<HTMLButtonElement> {
 
     domElement: HTMLButtonElement;
 
-    constructor(container: DomElementContainer, label: string, onClick?: EventListener) {
+    constructor(container: DomElementContainer, label: string, onClick?: EventListener, styleClass?: string) {
         super(container);
 
         this.add(this.createButton(label));
 
         this.onClick = onClick;
+        this.class = styleClass;
     }
 
     createButton(label: string): HTMLButtonElement {

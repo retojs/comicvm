@@ -27,7 +27,7 @@ export class BackgroundImageSizeDemo implements Demo {
     panelPropertiesEditor: PanelPropertiesEditor;
 
     comicWidth = 360;
-    panelBBoxViewerWidth = 700;
+    panelBBoxViewerWidth = 840;
 
     create(container: DomElementContainer) {
 
@@ -53,7 +53,7 @@ export class BackgroundImageSizeDemo implements Demo {
                 this.panelPropertiesEditor = new PanelPropertiesEditor(this.panelBBoxViewer,
                     () => {
                         this.repaintPanelSelection();
-                        this.panelBBoxViewer.repaint();
+                        this.panelBBoxViewer.paint();
                     }
                 );
 
@@ -64,7 +64,7 @@ export class BackgroundImageSizeDemo implements Demo {
             .catch(showError);
 
         function showError(error) {
-            new Div(container, "error", error);
+            new Div(container, "error", error ? error.message || "" : "");
             throw(error);
         }
     }
@@ -107,7 +107,8 @@ export class BackgroundImageSizeDemo implements Demo {
         if (panel) {
             this.selectedPanel = panel;
             this.panelPropertiesEditor.setPanel(this.selectedPanel);
-            this.panelBBoxViewer.paint(this.selectedPanel);
+            this.panelBBoxViewer.setPanel(this.selectedPanel);
+            this.panelBBoxViewer.paint();
             this.repaintPanelSelection();
         }
     }

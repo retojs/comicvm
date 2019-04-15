@@ -49,10 +49,22 @@ export class Line {
         };
     }
 
+    get width(): number {
+        return Math.max(this.from.x, this.to.x) - Math.min(this.from.x, this.to.x);
+    }
+
+    get height(): number {
+        return Math.max(this.from.y, this.to.y) - Math.min(this.from.y, this.to.y);
+    }
+
     translate(dx?: number, dy?: number): Line {
         this.from.translate(dx, dy);
         this.to.translate(dx, dy);
         return this;
+    }
+
+    clone(): Line {
+        return new Line(this.from.clone(), this.to.clone());
     }
 
     intersection(line: Line): Point {

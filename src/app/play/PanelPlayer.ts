@@ -3,18 +3,19 @@ import { Panel } from "../model/Panel";
 import { Scene } from "../model/Scene";
 import { Images } from "../images/Images";
 import { Player } from "./Player";
-import { getPanelDuration, getPlayingPanels, setPanelAnimationTime } from "./Timeline";
+import { isPlayingPanel, setPanelAnimationTime, Timeline } from "./Timeline";
 import { ComicVM } from "../ComicVM";
-import { PanelTimelineProperties } from "./PanelTimelineProperties";
 import { LayoutEngine } from "../layout/engine/LayoutEngine";
+import { PaintStyleConfig } from "../../common/style/PaintStyle";
 
-const LETTER_DURATION = 50;
+const MUTED_PANEL_STYLE = PaintStyleConfig.fill("rgba(250, 250, 250, 0.25)");
 
 export class PanelPlayer extends Player {
 
     private comicVM: ComicVM;
     private layoutEngine: LayoutEngine;
     private panelPainter: PanelPainter;
+    private animationDuration: number;
 
     constructor(comicVM: ComicVM) {
         super();
@@ -40,21 +41,22 @@ export class PanelPlayer extends Player {
     }
 
     setPanelTimelineProperties(panels: Panel[]) {
-        panels.forEach(panel => panel.timelineProperties = new PanelTimelineProperties(0, getPanelDuration(panel, LETTER_DURATION)));
+        this.animationDuration = Timeline.applyPanelTimelineProperties(panels);
     }
 
     paintPanels(time: number) {
-        const panels = getPlayingPanels(this.panels, time);
-        if (time > 0 && panels.length === 0) {
-            this.isPlaying = false;
-            console.log("stopped because no playing panels")
-        } else {
-            panels.forEach(panel => {
-                    this.layoutPanel(panel, time);
-                    this.panelPainter.paintPanel(panel);
-                }
-            )
+        if (time > this.animationDuration) {
+            this.resetPlayer();
+
+            console.log("PanelPlayer stopped at the end of the animation at " + (this.animationDuration / 1000).toFixed(2) + " s");
         }
+        this.panels.forEach(panel => {
+            this.layoutPanel(panel, time);
+            this.panelPainter.paintPanel(panel);
+            if (!isPlayingPanel(panel, time)) {
+                this.comicVM.canvas.rect(panel.shape, MUTED_PANEL_STYLE);
+            }
+        })
     }
 
     layoutPanel(panel: Panel, time: number) {

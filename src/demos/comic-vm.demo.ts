@@ -1,9 +1,8 @@
 import { ComicVM } from "../app/ComicVM";
 import * as layoutConfigButtons from "./components/LayoutConfigButtons";
-import { Demo, DEMO_DEFAULT_WIDTH } from "./Demo";
+import { Demo } from "./Demo";
 import { DomElementContainer } from "../common/dom/DomElement";
 import { Div } from "../common/dom/Div";
-import { PanelBoundingBoxViewer } from "./components/PanelBoundingBoxViewer";
 import { Scene } from "../app/model/Scene";
 import { CoordinatesDisplay } from "./components/CoordinatesDisplay";
 
@@ -20,21 +19,10 @@ export class ComicVmDemo implements Demo {
             .then(comicVM => {
                 console.log("comicVM created:", comicVM);
 
-                //this.scene = comicVM.getScene("background-demo");
                 this.scene = comicVM.getScene("animation-demo");
                 comicVM.paintScene(this.scene, container);
 
                 layoutConfigButtons.create(container, () => comicVM.repaintScene(true));
-
-                const panelBBox = new PanelBoundingBoxViewer(container, DEMO_DEFAULT_WIDTH, 500);
-
-                comicVM.canvas.onClick = (event: MouseEvent) => {
-                    const mousePos = comicVM.canvas.getCanvasPositionFromMousePosition(event.clientX, event.clientY);
-                    const panel = this.scene.getPanelAtPosition(mousePos);
-                    if (panel) {
-                        panelBBox.paint(panel);
-                    }
-                };
 
                 new CoordinatesDisplay(window.document.body);
 
@@ -42,7 +30,7 @@ export class ComicVmDemo implements Demo {
             .catch(showError);
 
         function showError(error) {
-            new Div(container, "error", error);
+            new Div(container, "error", error ? error.message || "" : "");
             throw(error);
         }
     }

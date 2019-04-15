@@ -5,6 +5,7 @@ import { DomElementContainer } from "../common/dom/DomElement";
 import { ComicVmCanvas } from "./paint/ComicVmCanvas";
 import { Canvas } from "../common/dom/Canvas";
 import { Images } from "./images/Images";
+import { PaintConfig } from "./paint/Paint.config";
 
 // TODO
 // - generate documentation with jsdoc
@@ -55,6 +56,7 @@ export class ComicVM {
         } else {
             this.canvas = new ComicVmCanvas(container);
         }
+        this.canvas.setFont(PaintConfig.canvas.font);
         this.currentScene.setup(this.canvas, this.images);
         return this.currentScene;
     }

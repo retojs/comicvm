@@ -1,7 +1,7 @@
 export type RenderFrameFn = (currentTime: number) => void;
 export type OnSpacePressedFn = (event: KeyboardEvent) => void;
 
-export class Player {
+export class  Player {
 
     isPlaying = false;
     startTime: number;
@@ -20,7 +20,7 @@ export class Player {
         return Date.now() - this.startTime;
     }
 
-    reset() {
+    resetPlayer() {
         this.isPlaying = false;
         this.startTime = null;
         this.pauseTime = 0;

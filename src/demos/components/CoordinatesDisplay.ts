@@ -36,14 +36,15 @@ export class CoordinatesDisplay {
         }
 
         let content = `<div class="coordinates-display_section">
-                         <div>mouse position: <span class="mouse-pos">(${this.currentMousePos.x}, ${this.currentMousePos.y})</span></div>
+                         <div>mouse position: <span class="mouse-pos">[ ${this.currentMousePos.x}, ${this.currentMousePos.y} ]</span></div>
                        </div>`;
+
         if (this.referencePoint) {
             const distance: Point = this.referencePoint.distanceTo(this.currentMousePos);
             content += `<div class="coordinates-display_section">
                           <div class="coordinates-display_section_label">
-                            distance from (${this.referencePoint.x}, ${this.referencePoint.y}):
-                            <span class="distance">(${distance.x}, ${distance.y})</span>
+                            distance from [ ${this.referencePoint.x}, ${this.referencePoint.y} ]:
+                            <span class="distance">[ ${distance.x}, ${distance.y} ]</span>
                           </div>
                         </div>`;
         }

@@ -7,6 +7,7 @@ import { PaintConfig } from "./Paint.config";
 import { BubblePainter } from "./BubblePainter";
 import { Character } from "../model/Character";
 import { DistantImage } from "../images/Images";
+import { Background } from "../model/Background";
 
 interface CharacterPaintOptions {
     paintImage?: boolean,
@@ -122,14 +123,8 @@ export class PanelPainter {
         if (panel.background.image) {
             if (panel.background.distantImages && panel.background.distantImages.length) {
                 panel.background.distantImages.sort((a: DistantImage, b: DistantImage) => b.distance - a.distance);
-                panel.background.distantImages.forEach((img: DistantImage) => {
-                    const characterSize = panel.characters[0].defaultPosition.size;
-                    const distantBackgroundImageShape = Rectangle.fitAroundBounds(img.image.bitmapShape.clone(), panel.backgroundImageShape)
-                        .translateInvert(
-                            (1 - 1 / img.distance) * panel.panning[0] * characterSize,
-                            (1 - 1 / img.distance) * panel.panning[1] * characterSize
-                        );
-                    this.canvas.drawImage(img.image, distantBackgroundImageShape);
+                panel.background.distantImages.forEach((distantImage: DistantImage) => {
+                    this.canvas.drawImage(distantImage.image, Background.getDistantImageShape(distantImage, panel, panel.backgroundImageShape));
                 })
             } else {
                 this.canvas.drawImage(panel.background.image, panel.backgroundImageShape);

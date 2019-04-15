@@ -22,6 +22,15 @@ export class Background {
         this.id = id;
     }
 
+    static getDistantImageShape(distantImage: DistantImage, panel: Panel, backgroundImageShape: Rectangle) {
+        const characterSize = panel.characters[0].defaultPosition.size;
+        return Rectangle.fitAroundBounds(distantImage.image.bitmapShape.clone(), backgroundImageShape)
+            .translateInvert(
+                (1 - 1 / distantImage.distance) * panel.panning[0] * characterSize,
+                (1 - 1 / distantImage.distance) * panel.panning[1] * characterSize
+            );
+    }
+
     addPanel(panel: Panel) {
         this.panels.push(panel);
         panel.background = this;
@@ -39,7 +48,18 @@ export class Background {
 
     getPanelBackgroundImageShape(panel: Panel): Rectangle {
         const charactersBBox = panel.getCharactersBackgroundBBox();
-        return this.getBackgroundImageShape(panel.background.image, charactersBBox);
+        const backgroundImageShape = this.getBackgroundImageShape(panel.background.image, charactersBBox);
+
+        // TODO
+        // if (this.distantImages && this.distantImages.length) {
+        //     return Rectangle.getBoundingBox([
+        //         backgroundImageShape,
+        //         ...this.distantImages.map((distantImage: DistantImage) =>
+        //             Background.getDistantImageShape(distantImage, panel, backgroundImageShape))
+        //     ]);
+        // } else {
+        return backgroundImageShape;
+        // }
     }
 
     getPanelBackgroundImageShapeStart(panel: Panel): Rectangle {
@@ -68,9 +88,11 @@ export class Background {
      * @param charactersBBox
      */
     getBackgroundShape(charactersBBox: Rectangle): Rectangle {
-        const start = this.scalePanelsBboxToCharactersBBox(charactersBBox, this.getPanelBBoxStart());
-        const end = this.scalePanelsBboxToCharactersBBox(charactersBBox, this.getPanelBBoxEnd());
-        return Rectangle.getBoundingBox([start, end]);
+        const panelsBBoxes = [
+            this.scalePanelsBboxToCharactersBBox(charactersBBox, this.getPanelBBoxStart()),
+            this.scalePanelsBboxToCharactersBBox(charactersBBox, this.getPanelBBoxEnd())
+        ];
+        return Rectangle.getBoundingBox(panelsBBoxes);
     }
 
     scalePanelsBboxToCharactersBBox(charactersBBox: Rectangle, panelsBBox: Rectangle) {

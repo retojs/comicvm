@@ -130,13 +130,14 @@ export class PanelPropertiesEditor {
 
     createAnimationTimeValueReadOnlyInput(name: string, value: number): ParameterInput {
         const input = this.createNumberInput(this.animationTimeValues, name, value, () => {});
-        input.input.domElement.readOnly = true;
+        input.input.domElement.disabled = true;
         return input;
     }
 
     /**
      * Creates an input field to edit a number property.
      *
+     * @param container: the container dom element or its id
      * @param name: the name of the property displayed as the input field's label
      * @param value: the source property of the input field's value
      * @param onChange: the change listener to update the source property whenever the input field's value is changed

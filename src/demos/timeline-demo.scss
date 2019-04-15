@@ -1,2 +1,8 @@
 .timeline-demo {
+
+  .timeline-container {
+    position: relative;
+    margin: auto;
+    margin-top: $gap-size--quad;
+  }
 }

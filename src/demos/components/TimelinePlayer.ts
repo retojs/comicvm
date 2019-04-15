@@ -12,8 +12,8 @@ import { DomElementContainer } from "../../common/dom/DomElement";
 import { Margin } from "../../common/style/Margin";
 import { PaintStyleConfig } from "../../common/style/PaintStyle";
 
-const PADDING = new Margin(16);
-const BACKGROUND_COLOR = PaintStyleConfig.fill("black");
+const PADDING = new Margin(60);
+const BACKGROUND_COLOR = PaintStyleConfig.fill("white");
 
 export class TimelinePlayer extends Player {
 
@@ -69,7 +69,7 @@ export class TimelinePlayer extends Player {
 
     renderAtTime(time: number) {
         if (this.isPlaying) {
-            this.reset();
+            this.resetPlayer();
         }
         window.requestAnimationFrame(() => {
             this.paintPanel(time);
@@ -131,7 +131,7 @@ export class TimelinePlayer extends Player {
     paintPanel(time: number) {
         const playingPanels = getPlayingPanels(this.panels, time);
         if (playingPanels.length === 0) {
-            this.reset();
+            this.resetPlayer();
         } else {
             playingPanels.forEach(panel => {
                 this.updateAnimationDisplay(time);

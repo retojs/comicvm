@@ -4,7 +4,7 @@ import { FadeInTransition } from "./transitions/FadeInTransition";
 import { PanelTimelineProperties } from "./PanelTimelineProperties";
 import { FadeOutTransition } from "./transitions/FadeOutTransition";
 
-const PANEL_BASIC_DURATION = 3000;
+const PANEL_BASIC_DURATION = 2000;
 const LETTER_DURATION = 10;
 const TRANSITION_DURATION = 500;
 
@@ -19,11 +19,15 @@ export class Timeline {
     }
 
     setPanels(panels: Panel[]) {
+        this.panels = panels || [];
+        this.duration = Timeline.applyPanelTimelineProperties(panels);
+    }
+
+    static applyPanelTimelineProperties(panels: Panel[]): number {
         let startTime = 0,
             endTime = 0;
 
-        this.panels = panels || [];
-        this.panels.forEach(panel => {
+        panels.forEach(panel => {
             const duration = PANEL_BASIC_DURATION + getPanelDuration(panel);
             endTime = startTime + duration + 2 * TRANSITION_DURATION;
             panel.timelineProperties = new PanelTimelineProperties(
@@ -35,7 +39,7 @@ export class Timeline {
             startTime = endTime;
         });
 
-        this.duration = endTime;
+        return endTime;
     }
 
     toString() {

@@ -1,0 +1,34 @@
+@import "./variables";
+
+button.button--posh {
+  padding: $gap-size--half $gap-size--double;
+  font-size: 20px;
+  font-family: $comic-vm-font-family;;
+  font-weight: bold;
+  letter-spacing: 3px;
+  color: white;
+  border: 1px solid teal;
+  background: linear-gradient(-20deg, lighten(teal, 10), teal);
+  cursor: pointer;
+  border-radius: 3px;
+
+  &:hover {
+    box-shadow: 2px 2px 24px rgba(0, 120, 120, 0.3), 0 0 6px rgba(120, 255, 255, 0.7);
+  }
+}
+
+
+button.button--modest {
+  padding: $gap-size--half $gap-size;
+  font-size: 16px;
+  font-family: $comic-vm-font-family;
+  font-weight: bold;
+  letter-spacing: 2px;
+  border: 2px solid rgba(0, 0, 0, 0);
+  cursor: pointer;
+  border-radius: 3px;
+
+  &:hover {
+    border: 2px solid teal;
+  }
+}
