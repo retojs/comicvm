@@ -62,6 +62,30 @@ export class Panel {
         return this.background.getPanelBackgroundImageShapeEnd(this);
     }
 
+    get isFirstPanel(): boolean {
+        return this.sceneIndex === 1;
+    }
+
+    get isLastPanel(): boolean {
+        return this.sceneIndex === this.scene.panels.length;
+    }
+
+    get previousPanel(): Panel {
+        if (this.isFirstPanel) {
+            return null;
+        } else {
+            return this.scene.panels[this.sceneIndex - 2];
+        }
+    }
+
+    get nextPanel(): Panel {
+        if (this.isLastPanel) {
+            return null;
+        } else {
+            return this.scene.panels[this.sceneIndex];
+        }
+    }
+
     constructor(stripIndex: number, sceneIndex: number) {
         this.stripIndex = stripIndex;
         this.sceneIndex = sceneIndex

@@ -135,16 +135,17 @@ export class TimelinePlayer extends Player {
         if (playingPanels.length === 0) {
             this.resetPlayer();
         } else {
+            this.updateAnimationDisplay(time);
+
+            this.canvas.begin();
+            this.canvas.resetTransform();
+            this.canvas.clear();
             playingPanels.forEach(panel => {
-                this.updateAnimationDisplay(time);
                 this.layoutPanel(panel, time);
-                this.canvas.begin();
-                this.canvas.resetTransform();
-                this.canvas.clear();
                 this.canvas.transformTo(panel.shape.clone().addMargin(PADDING));
                 this.panelPainter.paintPanelWithTransitions(panel, time);
-                this.canvas.end();
             });
+            this.canvas.end();
         }
     }
 

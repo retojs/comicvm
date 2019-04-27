@@ -23,6 +23,8 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
 
     font: Font;
 
+    globalAlpha = 1.0;
+
     backgroundColor = PaintStyleConfig.fill("white");
 
     // a cache for line heights per font
@@ -71,6 +73,15 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
         return this;
     }
 
+    /**
+     * Sets the canvas globalAlpha property to the specified value and returns the previous globalAlpha value that was overwritten.
+     */
+    setGlobalAlpha(alpha: number): number {
+        const currentAlpha = this.globalAlpha;
+        this.globalAlpha = alpha;
+        return currentAlpha;
+    }
+
     setClip(clip: Rectangle) {
         this.ctx.beginPath();
         this.ctx.moveTo(clip.x, clip.y);
@@ -116,6 +127,7 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
 
     begin() {
         this.ctx.save();
+        this.ctx.globalAlpha = this.globalAlpha;
     }
 
     end() {
@@ -228,6 +240,19 @@ export class Canvas extends DomElement<HTMLCanvasElement> {
     }
 
     strokeOrFill(config: PaintStyleConfig) {
+        if (config.gradient) {
+            const from = config.gradient.direction.from;
+            const to = config.gradient.direction.to;
+            const colorStopDistance = 1.0 / (config.gradient.colors.length - 1) || 1;
+            const gradient = this.ctx.createLinearGradient(from.x, from.y, to.x, to.y);
+            config.gradient.colors.forEach((color, index) => gradient.addColorStop(index * colorStopDistance, color));
+            if (config.gradient.fill) {
+                config.fillStyle = gradient;
+            }
+            if (config.gradient.stroke) {
+                config.strokeStyle = gradient;
+            }
+        }
         if (config.fillStyle) {
             this.ctx.fillStyle = config.fillStyle;
             this.ctx.fill();

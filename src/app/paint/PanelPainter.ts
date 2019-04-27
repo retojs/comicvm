@@ -27,14 +27,33 @@ export class PanelPainter {
     }
 
     paintPanelWithTransitions(panel: Panel, time: number) {
-        panel.timelineProperties.startTransition.applyBefore(this.canvas, panel, time);
-        panel.timelineProperties.endTransition.applyBefore(this.canvas, panel, time);
-
+        this.applyTransitionsBefore(panel, time);
         this.paintPanel(panel);
-
-        panel.timelineProperties.startTransition.applyAfter(this.canvas, panel, time);
-        panel.timelineProperties.endTransition.applyAfter(this.canvas, panel, time);
+        this.applyTransitionsAfter(panel, time);
     }
+
+    applyTransitionsBefore(panel: Panel, time: number) {
+        if (panel && panel.timelineProperties) {
+            if (panel.timelineProperties.startTransition) {
+                panel.timelineProperties.startTransition.applyBefore(this.canvas, panel, time);
+            }
+            if (panel.timelineProperties.endTransition) {
+                panel.timelineProperties.endTransition.applyBefore(this.canvas, panel, time);
+            }
+        }
+    }
+
+    applyTransitionsAfter(panel: Panel, time: number) {
+        if (panel && panel.timelineProperties) {
+            if (panel.timelineProperties.startTransition) {
+                panel.timelineProperties.startTransition.applyAfter(this.canvas, panel, time);
+            }
+            if (panel.timelineProperties.endTransition) {
+                panel.timelineProperties.endTransition.applyAfter(this.canvas, panel, time);
+            }
+        }
+    }
+
 
     paintPanel(panel: Panel) {
         this.canvas.begin();

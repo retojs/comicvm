@@ -85,7 +85,7 @@ export class PanelBoundingBoxViewer extends Div {
     }
 
     drawBackgroundImage() {
-        this.canvas.ctx.globalAlpha = 0.3;
+        this.canvas.globalAlpha = 0.3;
         this.canvas.resetTransform();
         this.canvas.transformTo(this.panel.backgroundImageShape, this.paintArea);
 
@@ -93,7 +93,7 @@ export class PanelBoundingBoxViewer extends Div {
     }
 
     paintPanels() {
-        this.canvas.ctx.globalAlpha = 0.3;
+        this.canvas.globalAlpha = 0.3;
         this.canvas.resetTransform();
 
         this.panel.background.panels.forEach(panel => {
@@ -105,24 +105,35 @@ export class PanelBoundingBoxViewer extends Div {
     }
 
     paintPanelBorders() {
-        this.canvas.ctx.globalAlpha = 1;
+        this.canvas.globalAlpha = 1;
         this.canvas.resetTransform();
 
         this.panel.background.panels.forEach(panel => this.paintPanelBorderUnscaled(panel));
     }
 
     paintPanelBorderUnscaled(panel: Panel) {
-        this.canvas.ctx.globalAlpha = 1;
+        this.canvas.globalAlpha = 1;
         this.canvas.resetTransform();
-        const shapeTransform = panel.backgroundImageShape.getShapeTransformTo(this.paintArea);
-        this.canvas.rect(
-            panel.shape.clone().transformAsPartOf(panel.backgroundImageShape, shapeTransform),
-            this.panel === panel ? SELECTED_PANEL_BORDER_STYLE : PANEL_BORDER_STYLE
-        );
+        if (panel.backgroundImageStartShape) {
+            this.paintPanelBorder(panel, panel.backgroundImageStartShape);
+        }
+        if (panel.backgroundImageEndShape) {
+            this.paintPanelBorder(panel, panel.backgroundImageEndShape);
+        }
+        if ((!panel.backgroundImageStartShape && !panel.backgroundImageEndShape)
+            || this.panel === panel) {
+            this.paintPanelBorder(panel, panel.backgroundImageShape);
+        }
+    }
+
+    private paintPanelBorder(panel: Panel, shape: Rectangle) {
+        const shapeTransform = shape.getShapeTransformTo(this.paintArea);
+        const borderShape = panel.shape.clone().transformAsPartOf(shape, shapeTransform);
+        this.canvas.rect(borderShape, this.panel === panel ? SELECTED_PANEL_BORDER_STYLE : PANEL_BORDER_STYLE);
     }
 
     paintPanelStartAndEndShapes(panel: Panel) {
-        this.canvas.ctx.globalAlpha = 1;
+        this.canvas.globalAlpha = 1;
         this.canvas.resetTransform();
 
         const backgroundImageStartShape = panel.backgroundImageStartShape;
@@ -150,7 +161,7 @@ export class PanelBoundingBoxViewer extends Div {
     }
 
     paintSelectedPanel() {
-        this.canvas.ctx.globalAlpha = 1;
+        this.canvas.globalAlpha = 1;
 
         this.canvas.transformTo(this.panel.backgroundImageShape, this.paintArea);
         PaintConfig.of.panel.border.enabled = false;
@@ -171,7 +182,7 @@ export class PanelBoundingBoxViewer extends Div {
         if (paintFn == null || typeof paintFn !== 'function') {
             return;
         }
-        this.canvas.ctx.globalAlpha = 0.8;
+        this.canvas.globalAlpha = 0.8;
         this.canvas.resetTransform();
 
         const shapeTransform = this.panel.backgroundImageShape.getShapeTransformTo(this.paintArea);

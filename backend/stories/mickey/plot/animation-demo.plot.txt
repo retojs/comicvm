@@ -9,7 +9,8 @@ Plot:
 Mickey:
     Hey Minnie?
 Minnie:
-    Hey Mickey, what's up?
+    Hey Mickey!
+    What's up?
 Mickey:
     I don't know.
     You tell me!

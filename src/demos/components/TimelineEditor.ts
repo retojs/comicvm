@@ -8,7 +8,7 @@ import { Rectangle } from "../../common/trigo/Rectangle";
 import { Dimensions } from "../../common/trigo/Dimensions";
 import { Line } from "../../common/trigo/Line";
 import { Point } from "../../common/trigo/Point";
-import { PaintStyleConfig } from "../../common/style/PaintStyle";
+import { GradientType, PaintStyleConfig } from "../../common/style/PaintStyle";
 import { Player } from "../../app/play/Player";
 import { Font } from "../../common/style/Font";
 import { Images } from "../../app/images/Images";
@@ -18,16 +18,24 @@ import { Button } from "../../common/dom/Button";
 import { Panel } from "../../app/model/Panel";
 import { LayoutEngine } from "../../app/layout/engine/LayoutEngine";
 import { Margin } from "../../common/style/Margin";
+import { Transition } from "../../app/play/transitions/Transition";
 
 const TIMELINE_PLAYER_WIDTH = 600;
 const TIMELINE_PLAYER_HEIGHT = 420;
 
 const FRAME_BOUNDS = new Dimensions(60, 60);
-const TIMELINE_PADDING = new Margin(8, 8);
+const TIMELINE_PADDING = new Margin(16, 32);
+const INDICATOR_AREA_HEIGHT = 8;
 
 const BACKGROUND_COLOR = PaintStyleConfig.fill("white");
 const FRAME_BORDER_COLOR = PaintStyleConfig.stroke("white", 1.5);
 const CURRENT_TIME_COLOR = PaintStyleConfig.stroke("red", 1);
+
+const PANEL_INDICATOR_COLOR = PaintStyleConfig.stroke("teal", 2);
+const TRANSITION_FADE_IN_INDICATOR_COLOR = PaintStyleConfig.gradientStroke(GradientType.Linear, ["black", "#eee"], null, 2);
+const TRANSITION_FADE_OUT_INDICATOR_COLOR = PaintStyleConfig.gradientStroke(GradientType.Linear, ["#eee", "black"], null, 2);
+const TRANSITION_FADE_OVER_START_INDICATOR_COLOR = PaintStyleConfig.gradientStroke(GradientType.Linear, ["blueviolet", "gold"], null, 2);
+const TRANSITION_FADE_OVER_END_INDICATOR_COLOR = PaintStyleConfig.gradientStroke(GradientType.Linear, ["gold", "blueviolet"], null, 2);
 
 export type TimeChangeListener = (time: number) => void;
 
@@ -57,6 +65,14 @@ export class TimelineEditor {
 
     mousePressed: boolean;
 
+    getPanelIndicatorY(panel: Panel): number {
+        return this.frameShape.y + this.frameShape.height + (panel.sceneIndex % 2 === 0 ? 6 : -2);
+    }
+
+    getTransitionIndicatorY(panel: Panel): number {
+        return this.frameShape.y + this.frameShape.height + (panel.sceneIndex % 2 === 0 ? 10 : 2);
+    }
+
     constructor(container: DomElementContainer, scene: Scene, onTimeChange?: TimeChangeListener) {
         this.root = new Div(container, "timeline-editor");
         this.timelinePlayerPanel = new Div(this.root);
@@ -76,7 +92,6 @@ export class TimelineEditor {
         this.setupTimeDisplay();
     }
 
-
     setup(width: number, font: Font, images: Images): TimelineEditor {
 
         this.images = images;
@@ -88,9 +103,9 @@ export class TimelineEditor {
         const frameWidth = innerWidth / frameCount;
         const frameHeight = this.frameBounds.height / frameWidth * this.frameBounds.width;
         const height = frameHeight + TIMELINE_PADDING.vertical;
+        const canvasHeight = height + INDICATOR_AREA_HEIGHT;
 
-        this.setupCanvas(width, height, font);
-        this.timelinePanel.domElement.style.width = width + "px";
+        this.frameShape = new Rectangle(0, (height - this.frameBounds.height) / 2, frameWidth, frameHeight);
 
         // the "actual timeline" is a line on the canvas from time = 0 to time = animation duration
 
@@ -99,19 +114,9 @@ export class TimelineEditor {
             new Point(width - TIMELINE_PADDING.right, height / 2)
         );
 
-        // The frame proportions is derived from the bounding box of all panel shapes
-        // and fit into the adjusted frame bounds calculated above.
+        // setup canvas, scene and other components
 
-        this.frameShape =
-            Rectangle.fitIntoBounds(
-                Rectangle.getBoundingBox(
-                    this.scene.panels.map(panel => panel.shape)
-                ),
-                new Rectangle(0, (height - this.frameBounds.height) / 2, frameWidth, frameHeight)
-            );
-
-        // setup scene and other components
-
+        this.setupCanvas(width, canvasHeight, font);
         this.scene.setup(this.canvas, images);
         this.timeline = new Timeline(this.scene.panels);
 
@@ -125,7 +130,6 @@ export class TimelineEditor {
         this.canvas.setDimensions(width, height);
         this.canvas.setFont(font);
         this.canvas.backgroundColor = BACKGROUND_COLOR;
-
     }
 
     setupMouseListeners() {
@@ -134,15 +138,18 @@ export class TimelineEditor {
             this.onClick(event);
         };
         this.timelinePanel.onMouseUp = () => this.mousePressed = false;
-        this.timelinePanel.onMouseMove = (event: MouseEvent) => {
-            if (this.mousePressed) {
-                this.onClick(event);
+        window.document.addEventListener('mousemove', (event: MouseEvent) => {
+                if (this.mousePressed) {
+                    this.onClick(event);
+                }
             }
-        }
+        )
     }
 
     onClick(event: MouseEvent) {
-        const pos = new Point(event.clientX, event.clientY).translate(...this.canvas.clientOffsetInv);
+        const pos = new Point(event.clientX, event.clientY)
+            .translate(...this.canvas.clientOffsetInv)
+            .translate(-TIMELINE_PADDING.left - 1);
         this.player.isPlaying = false;
         this.setCurrentTime(this.player.pauseTime = this.timelinePlayer.pauseTime = this.getTimeAt(pos.x));
         this.paintCurrentTime(this.currentTime);
@@ -216,25 +223,33 @@ export class TimelineEditor {
         return this.scene.panels.find(panel => isPlayingPanel(panel, time));
     }
 
+    getAllPanelsAt(time: number) {
+        return this.scene.panels.filter(panel => isPlayingPanel(panel, time));
+    }
+
     paint() {
         // TODO paint into hidden canvas initially (in setPanel(), or when mouse selected time)
         //      then only repaint the current panel
 
-        this.canvas.begin();
         this.canvas.clear();
-        for (let x = TIMELINE_PADDING.left; x < this.actualTimeLine.width; x += this.frameShape.width) {
-            const time = this.getFrameTime(x);
-            const panel = this.getPanelAt(time);
-            if (panel) {
-                this.layoutPanel(panel, time);
 
-                this.canvas.transformTo(panel.shape, this.getFrameShape(x));
-                this.panelPainter.paintPanelWithTransitions(panel, time);
+        for (let x = 0; x < this.actualTimeLine.width; x += this.frameShape.width) {
+            const time = this.getFrameTime(x);
+            const panels = this.getAllPanelsAt(time);
+            if (panels) {
+                panels.forEach(panel => {
+                    this.layoutPanel(panel, time);
+                    this.canvas.begin();
+                    this.canvas.transformTo(panel.shape, this.getFrameShape(x + TIMELINE_PADDING.left));
+                    this.panelPainter.paintPanelWithTransitions(panel, time);
+                    this.canvas.end();
+                })
             }
         }
-        this.canvas.end();
 
         this.paintFrameGrid();
+        this.paintPanelIndicators();
+        this.paintTransitionIndicators();
 
         return this;
     }
@@ -242,10 +257,71 @@ export class TimelineEditor {
     paintFrameGrid() {
         this.canvas.resetTransform();
 
-        for (let x = TIMELINE_PADDING.left; x <= this.actualTimeLine.width; x += this.frameShape.width) {
+        for (let x = 0; x <= this.actualTimeLine.width; x += this.frameShape.width) {
             const panel = this.getPanelAt(this.getFrameTime(x));
-            this.canvas.rect(panel.shape.clone().transformTo(this.getFrameShape(x)), FRAME_BORDER_COLOR);
+            if (panel) {
+                this.canvas.rect(panel.shape.clone().transformTo(this.getFrameShape(x + TIMELINE_PADDING.left)), FRAME_BORDER_COLOR);
+            }
         }
+    }
+
+    paintPanelIndicators() {
+        this.scene.panels.forEach(panel => {
+            if (panel.timelineProperties) {
+                this.paintIndicator(
+                    panel.timelineProperties.start,
+                    panel.timelineProperties.end,
+                    this.getPanelIndicatorY(panel),
+                    PANEL_INDICATOR_COLOR
+                );
+            }
+        })
+    }
+
+    paintTransitionIndicators() {
+        this.scene.panels.forEach(panel => {
+            if (panel.timelineProperties) {
+                if (panel.timelineProperties.startTransition) {
+                    this.paintIndicator(
+                        panel.timelineProperties.startTransition.start,
+                        panel.timelineProperties.startTransition.end,
+                        this.getTransitionIndicatorY(panel),
+                        this.getTransitionFillStyle(panel.timelineProperties.startTransition)
+                    );
+                }
+                if (panel.timelineProperties.endTransition) {
+                    this.paintIndicator(
+                        panel.timelineProperties.endTransition.start,
+                        panel.timelineProperties.endTransition.end,
+                        this.getTransitionIndicatorY(panel),
+                        this.getTransitionFillStyle(panel.timelineProperties.endTransition)
+                    );
+                }
+            }
+        })
+    }
+
+    getTransitionFillStyle(transition: Transition): PaintStyleConfig {
+        switch (transition.name) {
+            case Transition.FadeIn:
+                return TRANSITION_FADE_IN_INDICATOR_COLOR.clone();
+            case Transition.FadeOut:
+                return TRANSITION_FADE_OUT_INDICATOR_COLOR.clone();
+            case Transition.FadeOverStart:
+                return TRANSITION_FADE_OVER_START_INDICATOR_COLOR.clone();
+            case Transition.FadeOverEnd:
+                return TRANSITION_FADE_OVER_END_INDICATOR_COLOR.clone();
+        }
+    }
+
+    paintIndicator(startTime: number, endTime: number, y: number, paintStyle: PaintStyleConfig) {
+        const startX = this.getPixelAt(startTime);
+        const endX = this.getPixelAt(endTime);
+        const indicator = Line.fromCoordinates(startX, y, endX, y);
+        if (paintStyle.gradient) {
+            paintStyle.gradient.direction = indicator;
+        }
+        this.canvas.line(indicator, paintStyle);
     }
 
     getFrameShape(x: number): Rectangle {
@@ -270,7 +346,8 @@ export class TimelineEditor {
                 new Point(x, this.actualTimeLine.from.y - this.frameShape.height),
                 new Point(x, this.actualTimeLine.from.y + this.frameShape.height),
                 CURRENT_TIME_COLOR
-            )
+            );
+            // this.canvas.line(this.actualTimeLine, PaintStyleConfig.stroke("black"));
         })
     }
 

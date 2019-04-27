@@ -49,7 +49,6 @@ export class PanelPlayer extends Player {
     paintPanels(time: number) {
         if (time > this.animationDuration) {
             this.resetPlayer();
-
             console.log("PanelPlayer stopped at the end of the animation at " + (this.animationDuration / 1000).toFixed(2) + " s");
         }
         this.panels.forEach(panel => {

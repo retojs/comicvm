@@ -10,6 +10,10 @@ export class Line {
         this.to = to;
     }
 
+    static fromCoordinates(fromX: number, fromY: number, toX: number, toY: number) {
+        return new Line(new Point(fromX, fromY), new Point(toX, toY));
+    }
+
     setFrom(x: number, y: number): Line {
         this.from = new Point(x, y);
         return this;

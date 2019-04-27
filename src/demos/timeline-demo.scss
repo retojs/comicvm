@@ -2,7 +2,6 @@
 
   .timeline-container {
     position: relative;
-    margin: auto;
-    margin-top: $gap-size--quad;
+    margin: $gap-size--quad auto;
   }
 }

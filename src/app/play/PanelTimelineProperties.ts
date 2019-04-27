@@ -2,15 +2,25 @@ import { Transition } from "./transitions/Transition";
 
 export class PanelTimelineProperties {
 
+    start: number;
+    end: number;
+
     constructor(
-        public start: number,
-        public end: number,
+        start: number,
+        duration: number,
         public startTransition?: Transition,
         public endTransition?: Transition
-    ) {}
+    ) {
+        this.start = start;
+        this.duration = duration;
+    }
 
     get duration() {
         return this.end - this.start;
+    }
+
+    set duration(duration: number) {
+        this.end = this.start + duration;
     }
 
     get durationSecs() {

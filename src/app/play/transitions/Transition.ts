@@ -3,6 +3,13 @@ import { Panel } from "../../model/Panel";
 
 export class Transition {
 
+    static FadeIn = "FadeIn";
+    static FadeOut = "FadeOut";
+    static FadeOverStart = "FadeOverStart";
+    static FadeOverEnd = "FadeOverEnd";
+
+    name = "Generic";
+
     constructor(
         public start: number,
         public duration: number
@@ -10,6 +17,10 @@ export class Transition {
 
     get end() {
         return this.start + this.duration;
+    }
+
+    get showBothPanels() {
+        return this.name === Transition.FadeOverStart || this.name === Transition.FadeOverEnd;
     }
 
     isOn(time) {

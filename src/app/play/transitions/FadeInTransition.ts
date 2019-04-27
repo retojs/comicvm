@@ -5,16 +5,19 @@ import { Canvas } from "../../../common/dom/Canvas";
 
 export class FadeInTransition extends Transition {
 
+    name = Transition.FadeIn;
+
     paintStyle = PaintStyleConfig.fill("black");
 
     applyBefore(canvas: Canvas, panel: Panel, time: number) {}
 
     applyAfter(canvas: Canvas, panel: Panel, time: number) {
         if (this.isOn(time)) {
+            const globalAlpha = canvas.setGlobalAlpha(1 - this.getValue(time));
             canvas.begin();
-            canvas.ctx.globalAlpha = 1 - this.getValue(time);
             canvas.rect(panel.shape, this.paintStyle);
             canvas.end();
+            canvas.globalAlpha = globalAlpha;
         }
     }
 }
