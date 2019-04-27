@@ -1,6 +1,7 @@
 import { Rectangle } from "../../common/trigo/Rectangle";
 import { TextBox } from "./TextBox";
 import { STORY_TELLER } from "../plot/PlotItem";
+import { BubblePointer } from "./BubblePointer";
 
 export class Bubble {
 
@@ -8,8 +9,9 @@ export class Bubble {
     says: string;
 
     textBox: TextBox;
-
     shape: Rectangle;
+
+    pointers: BubblePointer[];
 
     constructor(who: string[], says: string) {
         this.says = says;

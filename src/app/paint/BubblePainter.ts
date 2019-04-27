@@ -3,8 +3,8 @@ import { LayoutConfig } from "../layout/Layout.config";
 import { PaintConfig } from "./Paint.config";
 import { Point } from "../../common/trigo/Point";
 import { Bubble } from "../model/Bubble";
-import { Character } from "../model/Character";
 import { Canvas } from "../../common/dom/Canvas";
+import { BubblePointer } from "../model/BubblePointer";
 
 export class BubblePainter {
 
@@ -23,14 +23,7 @@ export class BubblePainter {
                     this.paintTextLeftAligned(bubble);
                 } else {
                     this.canvas.roundRect(bubble.shape, LayoutConfig.bubble.radius, PaintConfig.of.bubble.textBox);
-                    // this.canvas.rect(bubble.shape.clone().addMargin(LayoutConfig.bubble.margin), PaintStyleConfig.stroke('red'));
-
-                    bubble.who.forEach(name => {
-                        if (panel.characterNames.indexOf(name) > -1) {
-                            this.paintBubblePointer(...this.calculateBubblePointer(bubble, panel.getCharacter(name)));
-                        }
-                    });
-
+                    bubble.pointers.forEach(this.paintBubblePointer.bind(this));
                     this.paintTextCentered(bubble);
                 }
             });
@@ -58,69 +51,14 @@ export class BubblePainter {
         });
     }
 
-    calculateBubblePointer(bubble: Bubble, character: Character): Point[] {
-        const chrPos = character.getPosition();
+    paintBubblePointer(pointer: BubblePointer): void {
+        const from = pointer.characterEnd;
+        const toLeft = pointer.bubbleEndLeft;
+        const toRight = pointer.bubbleEndRight;
+        const cpLeft = pointer.cpLeft;
+        const cpRight = pointer.cpRight;
 
-        // By default the pointer goes straight up to the bubble from the character's position
-        const nearCharacter = new Point(
-            chrPos.x + chrPos.size / 2,
-            chrPos.y - LayoutConfig.bubble.pointer.verticalDistanceFromCharacter * chrPos.size
-        );
-        const nearBubble = new Point(
-            nearCharacter.x,
-            bubble.shape.y + bubble.shape.height
-        );
-
-        // adjust x position of attachment to bubble
-        const horizontalOffset = LayoutConfig.bubble.pointer.horizontalDistanceFromBubbleCenter * (bubble.shape.width - LayoutConfig.bubble.radius.horizontal) / 2;
-        const bubbleLeftEnd = bubble.shape.center.x - horizontalOffset;
-        const bubbleRightEnd = bubble.shape.center.x + horizontalOffset;
-        if (nearCharacter.x < bubbleLeftEnd) {
-            nearBubble.x = bubbleLeftEnd;
-        }
-        if (nearCharacter.x > bubbleRightEnd) {
-            nearBubble.x = bubbleRightEnd
-        }
-
-        // adjust x position of the pointer's origin near the character
-        if (nearCharacter.x !== nearBubble.x) {
-            if (nearCharacter.x < nearBubble.x) {
-                nearCharacter.x = Math.min(nearBubble.x, nearCharacter.x + chrPos.size / 2);
-            } else {
-                nearCharacter.x = Math.max(nearBubble.x, nearCharacter.x - chrPos.size / 2);
-            }
-        }
-
-        const distance = nearBubble.distanceTo(nearCharacter);
-        const bendLeft = nearBubble.x > nearCharacter.x;
-        const bendRight = !bendLeft;
-        const deltaWidth = LayoutConfig.bubble.pointer.widthNearBubble - LayoutConfig.bubble.pointer.controlPointWidth;
-
-        // calculate control points for bezier curve
-        if (distance.y < 0) {
-            return null; // don't paint a pointer if bubble overlaps character
-        }
-
-        const toLeft = nearBubble.clone().translate(-LayoutConfig.bubble.pointer.widthNearBubble / 2);
-        const toRight = nearBubble.clone().translate(LayoutConfig.bubble.pointer.widthNearBubble / 2);
-
-        const cpLeft = toLeft.clone().translate(
-            bendRight ? 0 : deltaWidth,
-            distance.y * LayoutConfig.bubble.pointer.controlPointVerticalPosition);
-        const cpRight = toRight.clone().translate(
-            bendLeft ? 0 : -deltaWidth,
-            distance.y * LayoutConfig.bubble.pointer.controlPointVerticalPosition);
-
-        return [nearCharacter, toLeft, toRight, cpLeft, cpRight];
-    }
-
-    // TODO
-    // make paint method configurable
-    // - allow override of PaintConfig.paintBubblePointer default function
-
-    paintBubblePointer(from?: Point, toLeft?: Point, toRight?: Point, cpLeft?: Point, cpRight?: Point) {
         if (from && toLeft && toRight && cpLeft && cpRight) {
-
             this.canvas.begin();
             this.canvas.ctx.beginPath();
             this.canvas.ctx.moveTo(toLeft.x, toLeft.y - PaintConfig.of.bubble.textBox.lineWidth);
@@ -130,6 +68,16 @@ export class BubblePainter {
             this.canvas.ctx.fillStyle = PaintConfig.of.bubble.textBox.fillStyle;
             this.canvas.ctx.fill();
             this.canvas.end();
+
+            if (PaintConfig.isDebug.bubblePointer) {
+                this.canvas.line(pointer.fromCharacterToBubbleCenter, PaintConfig.debugStyle.bubblePointer.baseLine);
+                this.canvas.circle(pointer.characterEnd, 5, PaintConfig.debugStyle.bubblePointer.baseLineEnds);
+                this.canvas.circle(pointer.bubble.shape.center, 5, PaintConfig.debugStyle.bubblePointer.baseLineEnds);
+                this.canvas.lineFromTo(toLeft, cpLeft, PaintConfig.debugStyle.bubblePointer.controlPointLine);
+                this.canvas.lineFromTo(toRight, cpRight, PaintConfig.debugStyle.bubblePointer.controlPointLine);
+                this.canvas.circle(cpLeft, 5, PaintConfig.debugStyle.bubblePointer.controlPoint);
+                this.canvas.circle(cpRight, 5, PaintConfig.debugStyle.bubblePointer.controlPoint);
+            }
 
             this.canvas.bezier(from, toLeft, cpLeft, PaintConfig.of.bubble.pointer);
             this.canvas.bezier(from, toRight, cpRight, PaintConfig.of.bubble.pointer);

@@ -12,6 +12,8 @@ const MUTED_PANEL_STYLE = PaintStyleConfig.fill("rgba(250, 250, 250, 0.25)");
 
 export class PanelPlayer extends Player {
 
+    name = "PanelPlayer";
+
     private comicVM: ComicVM;
     private layoutEngine: LayoutEngine;
     private panelPainter: PanelPainter;

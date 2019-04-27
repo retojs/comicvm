@@ -4,6 +4,7 @@ import { LayoutConfig } from "../Layout.config";
 import { Rectangle } from "../../../common/trigo/Rectangle";
 import { Bubble } from "../../model/Bubble";
 import { TextBox } from "../../model/TextBox";
+import { BubblePointer } from "../../model/BubblePointer";
 
 export class BubbleLayoutEngine {
 
@@ -18,9 +19,11 @@ export class BubbleLayoutEngine {
 
     layoutPanel(panel: Panel, canvas: Canvas) {
         this.canvas = canvas;
+        this.canvas.setFont(this.canvas.font);
         this.createBubbleShapes(panel);
         this.layoutOffscreenBubble(panel);
         this.layoutBubblesIntoLines(panel);
+        this.createBubblePointers(panel);
     }
 
     private createBubbleShapes(panel: Panel): void {
@@ -65,6 +68,20 @@ export class BubbleLayoutEngine {
             });
 
         return this.alignBubbles(bubbleLines, panel);
+    }
+
+    createBubblePointers(panel: Panel): void {
+        panel.bubbles
+            .filter(bubble => !!bubble.shape)
+            .filter(bubble => !bubble.isOffScreen)
+            .forEach(bubble => {
+                bubble.pointers = [];
+                bubble.who.forEach(name => {
+                    if (panel.characterNames.indexOf(name) > -1) {
+                        bubble.pointers.push(new BubblePointer(bubble, panel.getCharacter(name)));
+                    }
+                });
+            });
     }
 
     private alignBubbles(bubbleLines: Bubble[][], panel: Panel): Bubble[][] {

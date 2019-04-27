@@ -1,14 +1,16 @@
-export class Offset {
+import { Point } from "./Point";
 
-    dx: number;
-    dy: number;
+export class Offset extends Point {
 
-    constructor(dx: number, dy: number) {
-        this.dx = dx;
-        this.dy = dy;
+    get dx(): number {
+        return this.x;
     };
 
-    invert(): Offset {
-        return new Offset(-this.dx, -this.dy);
-    }
+    get dy(): number {
+        return this.y;
+    };
+
+    constructor(dx: number, dy: number) {
+        super(dx, dy)
+    };
 }

@@ -17,6 +17,8 @@ const BACKGROUND_COLOR = PaintStyleConfig.fill("white");
 
 export class TimelinePlayer extends Player {
 
+    name = "Timeline player";
+
     readonly root: Div;
     readonly canvas: Canvas;
 

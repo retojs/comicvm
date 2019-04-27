@@ -2,8 +2,8 @@ import { Images } from "../images/Images";
 import { Endpoints } from "../backend/Endpoints";
 import { Scene } from "./Scene";
 
-// TODO
-// allow offline stories without backend
+// TODO: allow offline stories without backend
+
 export class Story {
 
     name: string;

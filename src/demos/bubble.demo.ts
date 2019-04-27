@@ -135,24 +135,24 @@ export class BubbleDemo implements Demo {
             LayoutConfig.bubble.verticalAlign = value;
             this.repaint();
         });
-        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.widthNearBubble", LayoutConfig.bubble.pointer.widthNearBubble, (value: number) => {
-            LayoutConfig.bubble.pointer.widthNearBubble = value;
+        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.bubbleEndsDistance", LayoutConfig.bubble.pointer.bubbleEndsDistance, (value: number) => {
+            LayoutConfig.bubble.pointer.bubbleEndsDistance = value;
             this.repaint();
         });
-        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.controlPointWidth", LayoutConfig.bubble.pointer.controlPointWidth, (value: number) => {
-            LayoutConfig.bubble.pointer.controlPointWidth = value;
+        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.characterEndDistance", LayoutConfig.bubble.pointer.characterEndDistance, (value: number) => {
+            LayoutConfig.bubble.pointer.characterEndDistance = value;
             this.repaint();
         });
-        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.controlPointVerticalPosition", LayoutConfig.bubble.pointer.controlPointVerticalPosition, (value: number) => {
-            LayoutConfig.bubble.pointer.controlPointVerticalPosition = value;
+        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.controlPoint.width", LayoutConfig.bubble.pointer.controlPoint.width, (value: number) => {
+            LayoutConfig.bubble.pointer.controlPoint.width = value;
             this.repaint();
         });
-        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.verticalDistanceFromCharacter", LayoutConfig.bubble.pointer.verticalDistanceFromCharacter, (value: number) => {
-            LayoutConfig.bubble.pointer.verticalDistanceFromCharacter = value;
+        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.controlPoint.horizontalOffset", LayoutConfig.bubble.pointer.controlPoint.horizontalOffset, (value: number) => {
+            LayoutConfig.bubble.pointer.controlPoint.horizontalOffset = value;
             this.repaint();
         });
-        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.horizontalDistanceFromBubbleCenter", LayoutConfig.bubble.pointer.horizontalDistanceFromBubbleCenter, (value: number) => {
-            LayoutConfig.bubble.pointer.horizontalDistanceFromBubbleCenter = value;
+        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.controlPoint.verticalOffset", LayoutConfig.bubble.pointer.controlPoint.verticalOffset, (value: number) => {
+            LayoutConfig.bubble.pointer.controlPoint.verticalOffset = value;
             this.repaint();
         });
 

@@ -6,8 +6,10 @@ import { Margin } from "../../common/style/Margin";
 
 export type ParameterListener<T> = (value: T) => void;
 
-const INCREMENT = 0.01;
-const INCREMENT_CTRL_KEY = 0.05;
+const INCREMENT_SMALL_VALUES = 0.01;
+const INCREMENT_SMALL_VALUES_CTRL_KEY = 0.05;
+const INCREMENT_LARGE_VALUES = 1;
+const INCREMENT_LARGE_VALUES_CTRL_KEY = 5;
 const FRACTION_DIGITS = 2;
 const KEY_DOWN_REPEAT_INTERVAL = 10;
 const KEY_DOWN_DEBOUNCE_INTERVAL = 200;
@@ -122,18 +124,30 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
             return;
         }
         const value = parseFloat(this.value);
+
+        let increment = INCREMENT_LARGE_VALUES;
+        let incrementCtrlKey = INCREMENT_LARGE_VALUES_CTRL_KEY;
+        if (this.isSmallValue(value)) {
+            increment = INCREMENT_SMALL_VALUES;
+            incrementCtrlKey = INCREMENT_SMALL_VALUES_CTRL_KEY;
+        }
+
         if (typeof value === "number") {
             switch (event.code) {
                 case "ArrowUp":
                 case "ArrowRight":
-                    this.value = "" + (value + (event.ctrlKey ? INCREMENT_CTRL_KEY : INCREMENT)).toFixed(FRACTION_DIGITS);
+                    this.value = "" + (value + (event.ctrlKey ? incrementCtrlKey : increment)).toFixed(FRACTION_DIGITS);
                     break;
                 case "ArrowDown":
                 case "ArrowLeft":
-                    this.value = "" + (value - (event.ctrlKey ? INCREMENT_CTRL_KEY : INCREMENT)).toFixed(FRACTION_DIGITS);
+                    this.value = "" + (value - (event.ctrlKey ? incrementCtrlKey : increment)).toFixed(FRACTION_DIGITS);
                     break;
             }
         }
+    }
+
+    isSmallValue(value: number) {
+        return value < 5;
     }
 
     getDebounced(onChange: ParameterListener<string>) {

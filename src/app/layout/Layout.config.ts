@@ -86,11 +86,13 @@ export class PanelConfig {
 }
 
 export class PointerConfig {
-    widthNearBubble = 25;
-    controlPointWidth = 15;
-    controlPointVerticalPosition = 0.6;
-    verticalDistanceFromCharacter = 0.5;
-    horizontalDistanceFromBubbleCenter = 0.2;
+    bubbleEndsDistance = 24;
+    characterEndDistance = 0.5;
+    controlPoint = {
+        width: 16,
+        horizontalOffset: 0.1,
+        verticalOffset: 0.25
+    };
 }
 
 export class BubbleConfig {

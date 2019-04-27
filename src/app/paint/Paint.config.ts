@@ -60,6 +60,19 @@ export class PaintConfig {
 
     static canvas = new CanvasConfig();
     static of = new FeaturePaintStyleConfig();
+
+    static isDebug = {
+        bubblePointer: false
+    };
+
+    static debugStyle = {
+        bubblePointer: {
+            baseLine: PaintStyleConfig.stroke("orange", 4),
+            baseLineEnds: PaintStyleConfig.fill("orange"),
+            controlPoint: PaintStyleConfig.fill("purple"),
+            controlPointLine: PaintStyleConfig.stroke("purple", 3)
+        }
+    }
 }
 
 

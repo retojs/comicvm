@@ -8,9 +8,9 @@ import { Images } from "./images/Images";
 import { PaintConfig } from "./paint/Paint.config";
 
 // TODO
-// - generate documentation with jsdoc
-// - write documentation
-// - see: https://github.com/jsdoc3/jsdoc
+//  - generate documentation with jsdoc
+//  - write documentation
+//  - see: https://github.com/jsdoc3/jsdoc
 
 export class ComicVM {
 

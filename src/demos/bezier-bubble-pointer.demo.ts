@@ -8,9 +8,9 @@ import { PaintStyleConfig } from "../common/style/PaintStyle";
 
 
 // TODO
-// - rename to bubble pointer demo
-// - write canvas-demo abstract base class
-// - write demo selector
+//  - rename to bubble pointer demo
+//  - write canvas-demo abstract base class
+//  - write demo selector
 
 export class BezierBubblePointerDemo implements Demo {
 
@@ -29,8 +29,8 @@ export class BezierBubblePointerDemo implements Demo {
         let mouseBounds = Rectangle.fromPoints(from, to);
 
         const initialMousePos = myCanvas.getDomPositionFromCanvasPosition(
-            to.x + (from.x - to.x) * LayoutConfig.bubble.pointer.controlPointVerticalPosition,
-            to.y + (from.y - to.y) * LayoutConfig.bubble.pointer.controlPointVerticalPosition
+            to.x + (from.x - to.x) * LayoutConfig.bubble.pointer.controlPoint.verticalOffset,
+            to.y + (from.y - to.y) * LayoutConfig.bubble.pointer.controlPoint.verticalOffset
         );
         drawBubblePointer(initialMousePos.x, initialMousePos.y);
 
@@ -98,10 +98,10 @@ export class BezierBubblePointerDemo implements Demo {
          * @param to Point where the pointer touches the bottom border of the bubble (upper point)
          */
         function calcFixedRangeTop(from: Point, to: Point): number {
-            const w1 = LayoutConfig.bubble.pointer.widthNearBubble;
-            const w2 = LayoutConfig.bubble.pointer.controlPointWidth;
+            const w1 = LayoutConfig.bubble.pointer.bubbleEndsDistance;
+            const w2 = LayoutConfig.bubble.pointer.controlPoint.width;
             const h1 = from.y - to.y;
-            const h2 = h1 * (1 - LayoutConfig.bubble.pointer.controlPointVerticalPosition);
+            const h2 = h1 * (1 - LayoutConfig.bubble.pointer.controlPoint.verticalOffset);
             return (1 - (h2 / w2 * w1) / h1);
         }
     }

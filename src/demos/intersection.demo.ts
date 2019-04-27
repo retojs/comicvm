@@ -59,11 +59,13 @@ export class IntersectionDemo implements Demo {
             const mouseLine = new Line(origin, mousePos);
             const intersection = mouseLine.intersection(crossingLine);
 
-            myCanvas.begin();
-            myCanvas.lineFromTo(origin, intersection, PaintStyleConfig.stroke("#4caf50"));
-            myCanvas.lineFromTo(mousePos, intersection, PaintStyleConfig.stroke("#4caf50"));
-            myCanvas.circle(intersection, dotRadius, PaintStyleConfig.fillAndStroke("rgba(30, 150, 240, 0.5)", "#4caf50", lineWidth));
-            myCanvas.end();
+            if (intersection) {
+                myCanvas.begin();
+                myCanvas.lineFromTo(origin, intersection, PaintStyleConfig.stroke("#4caf50"));
+                myCanvas.lineFromTo(mousePos, intersection, PaintStyleConfig.stroke("#4caf50"));
+                myCanvas.circle(intersection, dotRadius, PaintStyleConfig.fillAndStroke("rgba(30, 150, 240, 0.5)", "#4caf50", lineWidth));
+                myCanvas.end();
+            }
         }
 
         function initDrawing() {

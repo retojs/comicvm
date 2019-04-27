@@ -20,13 +20,21 @@ export class Line {
         return this;
     }
 
+    get isVertical(): boolean {
+        return this.from.x === this.to.x;
+    }
+
+    get isHorizontal(): boolean {
+        return this.from.y === this.to.y;
+    }
+
     get gradient(): number {
         const dx = this.from.x - this.to.x;
         const dy = this.from.y - this.to.y;
         if (dx) {
             return dy / dx;
         } else {
-            return 0;
+            return Number.POSITIVE_INFINITY;
         }
     }
 
@@ -57,6 +65,11 @@ export class Line {
         return Math.max(this.from.y, this.to.y) - Math.min(this.from.y, this.to.y);
     }
 
+    getPointAtX(x: number): Point {
+        const dx: number = x - this.from.x;
+        return this.from.clone().translate(dx, this.gradient * dx);
+    }
+
     translate(dx?: number, dy?: number): Line {
         this.from.translate(dx, dy);
         this.to.translate(dx, dy);
@@ -67,23 +80,30 @@ export class Line {
         return new Line(this.from.clone(), this.to.clone());
     }
 
+    isParallel(line: Line) {
+        return this.gradient === line.gradient;
+    }
+
+    hasIntersectionWith(line: Line): boolean {
+        return !this.isParallel(line);
+    }
+
     intersection(line: Line): Point {
 
-        // TODO refactor using line equation ax + by = c
+        // TODO: refactor using line equation ax + by = c
         //      see Line.parameters() and https://de.wikipedia.org/wiki/Koordinatenform
+        //      for the result see https://de.wikipedia.org/wiki/Schnittpunkt
 
-        // intersect condition: x1 = x2, y1 = y2
-        //
-        // line 1: y = verticalIntercept1 + gradient1 * x
-        // line 2: y = verticalIntercept2 + gradient2 * x
-        //
-        //  --> verticalIntercept1 + gradient1 * x                 =  verticalIntercept2 + gradient2 * x
-        //  -->                      gradient1 * x - gradient2 * x =  verticalIntercept2 - verticalIntercept1
-        //  -->                 x * (gradient1     - gradient2)    =  verticalIntercept2 - verticalIntercept1
-        //  -->                 x                                  = (verticalIntercept2 - verticalIntercept1) / (gradient1 - gradient2)
+        if (!this.hasIntersectionWith(line)) {
+            return null;
+        }
+        if (this.isVertical) {
+            return line.getPointAtX(this.from.x);
+        }
 
         const x = (line.verticalIntercept - this.verticalIntercept) / (this.gradient - line.gradient);
         const y = this.verticalIntercept + this.gradient * x;
+
         return new Point(x, y);
     }
 }

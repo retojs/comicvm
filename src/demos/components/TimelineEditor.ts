@@ -217,6 +217,9 @@ export class TimelineEditor {
     }
 
     paint() {
+        // TODO paint into hidden canvas initially (in setPanel(), or when mouse selected time)
+        //      then only repaint the current panel
+
         this.canvas.begin();
         this.canvas.clear();
         for (let x = TIMELINE_PADDING.left; x < this.actualTimeLine.width; x += this.frameShape.width) {
@@ -256,7 +259,7 @@ export class TimelineEditor {
     }
 
     paintCurrentTime(currentTime: number) {
-        if (this.getPixelAt(currentTime) >= this.canvas.width) {
+        if (this.getPixelAt(currentTime) >= this.actualTimeLine.width + TIMELINE_PADDING.left) {
             this.player.resetPlayer();
         }
         this.setCurrentTime(currentTime);

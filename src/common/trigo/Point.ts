@@ -17,6 +17,10 @@ export class Point {
         return this;
     }
 
+    translateBy(offset: Point) {
+        return this.translate(offset.x, offset.y);
+    }
+
     distanceTo(point: Point): Point {
         return new Point(
             point.x - this.x,
@@ -26,6 +30,10 @@ export class Point {
 
     get length(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    invert(): Point {
+        return new Point(-this.x, -this.y);
     }
 
     constrain(bounds: Rectangle): Point {
@@ -42,8 +50,13 @@ export class Point {
         return this;
     }
 
+    scale(factor: number): Point {
+        this.x *= factor;
+        this.y *= factor;
+        return this;
+    }
+
     clone(): Point {
         return new Point(this.x, this.y);
     }
-
 }

@@ -52,6 +52,9 @@ export class Scene {
     }
 
     setupImages(images: Images): Scene {
+        if (!images) {
+            return this;
+        }
         this.backgrounds.forEach(background => background.setupImage(images));
         this.panels.forEach(panel => panel.setupCharacterImages(images));
         return this;
