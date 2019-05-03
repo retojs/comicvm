@@ -1,7 +1,7 @@
 import { Margin } from "../../common/style/Margin";
 
 
-export enum CharacterPositionLayoutLevel {
+export enum LayoutLevel {
     DEFAULT = 0,
     SCENE = 1,
     BACKGROUND = 2,
@@ -41,7 +41,7 @@ export class ProportionsConfig {
 export class PageConfig {
 
     width = 2100;
-    height = Math.round(2100 * Math.sqrt(2));
+    height = Math.round(this.width * PageConfig.proportion);
 
     padding = new Margin(50, 40);
 
@@ -53,8 +53,8 @@ export class PageConfig {
         return this.height - this.padding.vertical;
     }
 
-    get proportion() {
-        return Math.sqrt(2);
+    static get proportion() {
+        return Math.sqrt(1.618);
     }
 }
 
@@ -113,7 +113,7 @@ export class LayoutConfig {
     static panel = new PanelConfig();
     static bubble = new BubbleConfig();
 
-    static characterPositionLayoutLevel = CharacterPositionLayoutLevel.PANEL;
+    static layoutLevel = LayoutLevel.PANEL;
 
     static applyZoom = true;
     static applyPanning = true;

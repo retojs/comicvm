@@ -1,5 +1,5 @@
 import { LayoutConfig, PanelWidthsConfig, StripHeightsConfig } from "../Layout.config";
-import { PlotItem, STORY_TELLER } from "../../plot/PlotItem";
+import { PlotItem } from "../../plot/PlotItem";
 import { Scene } from "../../model/Scene";
 import { Page } from "../../model/Page";
 import { Strip } from "../../model/Strip";
@@ -8,6 +8,7 @@ import { Rectangle } from "../../../common/trigo/Rectangle";
 import { Canvas } from "../../../common/dom/Canvas";
 import { BubbleLayoutEngine } from "./BubbleLayoutEngine";
 import { CharacterLayoutEngine } from "./CharacterLayoutEngine";
+import { validatePageShape, validatePanelShape, validateStripShape } from "./validation";
 
 export class LayoutEngine {
 
@@ -18,13 +19,6 @@ export class LayoutEngine {
 
     constructor(scene: Scene) {
         this.scene = scene;
-
-        if (this.scene.layoutProperties && this.scene.layoutProperties.characters) {
-            this.scene.characters = this.scene.layoutProperties.characters;
-        } else {
-            this.scene.characters = scene.plot.characters.filter(ch => ch !== STORY_TELLER);
-        }
-
         this.bubbleLayoutEngine = new BubbleLayoutEngine();
         this.characterLayoutEngine = new CharacterLayoutEngine();
     }
@@ -40,8 +34,8 @@ export class LayoutEngine {
 
         let plotItemIndex = 0;
         this.scene.panels.forEach(panel => {
-            panel.setPlotItems(plotItems.slice(plotItemIndex, plotItemIndex + panel.layoutProperties.plotItemCount));
-            plotItemIndex += panel.layoutProperties.plotItemCount;
+            panel.setPlotItems(plotItems.slice(plotItemIndex, plotItemIndex + panel.layout.plotItemCount));
+            plotItemIndex += panel.layout.plotItemCount;
         });
 
         return this;
@@ -66,10 +60,12 @@ export class LayoutEngine {
             LayoutConfig.page.height
         );
 
-        if (!(page.stripConfig && page.stripConfig.hasProportions)) {
-            page.stripConfig = StripHeightsConfig.createDefault(page.strips.length);
+        validatePageShape(page);
+
+        if (!(page.stripHeightsConfig && page.stripHeightsConfig.hasProportions)) {
+            page.stripHeightsConfig = StripHeightsConfig.createDefault(page.strips.length);
         }
-        page.strips.forEach(strip => this.layoutStrip(strip, page.stripConfig));
+        page.strips.forEach(strip => this.layoutStrip(strip, page.stripHeightsConfig));
     }
 
     layoutStrip(strip: Strip, stripConfig: StripHeightsConfig) {
@@ -80,10 +76,12 @@ export class LayoutEngine {
 
         strip.shape = new Rectangle(x, y, width, height);
 
-        if (!(strip.panelConfig && strip.panelConfig.hasProportions)) {
-            strip.panelConfig = PanelWidthsConfig.createDefault(strip.panels.length);
+        validateStripShape(strip);
+
+        if (!(strip.panelWidthsConfig && strip.panelWidthsConfig.hasProportions)) {
+            strip.panelWidthsConfig = PanelWidthsConfig.createDefault(strip.panels.length);
         }
-        strip.panels.forEach(panel => this.layoutPanelShape(panel, strip.panelConfig));
+        strip.panels.forEach(panel => this.layoutPanelShape(panel, strip.panelWidthsConfig));
     }
 
     layoutPanelShape(panel: Panel, panelConfig: PanelWidthsConfig) {
@@ -100,11 +98,9 @@ export class LayoutEngine {
         width -= LayoutConfig.panel.margin.horizontal;
         height -= LayoutConfig.panel.margin.vertical;
 
-        if (width < 0 && height < 0) {
-            console.error("Can not layout", panel.toString());
-            return;
-        }
         panel.shape = new Rectangle(x, y, width, height);
+
+        validatePanelShape(panel);
     }
 
     layoutPanelsContent(panels: Panel[], canvas: Canvas) {
@@ -112,7 +108,7 @@ export class LayoutEngine {
         this.bubbleLayoutEngine.layout(this.scene.panels, canvas);
     }
 
-    layoutPanelContent(panel: Panel, canvas: Canvas){
+    layoutPanelContent(panel: Panel, canvas: Canvas) {
         this.characterLayoutEngine.layoutCharacters(panel);
         this.bubbleLayoutEngine.layoutPanel(panel, canvas);
     }

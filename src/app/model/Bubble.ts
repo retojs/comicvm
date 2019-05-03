@@ -1,7 +1,8 @@
 import { Rectangle } from "../../common/trigo/Rectangle";
 import { TextBox } from "./TextBox";
-import { STORY_TELLER } from "../plot/PlotItem";
+import { NARRATOR } from "../plot/PlotItem";
 import { BubblePointer } from "./BubblePointer";
+import { AnimationTimeProperties } from "../play/AnimationTimeProperties";
 
 export class Bubble {
 
@@ -12,6 +13,8 @@ export class Bubble {
     shape: Rectangle;
 
     pointers: BubblePointer[];
+
+    animationTimeProperties: AnimationTimeProperties;
 
     constructor(who: string[], says: string) {
         this.says = says;
@@ -34,6 +37,6 @@ export class Bubble {
     }
 
     get isOffScreen(): boolean {
-        return this.who && this.who[0] === STORY_TELLER;
+        return this.who && this.who[0] === NARRATOR;
     }
 }

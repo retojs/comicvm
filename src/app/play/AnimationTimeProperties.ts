@@ -1,6 +1,6 @@
 import { Transition } from "./transitions/Transition";
 
-export class PanelTimelineProperties {
+export class AnimationTimeProperties {
 
     start: number;
     end: number;

@@ -2,7 +2,7 @@ import { BubbleLayoutEngine } from "./BubbleLayoutEngine";
 import { Canvas } from "../../../common/dom/Canvas";
 import { LayoutEngine } from "./LayoutEngine";
 import { SAMPLE_PLOT } from "../../plot/sample.plot";
-import { SAMPLE_LAYOUT } from "../sample.layout";
+import { SAMPLE_LAYOUT } from "../sample-layout/sample.layout";
 import { Bubble } from "../../model/Bubble";
 import { Scene } from "../../model/Scene";
 

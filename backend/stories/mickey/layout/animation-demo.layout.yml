@@ -1,38 +1,35 @@
----
-panelProperties:
-  - plotItemCount
-  - animation
-  - zoom
 pages:
-  # page 1
-  - strips:
-      # upper strip
-      - panels:
-          - - 3
-            - { zoom: 0, pan: [-2.5, 0]}
-            - 0.5
-          - - 2
-            - { zoom: 0.25, pan: []}
-            - 0.75
-      - panels:
-          - - 1
-            - { zoom: -0.25, pan: [] }
-          - - 1
-            - { zoom: -0.75, pan: [-0.5, 0] }
-      - panels:
-          - - 1
-            - { zoom: -0.25, pan: [0.25, -0.25] }
-            - 0.75
-          - - 1
-            - { zoom: 0, pan: [0.5, 0.25] }
-            - 0.75
-      - panels:
-          - - 2
-            - { zoom: 0, pan: [1.5, 0] }
-            - 0.75
-          - - 2
-            - { zoom: 0.5, pan: [-0.75, 0] }
-            - 1
-scene:
-  backgroundId: "strangeland"
-  pan: [0, 0.25]
+  - # page 1
+    strips:
+      - # strip 1
+        panels:
+          - [ 3, { zoom: 0.50,
+                   animate: { pan: { x: -2.5 }}}]
+
+          - [ 2, { zoom: 0.75,
+                   animate: { zoom: 0.25 }}]
+
+      - # strip 2
+        panels:
+          - [ 1, { animate: { zoom: -0.25 }}]
+
+          - [ 1, { animate: { zoom: -0.75, pan: { x: -0.5 }}}]
+
+      - # strip 3
+        panels:
+          - [ 2, { zoom: 0.75,
+                   animate: { zoom: -0.25, pan: { x: 0.25, y: -0.25 }}}]
+
+          - [ 1, { zoom: 0.75,
+                   animate: { pan: { x: 0.5, y: 0.25 }}}]
+      - # strip 4
+        panels:
+          - [ 2, { zoom: 0.75,
+                   animate: { pan: { x: 1.5 }}}]
+
+          - [ 2, { animate: { zoom: 0.5, pan: { x: -0.75 }}}]
+
+backgroundId: "strangeland"
+pan: { x: 0, y: 0.25 }
+zoom: 1.25
+Minnie: look-left

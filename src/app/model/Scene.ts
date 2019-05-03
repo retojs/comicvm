@@ -1,31 +1,39 @@
 import { Page } from "./Page";
 import { Background } from "./Background";
 import { Panel } from "./Panel";
-import { SceneLayoutProperties } from "../layout/LayoutProperties";
+import { extractQualifiers, SceneOrBackgroundLayout } from "../layout/Layout";
 import { LayoutParser } from "../layout/LayoutParser";
 import { Plot } from "../plot/Plot";
 import { LayoutEngine } from "../layout/engine/LayoutEngine";
 import { Canvas } from "../../common/dom/Canvas";
 import { Images } from "../images/Images";
 import { Point } from "../../common/trigo/Point";
+import { NARRATOR } from "../plot/PlotItem";
 
 export class Scene {
 
     name: string;
 
     plot: Plot;
-    layout: string;
+    layoutYaml: string;
     layoutParser: LayoutParser;
-    layoutProperties: SceneLayoutProperties;
+    layout: SceneOrBackgroundLayout;
 
     pages: Page[] = [];
     panels: Panel[] = [];
     backgrounds: Background[] = [];
-    characters: (string | string[])[];
 
-    constructor(name: string, layout: string, plot: string) {
+    get characters(): (string | string[])[] {
+        if (this.layout && this.layout.characters) {
+            return this.layout.characters;
+        } else {
+            return this.plot.characters.filter(ch => ch !== NARRATOR);
+        }
+    };
+
+    constructor(name: string, layoutYaml: string, plot: string) {
         this.name = name;
-        this.layout = layout;
+        this.layoutYaml = layoutYaml;
         this.plot = new Plot(plot);
     }
 
@@ -33,7 +41,6 @@ export class Scene {
         this.pages = [];
         this.panels = [];
         this.backgrounds = [];
-        this.characters = [];
     }
 
     setup(canvas: Canvas, images?: Images): Scene {
@@ -51,13 +58,29 @@ export class Scene {
         return this;
     }
 
+
     setupImages(images: Images): Scene {
-        if (!images) {
-            return this;
+        if (images) {
+            this.setupCharacterQualifier();
+            this.backgrounds.forEach(background => background.setupImage(images));
+            this.panels.forEach(panel => panel.setupCharacterImages(images));
         }
-        this.backgrounds.forEach(background => background.setupImage(images));
-        this.panels.forEach(panel => panel.setupCharacterImages(images));
         return this;
+    }
+
+    setupCharacterQualifier() {
+        const qualifiers = [
+            ...extractQualifiers(this.layout),
+            ...this.backgrounds.reduce((qualifiers, background) => [
+                ...qualifiers,
+                ...extractQualifiers(background.layout)
+            ], [])
+        ];
+
+        this.panels.forEach(panel => panel.addAllCharacterQualifiers([
+            ...qualifiers,
+            ...extractQualifiers(panel.layout)
+        ]));
     }
 
     addPage(page: Page) {

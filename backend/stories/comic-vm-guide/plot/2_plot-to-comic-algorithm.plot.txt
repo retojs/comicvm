@@ -1,0 +1,59 @@
+Title: How does ComicVM put a plot into Comics?
+
+Characters: Stranger, Expert
+
+Place: ComicVM Site
+_____
+Plot:
+
+Expert:
+    So you wanted to know how ComicVM puts a plot into Comics.
+Stranger:
+    Yup.
+Expert:
+    First of all the plot is parsed into a series of plot items.
+
+Show the plot items next to this comic.
+
+    A plot item is equivalent to a sentence in natural language:
+    It specifies who (subject) does (verb) what how to whom etc. (objects, adjectives, adverbs, prepositions, you name it.)
+
+    Secondly your layout yaml defines how to place panels on pages
+    and how many plot items should be illustrated in each panel.
+
+    Let's write a sample plot and the layout yaml for it together.
+
+Stranger:
+    Yay!
+
+----
+
+Expert:
+    A plot always starts with a title,
+    a list of characters
+    and it specifies where the scene takes place.
+
+// TODO make clear that a plot is always for one scene
+
+    The layout yaml file
+    defines panels in strips in pages like this:
+
+Show the layout yaml
+
+Expert:
+    As always ComicVM takes the simplest approach:
+    Put all characters involved in the plot items next to each other into the panel.
+Stranger:
+    That's it?
+Expert:
+    It all starts from that,
+    but we need a few more things of course.
+
+    Plot items describing dialog simply specify what someone says.
+    ComicVM puts all this dialog into speech bubbles pointing to the speaker.
+    All other action described in the plot items has to be illustrated with images.
+    So we need images for characters and background.
+
+
+    The background image we specify for each panel.
+

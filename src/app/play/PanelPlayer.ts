@@ -25,8 +25,9 @@ export class PanelPlayer extends Player {
         this.comicVM = comicVM;
         this.layoutEngine = new LayoutEngine(comicVM.currentScene);
         this.panelPainter = new PanelPainter(comicVM.canvas);
+        this.panelPainter.animateBubbles = true;
 
-        this.setPanelTimelineProperties(this.panels);
+        this.setAnimationTimeProperties(this.panels);
         this.renderFrameFn = this.paintPanels.bind(this);
     }
 
@@ -42,8 +43,8 @@ export class PanelPlayer extends Player {
         return this.comicVM.images;
     }
 
-    setPanelTimelineProperties(panels: Panel[]) {
-        this.animationDuration = Timeline.applyPanelTimelineProperties(panels);
+    setAnimationTimeProperties(panels: Panel[]) {
+        this.animationDuration = Timeline.applyAnimationTimeProperties(panels);
     }
 
     paintPanels(time: number) {

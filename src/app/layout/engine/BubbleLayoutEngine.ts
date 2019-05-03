@@ -5,6 +5,7 @@ import { Rectangle } from "../../../common/trigo/Rectangle";
 import { Bubble } from "../../model/Bubble";
 import { TextBox } from "../../model/TextBox";
 import { BubblePointer } from "../../model/BubblePointer";
+import { validatePanelShape } from "./validation";
 
 export class BubbleLayoutEngine {
 
@@ -12,14 +13,16 @@ export class BubbleLayoutEngine {
 
     layout(panels: Panel[], canvas: Canvas) {
         panels
-            .filter(panel => !!panel.shape && panel.shape.width > 0 && panel.shape.height > 0)
             .filter(panel => !!panel.bubbles && panel.bubbles.length > 0)
             .forEach(panel => this.layoutPanel(panel, canvas));
     }
 
     layoutPanel(panel: Panel, canvas: Canvas) {
+        validatePanelShape(panel);
+
         this.canvas = canvas;
         this.canvas.setFont(this.canvas.font);
+
         this.createBubbleShapes(panel);
         this.layoutOffscreenBubble(panel);
         this.layoutBubblesIntoLines(panel);

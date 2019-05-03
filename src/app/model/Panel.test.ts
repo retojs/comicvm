@@ -3,6 +3,7 @@ import { Panel } from "./Panel";
 import { Character } from "./Character";
 import { Qualifier } from "./Qualifier";
 import { Scene } from "./Scene";
+import { SceneOrBackgroundLayout } from "../layout/Layout";
 
 describe("Panel", () => {
 
@@ -12,7 +13,9 @@ describe("Panel", () => {
     beforeEach(() => {
         panel = new Panel(0, 0);
         panel.scene = new Scene("", "", "");
-        panel.scene.characters = ["Walt", "Mickey", "Minnie", "Goofy", "Weirdo"];
+        panel.scene.layout = {
+            characters: ["Walt", "Mickey", "Minnie", "Goofy", "Weirdo"]
+        } as SceneOrBackgroundLayout;
 
         plotItems = [
             new PlotItem({

@@ -1,99 +1,37 @@
-import { ScenePainter } from "../app/paint/ScenePainter";
-import { Canvas } from "../common/dom/Canvas";
-import { Scene } from "../app/model/Scene";
 import { DomElementContainer } from "../common/dom/DomElement";
 import { LayoutConfig, } from "../app/layout/Layout.config";
 import { PaintConfig } from "../app/paint/Paint.config";
 import { Div } from "../common/dom/Div";
-import { ComicVmCanvas } from "../app/paint/ComicVmCanvas";
 import { Demo } from "./Demo";
 import { ParameterInput } from "./components/ParameterInput";
 import { Margin } from "../common/style/Margin";
-
-const plot = `
-Title: Character Position Test
-
-Characters: Mickey, Minnie, Goofy
-
-Place: Duckburgh
-_____
-Plot:
-
-Mickey to Goofy:
-    Hey Goofy
-Goofy to Mickey:
-    Hey Mickey
-Mickey to Goofy:
-    Are you alright, Goofy? 
-Goofy to Mickey:
-    Sure, Mickey, why are you asking?
-Mickey to Goofy:
-    It's just...
-Minnie to Goofy: 
-    You look like shit, Goofy!
-Goofy to Minnie:
-    I can't believe you just said that. 
-Mickey to Goofy:
-    She didn't mean to be rude.
-    But you look aweful.
-    When was the last time you slept?
-Goofy to Mickey:
-    Hmm... Tuesday?
-Mickey to Goofy:
-    What?!
-    It's Friday now.
-Minnie to Goofy:
-    What the fuck happened?! 
-`;
-
-
-const layout = `
----
-panelProperties: [plotItemCount]
-pages:
-  # page 1
-  - stripHeights: [0.4, 0.3, 0.3] 
-    strips:
-      # upper strip
-      - panels:
-          - [2]
-          - [2]
-      # middle strip
-      - panelWidths: [0.35, 0.3, 0.35]
-        panels:
-          - [2]
-          - [1]
-          - [2]
-      # lower strip
-      - panels:
-          - [3]
-          - [3]
-scene:
-  pan: [0, 1]
-`;
-
+import { ComicVM } from "../app/ComicVM";
 
 export class BubbleDemo implements Demo {
 
     name = "Bubble Demo";
     desc = "This Example demonstrated how bubbles are arranged in panels";
 
-    canvas: Canvas;
-    scene: Scene;
-    scenePainter: ScenePainter;
+    comicVM: ComicVM;
 
     create(container: DomElementContainer) {
-        this.canvas = new ComicVmCanvas(container);
-        this.scene = new Scene("Mickey", layout, plot).setup(this.canvas);
-        this.scenePainter = ScenePainter.paintScene(this.scene, this.canvas);
+        ComicVM.loadStory("Mickey")
+            .then(comicVM => {
+                console.log("comicVM created:", comicVM);
+
+                this.comicVM = comicVM;
+                this.comicVM.setupScene("bubble-demo", container);
+
+                this.repaint();
+            });
 
         this.createInputs(container);
     }
 
     repaint() {
         window.requestAnimationFrame(() => {
-            this.scene.setup(this.canvas);
-            this.scenePainter.paintScene();
+            this.comicVM.currentScene.executeLayout(this.comicVM.canvas).setupImages(this.comicVM.images);
+            this.comicVM.repaintScene();
         });
     }
 

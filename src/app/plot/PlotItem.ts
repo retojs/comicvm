@@ -1,6 +1,6 @@
 import { Qualifier } from "../model/Qualifier";
 
-export const STORY_TELLER = "STORYTELLER";
+export const NARRATOR = "NARRATOR";
 
 export enum PlotItemType {
     SAYS = "says",

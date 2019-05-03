@@ -1,4 +1,4 @@
-import {PlotItem, PlotItemType, STORY_TELLER} from "./PlotItem";
+import {PlotItem, PlotItemType, NARRATOR} from "./PlotItem";
 
 describe("PlotItem", () => {
 
@@ -27,10 +27,10 @@ describe("PlotItem", () => {
 
         it("assigns stuff the story teller says to the _told property", () => {
             plotItem = new PlotItem({
-                who: [STORY_TELLER],
+                who: [NARRATOR],
                 says: "Once upon a time...   "
             });
-            expect(plotItem.who).toEqual([STORY_TELLER]);
+            expect(plotItem.who).toEqual([NARRATOR]);
             expect(plotItem._action).toEqual("Once upon a time...");
             expect(plotItem.says).toEqual("Once upon a time...");
             expect(plotItem._type).toBe(PlotItemType.SAYS);

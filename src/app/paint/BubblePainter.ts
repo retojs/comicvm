@@ -14,9 +14,12 @@ export class BubblePainter {
         this.canvas = canvas;
     }
 
-    paintBubbles(panel: Panel) {
+    paintBubbles(panel: Panel, animateBubbles: boolean = false) {
         panel.bubbles
             .filter(bubble => !!bubble.shape)
+            .filter(bubble => animateBubbles && bubble.animationTimeProperties
+                ? bubble.animationTimeProperties.start <= panel.animationTime * panel.animationTimeProperties.duration
+                : true)
             .forEach(bubble => {
                 if (bubble.isOffScreen) {
                     this.canvas.rect(bubble.shape, PaintConfig.of.bubble.textBox);

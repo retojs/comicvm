@@ -12,6 +12,8 @@
  Image = BackgroundImage | CharacterImage
  Plot = { PlotItems }
  PlotItem = Who, Action, WhoWith, Qualifier (...?)
+ Qualifier = Who, How
+ Layout = ...
 
  # Einfachstes Beispiel:
 

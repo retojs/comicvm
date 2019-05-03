@@ -1,4 +1,4 @@
-import { Endpoints } from "../app/backend/Endpoints";
+import { Endpoints } from "../backend/Endpoints";
 import { Img } from "../common/dom/Img";
 import { TextArea } from "../common/dom/TextArea";
 import { Div } from "../common/dom/Div";
@@ -9,7 +9,7 @@ import { ImageType } from "../app/images/ImageType";
 import { ImageEditor } from "./components/ImageEditor";
 import { Button } from "../common/dom/Button";
 import { Images, SIZE_STRING_REG_EXP } from "../app/images/Images";
-import { Story } from "../app/model/Story";
+import { StoryLoader } from "../backend/StoryLoader";
 
 const UNSAVED_CHANGE_STYLE_CLASS = "unsaved-change";
 
@@ -46,7 +46,7 @@ export class ImagesDemo implements Demo {
 
         const textContainer = new Div(storyContentContainer, "images-demo__text", "<h2>Plot and Layout</h2>");
 
-        Story.load(this.story)
+        StoryLoader.load(this.story)
             .then(story => {
                 story.scenes.forEach(scene => {
 
@@ -57,7 +57,7 @@ export class ImagesDemo implements Demo {
                     plotTextArea.setText(scene.plot.input);
 
                     const layoutTextArea = new TextArea(sceneContainer, 100, 20);
-                    layoutTextArea.setText(scene.layout);
+                    layoutTextArea.setText(scene.layoutYaml);
                 });
 
                 story.images.images.forEach(img => {
@@ -66,7 +66,9 @@ export class ImagesDemo implements Demo {
                     } else {
                         const characterImage = new Img(characterImageContainer, img.src, 100, 120);
                         if (img.src.indexOf(this.initialImage) > -1) {
-                            this.createImageEditor(imageEditorContainer, characterImage);
+                            if (!this.imageEditor) {
+                                this.createImageEditor(imageEditorContainer, characterImage);
+                            }
                         }
                         characterImage.onClick = (event: MouseEvent) => this.changeImage(event.target as HTMLImageElement);
                     }

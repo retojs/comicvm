@@ -9,6 +9,7 @@ import { Heading } from "../common/dom/Heading";
 import { PanelPropertiesEditor } from "./components/PanelPropertiesEditor";
 import { Panel } from "../app/model/Panel";
 import { PaintStyleConfig } from "../common/style/PaintStyle";
+import { PageConfig } from "../app/layout/Layout.config";
 
 const SELECTED_PANEL_BORDER = PaintStyleConfig.stroke("teal", 16);
 
@@ -31,6 +32,10 @@ export class BackgroundImageSizeDemo implements Demo {
 
     create(container: DomElementContainer) {
 
+        this.root = new Div(container, "background-image-demo",
+            new Heading(null, 2, "Panel Bounding Box")
+        );
+
         ComicVM.loadStory("Mickey")
             .then(comicVM => {
                 console.log("comicVM created:", comicVM);
@@ -38,16 +43,12 @@ export class BackgroundImageSizeDemo implements Demo {
                 this.comicVM = comicVM;
                 this.comicVM.setCurrentScene("animation-demo");
 
-                this.root = new Div(container, "background-image-demo",
-                    new Heading(null, 2, "Panel Bounding Box")
-                );
-
                 this.setupPanelSelection();
 
                 this.panelBBoxViewer = new PanelBoundingBoxViewer(
                     this.root,
                     this.panelBBoxViewerWidth,
-                    Math.round(this.comicWidth * Math.sqrt(2))
+                    Math.round(this.comicWidth * PageConfig.proportion)
                 );
 
                 this.panelPropertiesEditor = new PanelPropertiesEditor(this.panelBBoxViewer,
@@ -74,7 +75,7 @@ export class BackgroundImageSizeDemo implements Demo {
         panelSelectionCanvas.class = "panel-selection-page";
         panelSelectionCanvas.setDimensions(
             this.comicWidth,
-            Math.round(this.comicWidth * Math.sqrt(2))
+            Math.round(this.comicWidth * PageConfig.proportion)
         );
         this.comicVM.paintCurrentScene(panelSelectionCanvas);
 

@@ -3,16 +3,16 @@ import { Page } from "./Page";
 import { Strip } from "./Strip";
 import { Background } from "./Background";
 import { Rectangle } from "../../common/trigo/Rectangle";
-import { PlotItem, STORY_TELLER } from "../plot/PlotItem";
-import { flatCharacters, PanelLayoutProperties } from "../layout/LayoutProperties";
+import { NARRATOR, PlotItem } from "../plot/PlotItem";
+import { flatCharacters, getPanAsObject, Pan, PanelLayout } from "../layout/Layout";
 import { Character } from "./Character";
 import { Qualifier } from "./Qualifier";
 import { Bubble } from "./Bubble";
-import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/Layout.config";
+import { LayoutConfig, LayoutLevel } from "../layout/Layout.config";
 import { Images } from "../images/Images";
 import { Img } from "../../common/dom/Img";
 import { ImageQuery } from "../images/ImageQuery";
-import { PanelTimelineProperties } from "../play/PanelTimelineProperties";
+import { AnimationTimeProperties } from "../play/AnimationTimeProperties";
 
 export class Panel {
 
@@ -37,12 +37,12 @@ export class Panel {
 
     plotItems: PlotItem[] = [];
 
-    layoutProperties: PanelLayoutProperties;
+    layout: PanelLayout;
 
     shape: Rectangle;
     backgroundImageShape: Rectangle;
 
-    timelineProperties: PanelTimelineProperties;
+    animationTimeProperties: AnimationTimeProperties;
 
     _animationTime: number;
 
@@ -51,7 +51,8 @@ export class Panel {
     }
 
     get animationTime(): number {
-        return Math.min(1.0, Math.max(0.0, this._animationTime || 0.0));
+        const animationTime = this._animationTime != null ? this._animationTime : 0.5;
+        return Math.min(1.0, Math.max(0.0, animationTime));
     }
 
     get backgroundImageStartShape(): Rectangle {
@@ -124,9 +125,9 @@ export class Panel {
     extractCharacters(plotItems: PlotItem[]): void {
         this.resetCharacters();
 
-        if (this.background && this.background.layoutProperties && this.background.layoutProperties.characters) {
-            this.characterGroups = this.background.layoutProperties.characters;
-            this.characterNames = flatCharacters(this.background.layoutProperties.characters);
+        if (this.background && this.background.layout && this.background.layout.characters) {
+            this.characterGroups = this.background.layout.characters;
+            this.characterNames = flatCharacters(this.background.layout.characters);
         } else {
             this.characterGroups = this.scene.characters;
             this.characterNames = flatCharacters(this.scene.characters);
@@ -134,6 +135,12 @@ export class Panel {
 
         this.characterNames.forEach(name => this.addCharacter(name as string));
 
+        this.extractActors(plotItems);
+        this.extractCharacterQualifier(plotItems);
+        this.actorSlice = this.getCharacterSlice(this.actors);
+    }
+
+    extractActors(plotItems: PlotItem[]): void {
         plotItems
             .filter(plotItem => plotItem.who && plotItem.who.length > 0)
             .forEach(plotItem =>
@@ -150,19 +157,19 @@ export class Panel {
                 })
             );
 
-        // maintain order
+        // align order
         this.actors = this.characterNames
             .reduce((actors, name) => [...actors, this.getActor(name)], [])
             .filter(actor => !!actor);
+    }
 
+    extractCharacterQualifier(plotItems: PlotItem[]): void {
         plotItems
             .filter(plotItem => plotItem.how && plotItem.how.length > 0)
             .forEach(plotItem =>
                 plotItem.how.forEach(qualifier =>
                     this.addCharacterQualifier(qualifier))
             );
-
-        this.actorSlice = this.getCharacterSlice(this.actors);
     }
 
     extractBubbles(plotItems: PlotItem[]) {
@@ -174,7 +181,7 @@ export class Panel {
     }
 
     addActor(name: string): void {
-        if (!this.getActor(name) && !(name === STORY_TELLER)) {
+        if (!this.getActor(name) && !(name === NARRATOR)) {
             const character = this.getCharacter(name);
             if (character) {
                 this.actors.push(character);
@@ -184,7 +191,7 @@ export class Panel {
     }
 
     addCharacter(name: string): void {
-        if (!this.getCharacter(name) && !(name === STORY_TELLER)) {
+        if (!this.getCharacter(name) && !(name === NARRATOR)) {
             const character = new Character(name);
             this.characters.push(character);
             this.charactersByName[character.name] = character;
@@ -196,6 +203,12 @@ export class Panel {
         if (character) {
             character.addQualifier(qualifier.how);
         }
+    }
+
+    addAllCharacterQualifiers(qualifiers: Qualifier[]): void {
+        qualifiers
+            .filter(qualifier => qualifier != null)
+            .forEach(this.addCharacterQualifier.bind(this));
     }
 
     addBubble(plotItem: PlotItem) {
@@ -317,28 +330,25 @@ export class Panel {
     get staticZoom(): number {
         let zoom = 1.0;
 
-        if (CharacterPositionLayoutLevel.DEFAULT < LayoutConfig.characterPositionLayoutLevel
-            && this.scene.layoutProperties) {
-            zoom *= this.scene.layoutProperties.zoom || 1;
+        if (LayoutLevel.DEFAULT < LayoutConfig.layoutLevel && this.scene.layout) {
+            zoom *= this.scene.layout.camera.zoom || 1;
         }
-        if (CharacterPositionLayoutLevel.BACKGROUND <= LayoutConfig.characterPositionLayoutLevel
-            && this.background.layoutProperties) {
-            zoom *= this.background.layoutProperties.zoom || 1;
+        if (LayoutLevel.BACKGROUND <= LayoutConfig.layoutLevel && this.background.layout) {
+            zoom *= this.background.layout.camera.zoom || 1;
         }
-        if (CharacterPositionLayoutLevel.PANEL === LayoutConfig.characterPositionLayoutLevel
-            && this.layoutProperties) {
-            zoom *= this.layoutProperties.zoom || 1;
+        if (LayoutLevel.PANEL === LayoutConfig.layoutLevel && this.layout) {
+            zoom *= this.layout.camera.zoom || 1;
         }
 
         return zoom;
     }
 
     animateZoom(time: number, zoom: number): number {
-        if (this.layoutProperties.animation) {
-            const animZoom = this.layoutProperties.animation.zoom;
+        if (this.layout.animation && this.layout.animation.zoom) {
+            const animZoom = this.layout.animation.zoom;
 
             // animated zoom requirement:
-            // if (layoutProperties.animation.zoom = 0) then zoom = zoom during the whole animation
+            //  if (layoutProperties.animation.zoom = 0) then zoom = zoom during the whole animation
 
             zoom *= Math.max(0, 1 + time * animZoom - animZoom / 2);
 
@@ -347,54 +357,55 @@ export class Panel {
         return zoom;
     }
 
-    get panning(): [number, number] {
-        return this.animatePanning(this.animationTime, ...this.staticPanning);
+    get panObject(): Pan {
+        return getPanAsObject(this.pan);
     }
 
-    get panningStart(): [number, number] {
-        return this.animatePanning(0, ...this.staticPanning);
+    get pan(): [number, number] {
+        return this.animatePan(this.animationTime, ...this.staticPan);
     }
 
-    get panningEnd(): [number, number] {
-        return this.animatePanning(1, ...this.staticPanning);
+    get panStart(): [number, number] {
+        return this.animatePan(0, ...this.staticPan);
     }
 
-    get staticPanning(): [number, number] {
+    get panEnd(): [number, number] {
+        return this.animatePan(1, ...this.staticPan);
+    }
 
-        let panning = {x: 0, y: 0};
+    private get staticPan(): [number, number] {
 
-        if (CharacterPositionLayoutLevel.DEFAULT < LayoutConfig.characterPositionLayoutLevel
-            && hasPanning(this.scene.layoutProperties)) {
-            panning.x += (this.scene.layoutProperties.pan)[0];
-            panning.y += (this.scene.layoutProperties.pan)[1];
-        }
-        if (CharacterPositionLayoutLevel.BACKGROUND <= LayoutConfig.characterPositionLayoutLevel
-            && hasPanning(this.background.layoutProperties)) {
-            panning.x += (this.background.layoutProperties.pan)[0];
-            panning.y += (this.background.layoutProperties.pan)[1];
-        }
-        if (CharacterPositionLayoutLevel.PANEL === LayoutConfig.characterPositionLayoutLevel
-            && hasPanning(this.layoutProperties)) {
-            panning.x += (this.layoutProperties.pan)[0];
-            panning.y += (this.layoutProperties.pan)[1];
-        }
-        return [panning.x, panning.y];
+        let pan = {x: 0, y: 0};
 
-        function hasPanning(layoutProperties: any) {
-            return layoutProperties && layoutProperties.pan && layoutProperties.pan.length > 0;
+        if (LayoutLevel.DEFAULT < LayoutConfig.layoutLevel && hasPan(this.scene.layout)) {
+            pan.x += this.scene.layout.camera.pan.x || 0;
+            pan.y += this.scene.layout.camera.pan.y || 0;
+        }
+        if (LayoutLevel.BACKGROUND <= LayoutConfig.layoutLevel && hasPan(this.background.layout)) {
+            pan.x += this.background.layout.camera.pan.x || 0;
+            pan.y += this.background.layout.camera.pan.y || 0;
+        }
+        if (LayoutLevel.PANEL === LayoutConfig.layoutLevel && hasPan(this.layout)) {
+            pan.x += this.layout.camera.pan.x || 0;
+            pan.y += this.layout.camera.pan.y || 0;
+        }
+        return [pan.x, pan.y];
+
+        function hasPan(layout: any) {
+            return layout && layout.camera && layout.camera.pan;
         }
     }
 
-    animatePanning(time: number, x: number, y: number): [number, number] {
-        if (this.layoutProperties.animation) {
+    animatePan(time: number, x: number, y: number): [number, number] {
+        if (this.layout.animation && this.layout.animation.pan) {
 
             // animation.pan = [1, 0] means
             //  - at duration 0 pan.x := pan.x - 0.5
             //  - at duration 1 pan.x := pan.x + 0.5
             //  - pan.y := pan.y at any time
 
-            x += (time - 0.5) * this.layoutProperties.animation.pan[0] || 0;
-            y += (time - 0.5) * this.layoutProperties.animation.pan[1] || 0;
+            x += (time - 0.5) * (this.layout.animation.pan.x || 0);
+            y += (time - 0.5) * (this.layout.animation.pan.y || 0);
 
             // TODO transition function (ease in / out etc.)
         }

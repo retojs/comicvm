@@ -1,5 +1,5 @@
 import {Plot} from "./Plot";
-import {PlotItem, STORY_TELLER} from "./PlotItem";
+import {PlotItem, NARRATOR} from "./PlotItem";
 
 describe("Plot", () => {
 
@@ -42,7 +42,7 @@ describe("Plot", () => {
             CharacterS: ${characters}
             plot: ...
         `);
-        expect(plot.characters).toEqual(characters.concat([STORY_TELLER]));
+        expect(plot.characters).toEqual(characters.concat([NARRATOR]));
 
         plot = new Plot("invalid");
         expect(plot.characters).toEqual([]);

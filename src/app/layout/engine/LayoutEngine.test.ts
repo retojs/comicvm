@@ -1,7 +1,7 @@
 import { LayoutEngine } from "./LayoutEngine";
-import { STORY_TELLER } from "../../plot/PlotItem";
+import { NARRATOR } from "../../plot/PlotItem";
 import { SAMPLE_PLOT } from "../../plot/sample.plot";
-import { SAMPLE_LAYOUT } from "../sample.layout";
+import { SAMPLE_LAYOUT } from "../sample-layout/sample.layout";
 import { Scene } from "../../model/Scene";
 
 describe("LayoutEngine", () => {
@@ -18,13 +18,13 @@ describe("LayoutEngine", () => {
     });
 
     it("the constructor assigns the list of characters from the plot to the scene", () => {
-        expect(scene.characters).toEqual(scene.plot.characters.filter(ch => ch !== STORY_TELLER));
+        expect(scene.characters).toEqual(scene.plot.characters.filter(ch => ch !== NARRATOR));
     });
 
     it("method assignPlotItems distributes the plot items among the panels", () => {
         scene.panels.forEach(panel => {
             expect(panel.plotItems).toBeDefined();
-            expect(panel.plotItems.length).toBe(panel.layoutProperties.plotItemCount);
+            expect(panel.plotItems.length).toBe(panel.layout.plotItemCount);
         });
     });
 

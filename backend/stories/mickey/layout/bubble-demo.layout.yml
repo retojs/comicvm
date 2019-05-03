@@ -1,21 +1,22 @@
-panelProperties: [plotItemCount]
 pages:
-  # page 1
-  - stripHeights: [0.4, 0.3, 0.3]
+  - # page 1
+    stripHeights: [ 0.4, 0.3, 0.3 ]
     strips:
-      # upper strip
-      - panels:
-          - [2]
-          - [2]
-      # middle strip
-      - panelWidths: [0.35, 0.3, 0.35]
+      - # strip 1
         panels:
-          - [2]
-          - [1]
-          - [2]
-      # lower strip
-      - panels:
-          - [3]
-          - [3]
-scene:
-  pan: [0, 1]
+          - [ 2 ]
+          - [ 2 ]
+
+      - # strip 2
+        panelWidths: [ 0.35, 0.3, 0.35 ]
+        panels:
+          - [ 2 ]
+          - [ 1 ]
+          - [ 2 ]
+
+      - # strip 3
+        panels:
+          - [ 3 ]
+          - [ 3 ]
+
+pan: { y: 1 }

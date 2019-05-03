@@ -1,27 +1,31 @@
-panelProperties: [plotItemCount, characterPositions, zoom, pan]
 pages:
-  # page 1
-  - stripHeights: [0.5, 0.25, 0.25]
+  - # page 1
+    stripHeights: [ 0.5, 0.25, 0.25 ]
     strips:
-      # upper strip
-      - panels:
-          - [3, null, 0.8, [0, 0.3]]
-      # middle strip
-      - panels:
-          - [2, { Mickey: { x: 0.4 }}]
-          - [2, { Minnie: { x: 0.4 }}]
-      # lower strip
-      - panelWidths: [0.4, 0.6]
+      - # strip 1
         panels:
-          - [1, null, 1.2, [0.3, 0]]
-          - [4, null, 0.6]
+          - [ 3, { zoom: 0.8, pan: { y:0.3 }}]
+
+      - # strip 2
+        panels:
+          - [ 2, { Mickey: { x: 0.4 }}]
+          - [ 2, { Minnie: { x: 0.4 }}]
+
+      - # strip 3
+        panelWidths: [ 0.4, 0.6 ]
+        panels:
+          - [ 1, { zoom: 1.2, pan: { x: 0.3 }}]
+          - [ 4, { zoom: 0.6 }]
+
 backgrounds:
   default:
     zoom: 0.75
-scene:
-  characters: [[Mickey, Minnie], Goofy]
-  pan: [0, 0.8]
-  Minnie:
-    pos: { x: -0.6, y: 0.4, size: 1.2}
-  Goofy:
-    pos: { y: 0.2 }
+
+characters: [[ Mickey, Minnie ], Goofy ]
+pan: { x: 0, y: 0.8 }
+
+Minnie:
+  pos: { x: -0.6, y: 0.4, size: 1.2 }
+
+Goofy:
+  pos: { y: 0.2 }

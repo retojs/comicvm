@@ -1,4 +1,4 @@
-import { CharacterPositionLayoutLevel, LayoutConfig } from "../../app/layout/Layout.config";
+import { LayoutLevel, LayoutConfig } from "../../app/layout/Layout.config";
 import { Button } from "../../common/dom/Button";
 import { DomElementContainer } from "../../common/dom/DomElement";
 import { Div } from "../../common/dom/Div";
@@ -37,19 +37,19 @@ export function create(container: DomElementContainer, repaintFn: () => void) {
         }
     })();
 
-    function createLayoutLevelButton(level: CharacterPositionLayoutLevel) {
+    function createLayoutLevelButton(level: LayoutLevel) {
 
         const levelLabels = {};
-        levelLabels[CharacterPositionLayoutLevel.PANEL] = "Panel";
-        levelLabels[CharacterPositionLayoutLevel.BACKGROUND] = "Background";
-        levelLabels[CharacterPositionLayoutLevel.SCENE] = "Scene";
-        levelLabels[CharacterPositionLayoutLevel.DEFAULT] = "Default";
+        levelLabels[LayoutLevel.PANEL] = "Panel";
+        levelLabels[LayoutLevel.BACKGROUND] = "Background";
+        levelLabels[LayoutLevel.SCENE] = "Scene";
+        levelLabels[LayoutLevel.DEFAULT] = "Default";
 
         const layoutLevelButton = new Button(buttonContainer, getLayoutLevelButtonLabel());
         layoutLevelButton.onClick = setLayoutLevel;
 
         function setLayoutLevel() {
-            LayoutConfig.characterPositionLayoutLevel = level;
+            LayoutConfig.layoutLevel = level;
             repaintFn();
             layoutLevelButton.label = getLayoutLevelButtonLabel();
         }
@@ -59,8 +59,8 @@ export function create(container: DomElementContainer, repaintFn: () => void) {
         }
     }
 
-    createLayoutLevelButton(CharacterPositionLayoutLevel.PANEL);
-    createLayoutLevelButton(CharacterPositionLayoutLevel.BACKGROUND);
-    createLayoutLevelButton(CharacterPositionLayoutLevel.SCENE);
-    createLayoutLevelButton(CharacterPositionLayoutLevel.DEFAULT);
+    createLayoutLevelButton(LayoutLevel.PANEL);
+    createLayoutLevelButton(LayoutLevel.BACKGROUND);
+    createLayoutLevelButton(LayoutLevel.SCENE);
+    createLayoutLevelButton(LayoutLevel.DEFAULT);
 }

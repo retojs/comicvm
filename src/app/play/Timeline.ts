@@ -1,20 +1,21 @@
 import { Panel } from "../model/Panel";
 import { Transition } from "./transitions/Transition";
-import { PanelTimelineProperties } from "./PanelTimelineProperties";
+import { AnimationTimeProperties } from "./AnimationTimeProperties";
 import { FadeOverEndTransition } from "./transitions/FadeOverEndTransition";
 import { FadeOverStartTransition } from "./transitions/FadeOverStartTransition";
 import { FadeInTransition } from "./transitions/FadeInTransition";
 import { FadeOutTransition } from "./transitions/FadeOutTransition";
+import { Bubble } from "../model/Bubble";
 
-const PANEL_DURATION = 1500;
-const FIRST_PANEL_DURATION = 2500;
-const LAST_PANEL_DURATION = 2500;
-
+const PANEL_MIN_DURATION = 1500;
+const FIRST_PANEL_MIN_DURATION = 2500;
+const LAST_PANEL_MIN_DURATION = 2500;
+const BUBBLE_MIN_DURATION = 500;
 const LETTER_DURATION = 30;
 
 const SCENE_TRANSITION_DURATION = 1600;
-const BACKGROUND_TRANSITION_DURATION = 1000;
-const PANEL_TRANSITION_DURATION = 600;
+const BACKGROUND_TRANSITION_DURATION = 1200;
+const PANEL_TRANSITION_DURATION = 800;
 
 export const enum TransitionType {
     None,
@@ -42,14 +43,14 @@ export class Timeline {
 
     setPanels(panels: Panel[]) {
         this.panels = panels || [];
-        this.duration = this.applyPanelTimelineProperties();
+        this.duration = this.applyPanelAnimationTimeProperties();
     }
 
-    static applyPanelTimelineProperties(panels: Panel[]): number {
-        return new Timeline(panels).applyPanelTimelineProperties();
+    static applyAnimationTimeProperties(panels: Panel[]): number {
+        return new Timeline(panels).applyPanelAnimationTimeProperties();
     }
 
-    applyPanelTimelineProperties(): number {
+    applyPanelAnimationTimeProperties(): number {
         let startTime = 0,
             endTime = 0;
 
@@ -57,25 +58,40 @@ export class Timeline {
             const panelDuration = getPanelDuration(panel);
             const [startTransition, endTransition] = this.getTransitions(panel, startTime, panelDuration);
 
-            panel.timelineProperties = new PanelTimelineProperties(startTime, panelDuration, startTransition, endTransition);
+            panel.animationTimeProperties = new AnimationTimeProperties(startTime, panelDuration, startTransition, endTransition);
 
-            startTime = endTime = panel.timelineProperties.end;
+            startTime = endTime = panel.animationTimeProperties.end;
 
             const showBothPanelsStart = startTransition && startTransition.showBothPanels;
             const showBothPanelsEnd = endTransition && endTransition.showBothPanels;
 
             if (showBothPanelsStart
                 && panel.previousPanel
-                && panel.previousPanel.timelineProperties
-                && panel.previousPanel.timelineProperties.end <= panel.timelineProperties.start) {
-                panel.timelineProperties.start -= startTransition.duration;
+                && panel.previousPanel.animationTimeProperties
+                && panel.previousPanel.animationTimeProperties.end <= panel.animationTimeProperties.start) {
+                panel.animationTimeProperties.start -= startTransition.duration;
             }
             if (showBothPanelsEnd) {
                 startTime -= endTransition.duration;
             }
+
+            this.applyBubblesAnimationTimeProperties(panel);
         });
 
         return endTime;
+    }
+
+    applyBubblesAnimationTimeProperties(panel: Panel) {
+        let startTime = panel.animationTimeProperties && panel.animationTimeProperties.startTransition
+            ? panel.animationTimeProperties.startTransition.duration
+            : 0;
+        let endTime: number;
+
+        (panel.bubbles || []).forEach(bubble => {
+            endTime = startTime + getBubbleDuration(bubble);
+            bubble.animationTimeProperties = new AnimationTimeProperties(startTime, endTime);
+            startTime = endTime;
+        })
     }
 
     getTransitions(panel: Panel, startTime: number, duration: number): Transition[] {
@@ -115,12 +131,12 @@ export class Timeline {
     toString() {
         return (this.panels || []).reduce(
             (str: string, panel: Panel) => {
-                str += `\npanel ${panel.sceneIndex}: start=${panel.timelineProperties.start} end=${panel.timelineProperties.end}`;
-                if (panel.timelineProperties.startTransition) {
-                    str += `\n  start transition: start=${panel.timelineProperties.startTransition.start} end=${panel.timelineProperties.startTransition.end}`
+                str += `\npanel ${panel.sceneIndex}: start=${panel.animationTimeProperties.start} end=${panel.animationTimeProperties.end}`;
+                if (panel.animationTimeProperties.startTransition) {
+                    str += `\n  start transition: start=${panel.animationTimeProperties.startTransition.start} end=${panel.animationTimeProperties.startTransition.end}`
                 }
-                if (panel.timelineProperties.endTransition) {
-                    str += `\n  end transition: start=${panel.timelineProperties.endTransition.start} end=${panel.timelineProperties.endTransition.end}`
+                if (panel.animationTimeProperties.endTransition) {
+                    str += `\n  end transition: start=${panel.animationTimeProperties.endTransition.start} end=${panel.animationTimeProperties.endTransition.end}`
                 }
                 return str;
             },
@@ -134,30 +150,32 @@ export function getPlayingPanels(panels: Panel[], time: number) {
 }
 
 export function isPlayingPanel(panel: Panel, time: number): boolean {
-    return panel.timelineProperties.start <= time && time <= panel.timelineProperties.end
-}
-
-export function getPanelBoundTime(panel: Panel, time: number): number {
-    return Math.max(panel.timelineProperties.start, Math.min(panel.timelineProperties.end, time));
+    return panel.animationTimeProperties.start <= time && time <= panel.animationTimeProperties.end
 }
 
 export function setPanelAnimationTime(panel: Panel, time: number) {
     panel.animationTime = getAnimationTime(panel, time);
 }
 
-export function getAnimationTime(panel: Panel, time) {
-    return (time - panel.timelineProperties.start) / panel.timelineProperties.duration;
+export function getAnimationTime(panel: Panel, time: number) {
+    return (time - panel.animationTimeProperties.start) / panel.animationTimeProperties.duration;
 }
 
-export function getPanelDuration(panel: Panel, letterDuration: number = LETTER_DURATION): number {
+export function getPanelDuration(panel: Panel): number {
     const baseDuration = panel.isLastPanel
-        ? LAST_PANEL_DURATION
+        ? LAST_PANEL_MIN_DURATION
         : panel.isFirstPanel
-            ? FIRST_PANEL_DURATION
-            : PANEL_DURATION;
+            ? FIRST_PANEL_MIN_DURATION
+            : PANEL_MIN_DURATION;
 
-    return baseDuration +
-        letterDuration * panel.bubbles.reduce((letterCount, bubble) => letterCount + bubble.says.length, 0);
+    return baseDuration + panel.bubbles.reduce(
+        (duration, bubble) => duration + getBubbleDuration(bubble),
+        0
+    );
+}
+
+export function getBubbleDuration(bubble: Bubble): number {
+    return BUBBLE_MIN_DURATION + (bubble.says.length * LETTER_DURATION);
 }
 
 export function getStartTransition(type: TransitionType, start: number, duration: number): Transition {

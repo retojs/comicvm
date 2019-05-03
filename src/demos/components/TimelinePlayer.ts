@@ -39,6 +39,7 @@ export class TimelinePlayer extends Player {
         this.canvas = new Canvas(this.root);
         this.layoutEngine = new LayoutEngine(this.scene);
         this.panelPainter = new PanelPainter(this.canvas);
+        this.panelPainter.animateBubbles = true;
         this.renderFrameFn = this.paintPanel.bind(this);
     }
 
@@ -87,28 +88,28 @@ export class TimelinePlayer extends Player {
         let animationDisplayContent = "";
         const panelIndex = this.animationDisplayPanel.sceneIndex;
 
-        const layoutProps = this.animationDisplayPanel.layoutProperties;
-        let zoom = layoutProps && layoutProps.zoom != null ? layoutProps.zoom : 1;
-        let pan = layoutProps && layoutProps.pan && layoutProps.pan.length == 2 ? layoutProps.pan : [0, 0];
+        const layoutProps = this.animationDisplayPanel.layout;
+        let zoom = layoutProps && layoutProps.camera.zoom != null ? layoutProps.camera.zoom : 1;
+        let pan = layoutProps && layoutProps.camera.pan ? layoutProps.camera.pan : {x: 0, y: 0};
 
         animationDisplayContent +=
             `<div class="animation-display__heading">Panel ${panelIndex} - layout properties</div>`
             + `<div><span class="animation-display__prop">zoom</span>${zoom}</div>`
-            + `<div><span class="animation-display__prop">pan</span>[ ${pan[0]} , ${pan[1]} ]</div>`;
+            + `<div><span class="animation-display__prop">pan</span>[ ${pan.x || 0} , ${pan.y || 0} ]</div>`;
 
-        const animProps = this.animationDisplayPanel.layoutProperties ? this.animationDisplayPanel.layoutProperties.animation : null;
+        const animProps = this.animationDisplayPanel.layout ? this.animationDisplayPanel.layout.animation : null;
         zoom = animProps && animProps.zoom != null ? animProps.zoom : 0;
-        pan = animProps && animProps.pan && animProps.pan.length == 2 ? animProps.pan : [0, 0];
+        pan = animProps && animProps.pan ? animProps.pan : {x: 0, y: 0};
 
         animationDisplayContent +=
             `<div class="animation-display__heading margin-top">Panel ${panelIndex} - animation properties</div>`
             + `<div><span class="animation-display__prop">zoom</span>${zoom}</div>`
-            + `<div><span class="animation-display__prop">pan</span>[ ${pan[0]} , ${pan[1]} ]</div>`;
+            + `<div><span class="animation-display__prop">pan</span>[ ${pan.x || 0} , ${pan.y || 0} ]</div>`;
 
-        const timelineProperties = this.animationDisplayPanel.timelineProperties;
-        const duration = timelineProperties ? timelineProperties.durationSecs : 0;
-        const start = timelineProperties ? timelineProperties.startSecs : 0;
-        const end = timelineProperties ? timelineProperties.endSecs : 0;
+        const animationTimeProperties = this.animationDisplayPanel.animationTimeProperties;
+        const duration = animationTimeProperties ? animationTimeProperties.durationSecs : 0;
+        const start = animationTimeProperties ? animationTimeProperties.startSecs : 0;
+        const end = animationTimeProperties ? animationTimeProperties.endSecs : 0;
 
         animationDisplayContent +=
             `<div class="animation-display__heading margin-top">Panel ${panelIndex} - timeline properties</div>`
@@ -117,17 +118,19 @@ export class TimelinePlayer extends Player {
 
         setPanelAnimationTime(this.animationDisplayPanel, time);
         zoom = this.animationDisplayPanel.zoom;
-        pan = this.animationDisplayPanel.panning;
+        pan = this.animationDisplayPanel.panObject;
         const animationTime = this.animationDisplayPanel.animationTime;
-        const timeSecs: number = this.animationDisplayPanel.animationTime * this.animationDisplayPanel.timelineProperties.duration / 1000;
+        if (animationTime > 0) {
+            const timeSecs: number = this.animationDisplayPanel.animationTime * this.animationDisplayPanel.animationTimeProperties.duration / 1000;
 
-        animationDisplayContent +=
-            `<div class="animation-display__heading margin-top">Panel ${panelIndex} - animation time values</div>`
-            + `<div><span class="animation-display__prop">zoom</span>${zoom.toFixed(2)}</div>`
-            + `<div><span class="animation-display__prop">pan</span>[ ${pan[0].toFixed(2)} , ${pan[1].toFixed(2)} ]</div>`
-            + `<div><span class="animation-display__prop margin-top">time</span>${animationTime.toFixed(2)} duration / ${timeSecs.toFixed(2)} s</div>`;
+            animationDisplayContent +=
+                `<div class="animation-display__heading margin-top">Panel ${panelIndex} - animation time values</div>`
+                + `<div><span class="animation-display__prop">zoom</span>${zoom.toFixed(2)}</div>`
+                + `<div><span class="animation-display__prop">pan</span>[ ${pan.x.toFixed(2)} , ${pan.y.toFixed(2)} ]</div>`
+                + `<div><span class="animation-display__prop margin-top">time</span>${animationTime.toFixed(2)} duration / ${timeSecs.toFixed(2)} s</div>`;
 
-        this.animationDisplay.setContent(animationDisplayContent);
+            this.animationDisplay.setContent(animationDisplayContent);
+        }
     }
 
     paintPanel(time: number) {

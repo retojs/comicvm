@@ -79,6 +79,7 @@ export class TimelineEditor {
         this.timelinePanel = new Div(this.root, "timeline-container");
         this.canvas = new Canvas(this.timelinePanel);
         this.panelPainter = new PanelPainter(this.canvas);
+        this.panelPainter.animateBubbles = true;
 
         this.scene = scene;
         this.layoutEngine = new LayoutEngine(scene);
@@ -267,10 +268,10 @@ export class TimelineEditor {
 
     paintPanelIndicators() {
         this.scene.panels.forEach(panel => {
-            if (panel.timelineProperties) {
+            if (panel.animationTimeProperties) {
                 this.paintIndicator(
-                    panel.timelineProperties.start,
-                    panel.timelineProperties.end,
+                    panel.animationTimeProperties.start,
+                    panel.animationTimeProperties.end,
                     this.getPanelIndicatorY(panel),
                     PANEL_INDICATOR_COLOR
                 );
@@ -280,21 +281,21 @@ export class TimelineEditor {
 
     paintTransitionIndicators() {
         this.scene.panels.forEach(panel => {
-            if (panel.timelineProperties) {
-                if (panel.timelineProperties.startTransition) {
+            if (panel.animationTimeProperties) {
+                if (panel.animationTimeProperties.startTransition) {
                     this.paintIndicator(
-                        panel.timelineProperties.startTransition.start,
-                        panel.timelineProperties.startTransition.end,
+                        panel.animationTimeProperties.startTransition.start,
+                        panel.animationTimeProperties.startTransition.end,
                         this.getTransitionIndicatorY(panel),
-                        this.getTransitionFillStyle(panel.timelineProperties.startTransition)
+                        this.getTransitionFillStyle(panel.animationTimeProperties.startTransition)
                     );
                 }
-                if (panel.timelineProperties.endTransition) {
+                if (panel.animationTimeProperties.endTransition) {
                     this.paintIndicator(
-                        panel.timelineProperties.endTransition.start,
-                        panel.timelineProperties.endTransition.end,
+                        panel.animationTimeProperties.endTransition.start,
+                        panel.animationTimeProperties.endTransition.end,
                         this.getTransitionIndicatorY(panel),
-                        this.getTransitionFillStyle(panel.timelineProperties.endTransition)
+                        this.getTransitionFillStyle(panel.animationTimeProperties.endTransition)
                     );
                 }
             }

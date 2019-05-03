@@ -10,7 +10,7 @@ export class Page {
 
     scene: Scene;
 
-    stripConfig: StripHeightsConfig;
+    stripHeightsConfig: StripHeightsConfig;
     strips: Strip[] = [];
     panels: Panel[] = [];
 

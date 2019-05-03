@@ -1,4 +1,4 @@
-import {PlotItem, STORY_TELLER} from "./PlotItem";
+import {PlotItem, NARRATOR} from "./PlotItem";
 import {PlotParser} from "./PlotParser";
 
 export class Plot {
@@ -49,7 +49,7 @@ export class Plot {
                 .split(",")
                 .map(name => name.trim())
             : [];
-        characters.push(STORY_TELLER);
+        characters.push(NARRATOR);
         return characters;
     }
 }

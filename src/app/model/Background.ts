@@ -1,6 +1,6 @@
 import { Scene } from "./Scene";
 import { Panel } from "./Panel";
-import { BackgroundLayoutProperties } from "../layout/LayoutProperties";
+import { SceneOrBackgroundLayout } from "../layout/Layout";
 import { DistantImage, Images } from "../images/Images";
 import { Img } from "../../common/dom/Img";
 import { ImageQuery } from "../images/ImageQuery";
@@ -14,7 +14,7 @@ export class Background {
 
     scene: Scene;
     panels: Panel[] = [];
-    layoutProperties: BackgroundLayoutProperties;
+    layout: SceneOrBackgroundLayout;
     image: Img;
     distantImages: DistantImage[];
 
@@ -26,8 +26,8 @@ export class Background {
         const characterSize = panel.characters[0].defaultPosition.size;
         return Rectangle.fitAroundBounds(distantImage.image.bitmapShape.clone(), backgroundImageShape)
             .translateInvert(
-                (1 - 1 / distantImage.distance) * panel.panning[0] * characterSize,
-                (1 - 1 / distantImage.distance) * panel.panning[1] * characterSize
+                (1 - 1 / distantImage.distance) * panel.pan[0] * characterSize,
+                (1 - 1 / distantImage.distance) * panel.pan[1] * characterSize
             );
     }
 

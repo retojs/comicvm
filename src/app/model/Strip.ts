@@ -9,7 +9,7 @@ export class Strip {
 
     page: Page;
 
-    panelConfig: PanelWidthsConfig;
+    panelWidthsConfig: PanelWidthsConfig;
     panels: Panel[] = [];
 
     shape: Rectangle;

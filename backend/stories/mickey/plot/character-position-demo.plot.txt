@@ -14,5 +14,6 @@ Mickey to Goofy:
 Goofy to Mickey:
     Hey Mickey!
     Long time no see.
+Goofy to Minnie:
     And hello Minnie
     Always a pleasure to see you.

@@ -1,23 +1,22 @@
 import { Panel } from "../../model/Panel";
-import { CharacterPositionLayoutLevel, LayoutConfig } from "../Layout.config";
+import { LayoutConfig, LayoutLevel } from "../Layout.config";
 import { Square } from "../../../common/trigo/Square";
 import { Rectangle } from "../../../common/trigo/Rectangle";
 import { Point } from "../../../common/trigo/Point";
-import { ALL_CHARACTERS, CharacterLayoutProperties, CharacterPositionTransform } from "../LayoutProperties";
+import { ALL_CHARACTERS, CharacterLayout, CharacterPositionTransform } from "../Layout";
+import { validatePanelShape } from "./validation";
 
 export class CharacterLayoutEngine {
 
     constructor() {}
 
     layout(panels: Panel[]) {
-        panels
-            .filter(panel => !!panel.shape && panel.shape.width > 0 && panel.shape.height > 0)
-            .forEach(panel => {
-                this.layoutCharacters(panel);
-            });
+        panels.forEach(panel => this.layoutCharacters(panel));
     }
 
     layoutCharacters(panel: Panel) {
+        validatePanelShape(panel);
+
         this.setCharacterDefaultPositions(panel);
         this.setCharacterBackgroundPositions(panel);
         this.setCharacterPanelPositions(panel);
@@ -60,15 +59,15 @@ export class CharacterLayoutEngine {
             character.backgroundPositionEnd = character.defaultPosition.clone();
         });
 
-        if (CharacterPositionLayoutLevel.DEFAULT === LayoutConfig.characterPositionLayoutLevel) { return; }
+        if (LayoutLevel.DEFAULT === LayoutConfig.layoutLevel) { return; }
 
-        if (CharacterPositionLayoutLevel.DEFAULT < LayoutConfig.characterPositionLayoutLevel
-            && panel.scene.layoutProperties) {
-            this.adjustCharacterBackgroundPositions(panel, panel.scene.layoutProperties.characterProperties);
+        if (LayoutLevel.DEFAULT < LayoutConfig.layoutLevel
+            && panel.scene.layout) {
+            this.adjustCharacterBackgroundPositions(panel, panel.scene.layout.characterLayouts);
         }
-        if (CharacterPositionLayoutLevel.BACKGROUND <= LayoutConfig.characterPositionLayoutLevel
-            && panel.background.layoutProperties) {
-            this.adjustCharacterBackgroundPositions(panel, panel.background.layoutProperties.characterProperties);
+        if (LayoutLevel.BACKGROUND <= LayoutConfig.layoutLevel
+            && panel.background.layout) {
+            this.adjustCharacterBackgroundPositions(panel, panel.background.layout.characterLayouts);
         }
 
         let visibleCharacters = panel.characters;
@@ -94,19 +93,19 @@ export class CharacterLayoutEngine {
 
     setCharacterPanelPositions(panel: Panel) {
 
-        if (CharacterPositionLayoutLevel.PANEL !== LayoutConfig.characterPositionLayoutLevel) { return; }
+        if (LayoutLevel.PANEL !== LayoutConfig.layoutLevel) { return; }
 
         // Character's positions can be configured for each panel
         panel.characters.forEach(character => character.panelPosition = character.backgroundPosition.clone());
 
-        if (panel.layoutProperties
-            && panel.layoutProperties.characterPositions
-            && panel.layoutProperties.characterPositions.length > 0) {
-            this.adjustCharacterPanelPositions(panel, panel.layoutProperties.characterPositions);
+        if (panel.layout
+            && panel.layout.characterLayouts
+            && panel.layout.characterLayouts.length > 0) {
+            this.adjustCharacterPanelPositions(panel, panel.layout.characterLayouts.map(layout => layout.pos));
         }
     }
 
-    adjustCharacterBackgroundPositions(panel: Panel, layoutProperties: CharacterLayoutProperties[]) {
+    adjustCharacterBackgroundPositions(panel: Panel, layoutProperties: CharacterLayout[]) {
 
         layoutProperties.forEach(chProps => {
             if (chProps.pos) {
@@ -166,9 +165,9 @@ export class CharacterLayoutEngine {
         if (!LayoutConfig.applyPanning) { return; }
 
         const characterSize = panel.characters[0].defaultPosition.size;
-        const panning = panel.panning.map(comp => comp * characterSize);
-        const panningStart = panel.panningStart.map(comp => comp * characterSize);
-        const panningEnd = panel.panningEnd.map(comp => comp * characterSize);
+        const panning = panel.pan.map(comp => comp * characterSize);
+        const panningStart = panel.panStart.map(comp => comp * characterSize);
+        const panningEnd = panel.panEnd.map(comp => comp * characterSize);
 
         panel.characters.forEach(ch => {
             if (ch.defaultPosition) {

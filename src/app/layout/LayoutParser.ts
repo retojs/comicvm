@@ -1,217 +1,184 @@
-import {
-    CharacterLayoutProperties,
-    CharacterPositionTransform,
-    createBackgroundLayout,
-    createSceneLayout,
-    PanelAnimationProperties,
-    PanelLayoutProperties,
-    PanelLayoutPropertyName
-} from "./LayoutProperties";
-import { BackgroundLayout, CharacterLayout, Layout, LayoutProperty, PageLayout, PanelLayout, StripLayout } from "./Layout";
 import { PanelWidthsConfig, StripHeightsConfig } from "./Layout.config";
-import { Square } from "../../common/trigo/Square";
 import { Scene } from "../model/Scene";
 import { Page } from "../model/Page";
 import { Strip } from "../model/Strip";
 import { Panel } from "../model/Panel";
-import { Qualifier } from "../model/Qualifier";
 import { Background } from "../model/Background";
-import * as YAML from "yaml";
+import * as YAML from "js-yaml";
+import { YamlLayout } from "./YamlLayout";
+import { ALL_CHARACTERS, CameraAnimation, CharacterLayout, flatCharacters, PanelLayout, SceneOrBackgroundLayout } from "./Layout";
+import YamlPageLayoutConfig = YamlLayout.PageLayoutConfig;
+import YamlBackgroundLayoutConfig = YamlLayout.BackgroundLayoutConfig;
+import YamlSceneLayoutConfig = YamlLayout.SceneLayoutConfig;
+import YamlCharacterLayoutConfig = YamlLayout.CharacterLayoutConfig;
+import YamlCharacterLayoutProperty = YamlLayout.CharacterLayoutProperty;
+import YamlCharacterPositionConfig = YamlLayout.CharacterPositionConfig;
+import YamlStripLayoutConfig = YamlLayout.StripLayoutConfig;
+import YamlPanelLayoutProperties = YamlLayout.PanelLayoutProperties;
+import YamlPanelLayoutConfig = YamlLayout.PanelLayoutConfig;
+import PanelLayoutProperty = YamlLayout.PanelLayoutProperty;
 
 export class LayoutParser {
 
     static parseLayout(scene: Scene): LayoutParser {
-        return new LayoutParser(scene.layout).parseLayout(scene);
+        return new LayoutParser(scene).parseLayout();
     }
 
-    layout: Layout;
+    scene: Scene;
+
+    yamlSceneLayout: YamlSceneLayoutConfig;
 
     private panelSceneIndex: number;
 
-    constructor(input: string) {
-        this.layout = YAML.parse(input);
+    constructor(scene: Scene) {
+        this.scene = scene;
+        this.yamlSceneLayout = YAML.safeLoad(scene.layoutYaml);
     }
 
-    parseLayout(scene: Scene): LayoutParser {
-        const sceneLayout: Layout = YAML.parse(scene.layout);
+    get characters(): string[] {
+        return flatCharacters([...this.scene.characters, ALL_CHARACTERS]);
+    }
 
-        if (sceneLayout.scene) {
-            scene.layoutProperties = createSceneLayout({
-                backgroundId: sceneLayout.scene.backgroundId,
-                zoom: sceneLayout.scene.zoom,
-                pan: sceneLayout.scene.pan,
-                characters: sceneLayout.scene.characters
-            });
-            scene.layoutProperties.characterProperties = this.parseCharacterLayoutProperties(sceneLayout.scene);
-        }
+    parseLayout(): LayoutParser {
 
-        if (sceneLayout.backgrounds) {
-            Object.keys(sceneLayout.backgrounds).forEach(key => {
-                const background = sceneLayout.backgrounds[key];
-                this.createBackground(key, background, scene);
-            });
-        }
-
-        this.panelSceneIndex = 1;
-
-        sceneLayout.pages.forEach((pageLayout: PageLayout, index) => {
-            this.createPage(pageLayout, index, scene);
-        });
-
-        // connect panels with their background
-        scene.panels.forEach(panel => {
-            const defaultBackground = scene.layoutProperties.backgroundId;
-            if (!panel.layoutProperties.backgroundId) {
-                panel.layoutProperties.backgroundId = defaultBackground;
-            }
-            let background: Background = scene.backgrounds.find(bgr => bgr.id === panel.layoutProperties.backgroundId);
-            if (!background) {
-                background = new Background(panel.layoutProperties.backgroundId);
-                scene.addBackground(background);
-            }
-            background.addPanel(panel);
-        });
+        this.createScene();
+        this.parseBackgroundsLayout();
+        this.parsePagesLayout();
+        this.connectPanelsWithBackgrounds();
 
         return this;
     }
 
-    createBackground(id: string, bgrLayout: BackgroundLayout, scene: Scene): Background {
-        const background = new Background(id);
-        scene.addBackground(background);
+    parseBackgroundsLayout() {
+        if (this.yamlSceneLayout && this.yamlSceneLayout.backgrounds) {
+            for (let backgroundId in this.yamlSceneLayout.backgrounds) {
+                this.createBackground(backgroundId, this.yamlSceneLayout.backgrounds[backgroundId]);
+            }
+        }
+    }
 
-        background.layoutProperties = createBackgroundLayout({
-            id,
-            zoom: bgrLayout.zoom,
-            pan: bgrLayout.pan,
-            characters: bgrLayout.characters
+    parsePagesLayout() {
+        if (this.yamlSceneLayout && this.yamlSceneLayout.pages) {
+            this.panelSceneIndex = 1;
+
+            this.yamlSceneLayout.pages.forEach((pageLayout: YamlPageLayoutConfig, index) => {
+                this.createPage(pageLayout, index);
+            });
+        }
+    }
+
+    connectPanelsWithBackgrounds() {
+        this.scene.panels.forEach(panel => {
+            if (this.scene.layout.backgroundId
+                && Background.defaultId !== this.scene.layout.backgroundId
+                && Background.defaultId === panel.layout.backgroundId) {
+                panel.layout.backgroundId = this.scene.layout.backgroundId;
+            }
+            let background: Background = this.scene.backgrounds.find(bgr => bgr.id === panel.layout.backgroundId);
+            if (!background) {
+                background = new Background(panel.layout.backgroundId);
+                this.scene.addBackground(background);
+            }
+            background.addPanel(panel);
         });
-        background.layoutProperties.characterProperties = this.parseCharacterLayoutProperties(bgrLayout);
+    }
+
+    createScene(): void {
+        if (this.yamlSceneLayout) {
+            this.scene.layout = SceneOrBackgroundLayout.builder()
+                .backgroundId(this.yamlSceneLayout.backgroundId)
+                .characters(this.yamlSceneLayout.characters)
+                .zoom(this.yamlSceneLayout.zoom)
+                .pan(this.yamlSceneLayout.pan)
+                .characterLayouts(this.createCharacterLayouts(this.yamlSceneLayout))
+                .build();
+        }
+    }
+
+    createBackground(backgroundId: string, yamlBackgroundLayout: YamlBackgroundLayoutConfig): Background {
+        const background = new Background(backgroundId);
+        this.scene.addBackground(background);
+
+        background.layout = SceneOrBackgroundLayout.builder()
+            .backgroundId(backgroundId)
+            .characters(yamlBackgroundLayout.characters)
+            .zoom(yamlBackgroundLayout.zoom)
+            .pan(yamlBackgroundLayout.pan)
+            .characterLayouts(this.createCharacterLayouts(yamlBackgroundLayout))
+            .build();
+
         return background;
     }
 
-    parseCharacterLayoutProperties(layout: BackgroundLayout): CharacterLayoutProperties[] {
-        const chProps: CharacterLayoutProperties[] = [];
-        Object.keys(layout)
-            .filter(key =>
-                key !== "zoom"
-                && key !== "pan"
-                && key !== "characters"
-            )
-            .forEach(name => {
-                const chLayout: CharacterLayout = layout[name];
-                const prop = new CharacterLayoutProperties(name);
-                chProps.push(prop);
-                if (chLayout.how) {
-                    if (typeof chLayout.how === "string") {
-                        prop.how.push(new Qualifier(name, chLayout.how));
-                    } else {
-                        prop.how = chLayout.how.map(how => new Qualifier(name, how));
-                    }
-                }
-                if (chLayout.pos) {
-                    prop.pos = new CharacterPositionTransform(name, chLayout.pos.x, chLayout.pos.y, chLayout.pos.size);
-                }
-            });
-        return chProps;
-    }
-
-    createPage(pageLayout: PageLayout, index, scene): Page {
+    createPage(pageLayout: YamlPageLayoutConfig, index: number): Page {
         const page = new Page(index);
-        scene.addPage(page);
+        this.scene.addPage(page);
 
         if (pageLayout.stripHeights) {
-            page.stripConfig = new StripHeightsConfig(pageLayout.stripHeights);
+            page.stripHeightsConfig = new StripHeightsConfig(pageLayout.stripHeights);
         }
-        pageLayout.strips.forEach((stripLayout: StripLayout, index) => {
+        pageLayout.strips.forEach((stripLayout: YamlStripLayoutConfig, index) => {
             this.createStrip(stripLayout, index, page);
         });
         return page;
     }
 
-    createStrip(stripLayout: StripLayout, index, page: Page): Strip {
+    createStrip(stripLayout: YamlStripLayoutConfig, index, page: Page): Strip {
         const strip = new Strip(index);
         page.addStrip(strip);
 
         if (stripLayout.panelWidths) {
-            strip.panelConfig = new PanelWidthsConfig(stripLayout.panelWidths);
+            strip.panelWidthsConfig = new PanelWidthsConfig(stripLayout.panelWidths);
         }
-        stripLayout.panels.forEach((panelLayout: PanelLayout, index) => {
+        stripLayout.panels.forEach((panelLayout: YamlPanelLayoutProperties, index) => {
             this.createPanel(panelLayout, index, strip);
         });
         return strip;
     }
 
-    createPanel(panelLayout: PanelLayout, index: number, strip: Strip): Panel {
+    createPanel(panelLayout: YamlPanelLayoutProperties, index: number, strip: Strip): Panel {
         const panel = new Panel(index, this.panelSceneIndex++);
         strip.addPanel(panel);
 
-        // convert array of layout properties to object of type PanelLayoutProperties
-        let layoutProperties = {};
-        this.layout.panelProperties.forEach((prop, index) => {
-                layoutProperties[prop] = this.parseLayoutProperty(prop, panelLayout[index])
+        const panelLayoutBuilder = PanelLayout.builder();
+
+        panelLayout.forEach((prop: PanelLayoutProperty) => {
+            if (typeof prop === "number") {
+                panelLayoutBuilder.plotItemCount(prop);
+            } else if (typeof prop === "string") {
+                panelLayoutBuilder.backgroundId(prop);
+            } else if (typeof prop === "object") {
+                const layoutConfig: YamlPanelLayoutConfig = prop as YamlPanelLayoutConfig;
+
+                panelLayoutBuilder.zoom(layoutConfig.zoom);
+                panelLayoutBuilder.pan(layoutConfig.pan);
+                if (layoutConfig.animate) {
+                    panelLayoutBuilder.animation(new CameraAnimation(layoutConfig.animate));
+                }
+                (this.createCharacterLayouts(layoutConfig) || [])
+                    .forEach(characterLayout => panelLayoutBuilder.characterLayout(characterLayout));
             }
-        );
-        panel.layoutProperties = layoutProperties as PanelLayoutProperties;
+        });
+
+        panel.layout = panelLayoutBuilder.build();
 
         return panel;
     }
 
-    parseLayoutProperty(propertyName: PanelLayoutPropertyName, input: LayoutProperty): any {
-        switch (propertyName) {
-            case PanelLayoutPropertyName.PlotItemCount:
-            case PanelLayoutPropertyName.backgroundId:
-            case PanelLayoutPropertyName.Zoom:
-                return input;
-            case PanelLayoutPropertyName.Pan:
-                return input ? input : [];
-            case PanelLayoutPropertyName.CharacterQualifier:
-                return this.createQualifiers(input as string);
-            case PanelLayoutPropertyName.CharacterPositions:
-                return this.createPositionChanges(input as any);
-            case PanelLayoutPropertyName.Animation:
-                return this.createAnimationProperties(input as any);
-        }
-    }
-
-    createQualifiers(input: string): Qualifier[] {
-        let qualifiers: Qualifier[] = [];
-        if (input) {
-            const qualifierStrings: string[] = input.split(";");
-
-            if (qualifierStrings && qualifierStrings.length > 0) {
-                qualifiers = qualifierStrings.map(q => {
-                    const colonPos = q.indexOf("=");
-                    if (colonPos > 0) {
-                        const who = q.substr(0, colonPos);
-                        const how = q.substr(colonPos + 1);
-                        return new Qualifier(who.trim(), how.trim());
-                    } else {
-                        throw new Error("qualifier without character name")
-                    }
-                });
-            }
-        }
-        return qualifiers;
-    }
-
-    createPositionChanges(input: { [key: string]: Square }): CharacterPositionTransform[] {
-        let positionChanges: CharacterPositionTransform[] = [];
-        if (input) {
-            const characterNames = Object.keys(input);
-            if (characterNames && characterNames.length > 0) {
-                positionChanges = characterNames.map(name => {
-                    const pos: Square = input[name];
-                    return new CharacterPositionTransform(name, pos.x, pos.y, pos.size);
-                });
-            }
-        }
-        return positionChanges;
-    }
-
-    createAnimationProperties(input: PanelAnimationProperties): PanelAnimationProperties {
-        if (input) {
-            return new PanelAnimationProperties(input.zoom, input.pan);
-        }
-        return null;
+    createCharacterLayouts(layout: YamlBackgroundLayoutConfig): CharacterLayout[] {
+        return this.characters
+            .filter(name => layout[name])
+            .map(name => {
+                let config: YamlCharacterLayoutConfig = {};
+                const yaml: YamlCharacterLayoutProperty = layout[name];
+                if (yaml["pos"] || yaml["how"]) {
+                    config = yaml as YamlCharacterLayoutConfig
+                } else if (yaml["x"] || yaml["y"] || yaml["size"]) {
+                    config.pos = yaml as YamlCharacterPositionConfig;
+                } else if (typeof yaml === "string") {
+                    config.how = yaml;
+                }
+                return new CharacterLayout(name, config);
+            });
     }
 }

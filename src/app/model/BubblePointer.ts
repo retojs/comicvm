@@ -65,7 +65,7 @@ export class BubblePointer {
     }
 
     calculateControlPoints() {
-        if (this.bubbleEnd == null) {
+        if (this.bubbleEndLeft == null || this.bubbleEndRight == null) {
             return;
         }
 

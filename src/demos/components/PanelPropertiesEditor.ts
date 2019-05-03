@@ -1,6 +1,6 @@
 import { Div } from "../../common/dom/Div";
 import { Panel } from "../../app/model/Panel";
-import { PanelAnimationProperties, PanelLayoutProperties } from "../../app/layout/LayoutProperties";
+import { CameraAnimation, PanelLayout } from "../../app/layout/Layout";
 import { ParameterInput, ParameterListener } from "./ParameterInput";
 import { Heading } from "../../common/dom/Heading";
 import { DomElementContainer } from "../../common/dom/DomElement";
@@ -12,12 +12,12 @@ export class PanelPropertiesEditor {
     panel: Panel;
     changeListener: ParameterListener<any>;
 
-    layoutProps: Div;
+    layoutConfig: Div;
     zoom: ParameterInput;
     panX: ParameterInput;
     panY: ParameterInput;
 
-    animationProps: Div;
+    animationConfig: Div;
     animationZoom: ParameterInput;
     animationPanX: ParameterInput;
     animationPanY: ParameterInput;
@@ -30,8 +30,8 @@ export class PanelPropertiesEditor {
 
     constructor(container, onChange: ParameterListener<any>) {
         this.root = new Div(container, "panel-properties-editor");
-        this.layoutProps = new Div(this.root, "property-section");
-        this.animationProps = new Div(this.root, "property-section");
+        this.layoutConfig = new Div(this.root, "property-section");
+        this.animationConfig = new Div(this.root, "property-section");
         this.animationTimeValues = new Div(this.root, "property-section");
         this.changeListener = onChange;
     }
@@ -55,51 +55,51 @@ export class PanelPropertiesEditor {
     }
 
     createLayoutPropertyInputs() {
-        this.layoutProps.clearContent();
-        this.layoutProps.addContent(new Heading(null, 4, "Layout Properties"));
+        this.layoutConfig.clearContent();
+        this.layoutConfig.addContent(new Heading(null, 4, "Layout Properties"));
 
-        const layoutProps: PanelLayoutProperties = this.panel.layoutProperties;
+        const layout: PanelLayout = this.panel.layout;
 
-        this.zoom = this.createLayoutPropertyInput("zoom", layoutProps.zoom != null ? layoutProps.zoom : 1,
-            value => layoutProps.zoom = value
+        this.zoom = this.createLayoutPropertyInput("zoom", layout.camera.zoom != null ? layout.camera.zoom : 1,
+            value => layout.camera.zoom = value
         );
 
-        layoutProps.pan = layoutProps.pan || [];
+        layout.camera.pan = layout.camera.pan || {};
 
-        this.panX = this.createLayoutPropertyInput("pan.x", layoutProps.pan[0] || 0,
-            value => layoutProps.pan[0] = value
+        this.panX = this.createLayoutPropertyInput("pan.x", layout.camera.pan.x || 0,
+            value => layout.camera.pan.x = value
         );
-        this.panY = this.createLayoutPropertyInput("pan.y", layoutProps.pan[1] || 0,
-            value => layoutProps.pan[1] = value
+        this.panY = this.createLayoutPropertyInput("pan.y", layout.camera.pan.y || 0,
+            value => layout.camera.pan.y = value
         );
     }
 
     createAnimationPropertyInputs() {
-        this.animationProps.clearContent();
-        this.animationProps.addContent(new Heading(null, 4, "Animation Properties"));
+        this.animationConfig.clearContent();
+        this.animationConfig.addContent(new Heading(null, 4, "Animation Properties"));
 
-        const animationProps: PanelAnimationProperties = this.panel.layoutProperties.animation;
+        const animation: CameraAnimation = this.panel.layout.animation;
 
-        this.animationZoom = this.createAnimationPropertyInput("zoom", animationProps.zoom || 0,
-            value => animationProps.zoom = value
+        this.animationZoom = this.createAnimationPropertyInput("zoom", animation.zoom || 0,
+            value => animation.zoom = value
         );
 
-        animationProps.pan = animationProps.pan || [];
+        animation.pan = animation.pan || {};
 
-        this.animationPanX = this.createAnimationPropertyInput("pan.x", animationProps.pan[0] || 0,
-            value => animationProps.pan[0] = value
+        this.animationPanX = this.createAnimationPropertyInput("pan.x", animation.pan.x || 0,
+            value => animation.pan.x = value
         );
-        this.animationPanY = this.createAnimationPropertyInput("pan.y", animationProps.pan[1] || 0,
-            value => animationProps.pan[1] = value
+        this.animationPanY = this.createAnimationPropertyInput("pan.y", animation.pan.y || 0,
+            value => animation.pan.y = value
         );
     }
 
     createLayoutPropertyInput(name: string, value: number, onChange: ParameterListener<number>): ParameterInput {
-        return this.createNumberInput(this.layoutProps, name, value, onChange);
+        return this.createNumberInput(this.layoutConfig, name, value, onChange);
     }
 
     createAnimationPropertyInput(name: string, value: number, onChange: ParameterListener<number>): ParameterInput {
-        return this.createNumberInput(this.animationProps, name, value, onChange);
+        return this.createNumberInput(this.animationConfig, name, value, onChange);
     }
 
     createAnimationTimeInput() {
@@ -112,15 +112,15 @@ export class PanelPropertiesEditor {
                 this.panel.animationTime = constrainedValue;
                 this.animationTime.value = constrainedValue.toFixed(2);
                 this.currentZoom.value = this.panel.zoom.toFixed(2);
-                this.currentPanX.value = this.panel.panning[0].toFixed(2);
-                this.currentPanY.value = this.panel.panning[1].toFixed(2);
+                this.currentPanX.value = this.panel.pan[0].toFixed(2);
+                this.currentPanY.value = this.panel.pan[1].toFixed(2);
             }
         );
         this.animationTime.class = "margin-right";
 
         this.currentZoom = this.createAnimationTimeValueReadOnlyInput("zoom", this.panel.zoom);
-        this.currentPanX = this.createAnimationTimeValueReadOnlyInput("pan.x", this.panel.panning[0]);
-        this.currentPanY = this.createAnimationTimeValueReadOnlyInput("pan.y", this.panel.panning[1]);
+        this.currentPanX = this.createAnimationTimeValueReadOnlyInput("pan.x", this.panel.pan[0]);
+        this.currentPanY = this.createAnimationTimeValueReadOnlyInput("pan.y", this.panel.pan[1]);
     }
 
 

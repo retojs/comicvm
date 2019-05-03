@@ -1,0 +1,62 @@
+Title: What can ComicVM do for you?
+
+Characters: Stranger, Expert
+
+Place: ComicVM Site
+_____
+Plot:
+
+Expert:
+    Hello stranger!
+Stranger:
+    Hi.
+Expert:
+    Let me introduce you to ComicVM!
+Stranger:
+    Ok.
+    What does ComicVM mean anyway?
+Expert:
+    VM stands for "Virtual Machine".
+    Wikipedia can tell you all about it.
+Stranger:
+    Sure.
+    So what good is this Comic virtual machine?
+    What can you do with it?
+
+Expert:
+    ComicVM is a tool to tell a plot in the form of "Comics".
+    Comics is a medium used to express ideas through images, often combined with text or other visual information.
+Stranger:
+    I know, that's what it says on Wikipedia...
+Expert:
+    Right.
+    So what you feed into the ComicVM is a plot
+    in the form of a screenplay script
+    and a little bit of layout configuration
+    in the form of a yaml file.
+(to the 4th wall)
+    If you have never heard of yaml let me google it for you.
+Expert:
+    Based on these two files
+    and some images for characters and backgrounds
+    ComicVM will render your plot as a visual novel or: Comic.
+    Just like the one we are in right now.
+Stranger:
+    Neat.
+
+Expert:
+    The main goal in the design of ComicVM has been to keep the necessary configuration minimal.
+    The layout yaml file for this whole Introduction e.g. is just {{ n }} lines long.
+Stranger:
+    Nice. I like that.
+Expert:
+    If you choose a generic layout out of the box
+    you don't even have to manually configure anything at all.
+    The layout algorithms inside ComicVM can put any plot into a well readable Comic.
+Stranger:
+    Interesting.
+    So how do these algorithms work?
+Expert:
+(smiles)
+    I'm glad you're asking.
+    Let's go to the next scene to learn more!

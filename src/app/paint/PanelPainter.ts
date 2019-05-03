@@ -21,6 +21,8 @@ export class PanelPainter {
 
     bubblePainter: BubblePainter;
 
+    animateBubbles = false;
+
     constructor(canvas: Canvas) {
         this.canvas = canvas;
         this.bubblePainter = new BubblePainter(canvas);
@@ -33,23 +35,23 @@ export class PanelPainter {
     }
 
     applyTransitionsBefore(panel: Panel, time: number) {
-        if (panel && panel.timelineProperties) {
-            if (panel.timelineProperties.startTransition) {
-                panel.timelineProperties.startTransition.applyBefore(this.canvas, panel, time);
+        if (panel && panel.animationTimeProperties) {
+            if (panel.animationTimeProperties.startTransition) {
+                panel.animationTimeProperties.startTransition.applyBefore(this.canvas, panel, time);
             }
-            if (panel.timelineProperties.endTransition) {
-                panel.timelineProperties.endTransition.applyBefore(this.canvas, panel, time);
+            if (panel.animationTimeProperties.endTransition) {
+                panel.animationTimeProperties.endTransition.applyBefore(this.canvas, panel, time);
             }
         }
     }
 
     applyTransitionsAfter(panel: Panel, time: number) {
-        if (panel && panel.timelineProperties) {
-            if (panel.timelineProperties.startTransition) {
-                panel.timelineProperties.startTransition.applyAfter(this.canvas, panel, time);
+        if (panel && panel.animationTimeProperties) {
+            if (panel.animationTimeProperties.startTransition) {
+                panel.animationTimeProperties.startTransition.applyAfter(this.canvas, panel, time);
             }
-            if (panel.timelineProperties.endTransition) {
-                panel.timelineProperties.endTransition.applyAfter(this.canvas, panel, time);
+            if (panel.animationTimeProperties.endTransition) {
+                panel.animationTimeProperties.endTransition.applyAfter(this.canvas, panel, time);
             }
         }
     }
@@ -63,10 +65,10 @@ export class PanelPainter {
         this.paintGrid(panel);
         this.paintCharactersBBox(panel);
         this.paintActorsBBox(panel);
-        this.paintCharacters(panel, {paintImage: true});
         this.paintCharacters(panel, {paintRect: true});
+        this.paintCharacters(panel, {paintImage: true});
         this.paintCharacters(panel, {paintName: true});
-        this.bubblePainter.paintBubbles(panel);
+        this.bubblePainter.paintBubbles(panel, this.animateBubbles);
         this.paintBorder(panel);
 
         this.canvas.end();

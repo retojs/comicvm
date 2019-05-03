@@ -3,7 +3,6 @@ import * as layoutConfigButtons from "./components/LayoutConfigButtons";
 import { Demo } from "./Demo";
 import { DomElementContainer } from "../common/dom/DomElement";
 import { Div } from "../common/dom/Div";
-import { Scene } from "../app/model/Scene";
 import { CoordinatesDisplay } from "./components/CoordinatesDisplay";
 
 export class ComicVmDemo implements Demo {
@@ -11,7 +10,7 @@ export class ComicVmDemo implements Demo {
     name = "ComicVM Demo";
     desc = "This example demonstrates how to setup a ComicVM";
 
-    scene: Scene;
+    comicVM: ComicVM;
 
     create(container: DomElementContainer) {
 
@@ -19,13 +18,13 @@ export class ComicVmDemo implements Demo {
             .then(comicVM => {
                 console.log("comicVM created:", comicVM);
 
-                this.scene = comicVM.getScene("animation-demo");
-                comicVM.paintScene(this.scene, container);
+                this.comicVM = comicVM;
+                this.comicVM.setupScene("animation-demo", container);
+                this.repaint();
 
-                layoutConfigButtons.create(container, () => comicVM.repaintScene(true));
+                layoutConfigButtons.create(container, this.repaint.bind(this));
 
                 new CoordinatesDisplay(window.document.body);
-
             })
             .catch(showError);
 
@@ -33,5 +32,12 @@ export class ComicVmDemo implements Demo {
             new Div(container, "error", error ? error.message || "" : "");
             throw(error);
         }
+    }
+
+    repaint() {
+        window.requestAnimationFrame(() => {
+            this.comicVM.currentScene.executeLayout(this.comicVM.canvas).setupImages(this.comicVM.images);
+            this.comicVM.repaintScene();
+        });
     }
 }

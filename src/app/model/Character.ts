@@ -1,5 +1,5 @@
 import { Square } from "../../common/trigo/Square";
-import { CharacterPositionLayoutLevel, LayoutConfig } from "../layout/Layout.config";
+import { LayoutLevel, LayoutConfig } from "../layout/Layout.config";
 import { Img } from "../../common/dom/Img";
 import { Images } from "../images/Images";
 import { ImageQuery } from "../images/ImageQuery";
@@ -38,16 +38,13 @@ export class Character {
 
     getPosition(): Square {
         let position: Square;
-        if (CharacterPositionLayoutLevel.DEFAULT === LayoutConfig.characterPositionLayoutLevel
-            && this.defaultPosition) {
+        if (LayoutLevel.DEFAULT === LayoutConfig.layoutLevel && this.defaultPosition) {
             position = this.defaultPosition;
         }
-        if (CharacterPositionLayoutLevel.DEFAULT < LayoutConfig.characterPositionLayoutLevel
-            && this.backgroundPosition) {
+        if (LayoutLevel.DEFAULT < LayoutConfig.layoutLevel && this.backgroundPosition) {
             position = this.backgroundPosition;
         }
-        if (CharacterPositionLayoutLevel.PANEL === LayoutConfig.characterPositionLayoutLevel
-            && this.panelPosition) {
+        if (LayoutLevel.PANEL === LayoutConfig.layoutLevel && this.panelPosition) {
             position = this.panelPosition;
         }
         return position;

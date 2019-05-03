@@ -1,18 +1,19 @@
 import { TextAlign } from "../../common/style/TextAlign";
 import { Font } from "../../common/style/Font";
 import { LineCap, PaintStyleConfig } from "../../common/style/PaintStyle";
+import { PageConfig } from "../layout/Layout.config";
 
 export class CanvasConfig {
 
     width = 720;
-    height = Math.round(720 * Math.sqrt(2));
+    height = Math.round(this.width * PageConfig.proportion);
 
     font = new Font(36, "Roboto");
 }
 
-export const thinLineWidth = 3;
-export const normalLineWidth = 6;
-export const thickLineWidth = 12;
+export const thinLineWidth = 2;
+export const normalLineWidth = 4;
+export const thickLineWidth = 8;
 
 export class FeaturePaintStyleConfig {
 
@@ -46,13 +47,13 @@ export class FeaturePaintStyleConfig {
     };
 
     bubble = {
-        textBox: PaintStyleConfig.fillAndStroke("white", "teal", thinLineWidth),
+        textBox: PaintStyleConfig.fillAndStroke("white", "teal", normalLineWidth),
         text: PaintStyleConfig.text("black", TextAlign.Center),
         offScreen: {
             text: PaintStyleConfig.text("black", TextAlign.Left)
         },
-        pointer: PaintStyleConfig.stroke("teal", thinLineWidth, LineCap.Butt),
-        pointerHalo: PaintStyleConfig.stroke("rgba(255, 255, 255, 0.7)", thickLineWidth, LineCap.Butt)
+        pointer: PaintStyleConfig.stroke("teal", normalLineWidth, LineCap.Butt),
+        pointerHalo: PaintStyleConfig.stroke("rgba(255, 255, 255, 0.7)", normalLineWidth, LineCap.Butt)
     }
 }
 

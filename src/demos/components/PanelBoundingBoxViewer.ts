@@ -46,6 +46,7 @@ export class PanelBoundingBoxViewer extends Div {
         this.canvasShapeBounds = this.canvas.shape.translateToOrigin();
 
         this.panelPainter = new PanelPainter(this.canvas);
+        this.panelPainter.animateBubbles = true;
     }
 
     setPanel(panel: Panel) {

@@ -1,68 +1,49 @@
----
-panelProperties:
-  - plotItemCount
-  - backgroundId
-  - characterQualifier
-  - characterPositions
-  - zoom
-  - pan
 pages:
-  # page 1
-  - stripHeights: [0.4, 0.6]
+  - # page 1
+    stripHeights: [ 0.4, 0.6 ]
     strips:
-      # upper strip
-      - panelWidths: [0.3, 0.4, 0.3]
+      - # strip 1
+        panelWidths: [ 0.3, 0.4, 0.3 ]
         panels:
-          - - 2
-            - bgr-1
-            - Mariel=surprised; Dad=smiling
-          - - 1
-            - bgr-2
-            - all=happy
-            - Mariel: {x: 1.4, size: 1.5}
-          - - 0
-            - bgr-3
-            -
-            -
-            - 1.9
-            - [1.3, 1]
-      # lower strip
-      - panels:
-          - - 3
-            - bgr-3
-            -
-            - Silas: {y: 1.7, size: 1.5}
-  # page 2
-  - strips:
-      # upper strip
-      - panels:
-          - - 1
-          - - 2
-            - sunset-beach
+          - [ 2, bgr-1, { Mariel: surprised,
+                             Dad: smiling }]
+
+          - [ 1, bgr-2, { Mariel: { x: 1.4, size: 1.5 },
+                             all: happy }]
+
+          - [ 0, bgr-3, { zoom: 1.9, pan: { x: 1.3, y: 1 }}]
+
+      - # strip 2
+        panels:
+          - [ 3, bgr-3, { Silas: { y: 1.7, size: 1.5 }}]
+
+  - # page 2
+    strips:
+      - # strip 1
+        panels:
+          - [ 1 ]
+          - [ 2, sunset-beach ]
+
 backgrounds:
   default:
     zoom: 1
-    pan: [0.5, 1.5]
+    pan: { x: 0.5, y: 1.5 }
     Mariel:
-      how:
-        - sad
-        - happy
-      pos: {x: 2.3, y: 1.5, size: 1.5}
+      how: sad
+      pos: { x: 2.3, y: 1.5, size: 1.5 }
     all:
-      how:
-        - fluffy
-      pos: {x: 2.5}
+      how: fluffy
+      pos: { x: 2.5 }
+
   sunset-beach:
     zoom: 1
-    pan: [1, 1]
+    pan: { x: 1, y: 1 }
     Basil:
-      how:
-        - screaming
-      pos: {x: 1.5, y: -0.5, size: 2}
-scene:
-  zoom: 1
-  pan: [1, 1]
-  Mariel:
-    how:
-      - wet
-    pos: {x: -1.2, size: 0.75}
+      how: screaming
+      pos: { x: 1.5, y: -0.5, size: 2 }
+
+zoom: 1
+pan: { x: 1, y: 1 }
+Mariel:
+  how: wet
+  pos: { x: -1.2, size: 0.75 }
