@@ -1,4 +1,4 @@
-import { Story } from "./model/Story";
+import { Story } from "./Story";
 import { Scene } from "./model/Scene";
 import { ScenePainter } from "./paint/ScenePainter";
 import { DomElementContainer } from "../common/dom/DomElement";
@@ -6,6 +6,7 @@ import { ComicVmCanvas } from "./paint/ComicVmCanvas";
 import { Canvas } from "../common/dom/Canvas";
 import { Images } from "./images/Images";
 import { PaintConfig } from "./paint/Paint.config";
+import { StoryLoader } from "../backend/StoryLoader";
 
 // TODO
 //  - generate documentation with jsdoc
@@ -24,7 +25,7 @@ export class ComicVM {
     }
 
     static loadStory(storyName: string): Promise<ComicVM> {
-        return Story.load(storyName)
+        return StoryLoader.load(storyName)
             .then(story => new ComicVM(story));
     }
 

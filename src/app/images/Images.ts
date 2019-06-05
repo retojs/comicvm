@@ -1,7 +1,5 @@
 import { ImageStore } from "./ImageStore";
-import { Endpoints } from "../backend/Endpoints";
 import { Img } from "../../common/dom/Img";
-import { BackendConfig } from "../backend/Backend.config";
 import { ImageQuery } from "./ImageQuery";
 import { Rectangle } from "../../common/trigo/Rectangle";
 import { Square } from "../../common/trigo/Square";
@@ -25,8 +23,6 @@ export class Images {
 
     private characterImageStore = new ImageStore([]);
     private backgroundImageStore = new ImageStore([]);
-
-    private _backend: Endpoints;
 
     /**
      * Generates strings like '_x=70y=30size=155' for an image and a rectangle.
@@ -85,45 +81,41 @@ export class Images {
 
     constructor(story: string) {
         this.story = story;
-        this._backend = new Endpoints();
     }
 
-    load(): Promise<Img[]> {
-        return this._backend.getImages(this.story)
-            .then(imageUrls => {
-                this.imagePaths = imageUrls;
-                this.imageNames = imageUrls.map(url => Images.getName(url));
+    init(imageUrls: string[], baseUrl: string): Promise<Images> {
+        this.imagePaths = imageUrls;
+        this.imageNames = imageUrls.map(url => Images.getName(url));
 
-                this.backgroundImageStore = new ImageStore(imageUrls
-                    .filter(path => path.indexOf("/background/") > -1)
-                    .map(path => Images.getName(path)));
+        this.backgroundImageStore = new ImageStore(imageUrls
+            .filter(path => path.indexOf("/background/") > -1)
+            .map(path => Images.getName(path)));
 
-                this.characterImageStore = new ImageStore(imageUrls
-                    .filter(path => path.indexOf("/character/") > -1)
-                    .map(path => Images.getName(path)));
+        this.characterImageStore = new ImageStore(imageUrls
+            .filter(path => path.indexOf("/character/") > -1)
+            .map(path => Images.getName(path)));
 
-                return imageUrls;
-            })
-            .then(imageNames => Promise.all(
-                imageNames.map(imageName => this.createImage(imageName))
-            )).then(result => {
-                this.images = result;
-                this.imagesByName = {};
-                this.imageNames.forEach(name =>
-                    this.imagesByName[name] = this.images.find(img =>
-                        Images.getName(img.src).indexOf(name) === 0)
-                );
-                return result;
-            });
+        return Promise.all(imageUrls.map(url => this.createImage(url, baseUrl)))
+            .then((images: Img[]) => this.setImages(images))
+            .then(() => this);
     }
 
-    createImage(imageName: string): Promise<Img> {
+    createImage(imageName: string, baseUrl: string): Promise<Img> {
         return new Promise((resolve) => {
-            const img = new Img(null, BackendConfig.baseURL + imageName);
+            const img = new Img(null, baseUrl + imageName);
             img.onLoad = () => {
                 resolve(img);
             };
         })
+    }
+
+    setImages(images: Img[]) {
+        this.images = images;
+        this.imagesByName = {};
+        this.imageNames.forEach(name =>
+            this.imagesByName[name] = this.images.find(img =>
+                Images.getName(img.src).indexOf(name) === 0)
+        );
     }
 
     chooseBackgroundImage(query: ImageQuery): Img {

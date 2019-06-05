@@ -1,5 +1,5 @@
 import { Div } from "../../common/dom/Div";
-import { Endpoints } from "../../app/backend/Endpoints";
+import { Endpoints } from "../../backend/Endpoints";
 import { Img } from "../../common/dom/Img";
 import { DomElementContainer } from "../../common/dom/DomElement";
 import { ImageType } from "../../app/images/ImageType";
