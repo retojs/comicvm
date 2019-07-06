@@ -24,6 +24,10 @@ export class LayoutParser {
         return new LayoutParser(scene).parseLayout();
     }
 
+    static getPageCount(scene: Scene): number {
+        return new LayoutParser(scene).parseLayout().yamlSceneLayout.pages.length;
+    }
+
     scene: Scene;
 
     yamlSceneLayout: YamlSceneLayoutConfig;

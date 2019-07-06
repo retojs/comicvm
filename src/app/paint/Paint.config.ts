@@ -47,12 +47,12 @@ export class FeaturePaintStyleConfig {
     };
 
     bubble = {
-        textBox: PaintStyleConfig.fillAndStroke("white", "teal", normalLineWidth),
+        textBox: PaintStyleConfig.fillAndStroke("white", "grey", normalLineWidth),
         text: PaintStyleConfig.text("black", TextAlign.Center),
         offScreen: {
             text: PaintStyleConfig.text("black", TextAlign.Left)
         },
-        pointer: PaintStyleConfig.stroke("teal", normalLineWidth, LineCap.Butt),
+        pointer: PaintStyleConfig.stroke("grey", normalLineWidth, LineCap.Butt),
         pointerHalo: PaintStyleConfig.stroke("rgba(255, 255, 255, 0.7)", normalLineWidth, LineCap.Butt)
     }
 }
@@ -76,25 +76,27 @@ export class PaintConfig {
     }
 }
 
-
-export function setPaintConfigFinal() {
-    PaintConfig.of.character.actor.name.enabled = false;
-    PaintConfig.of.character.actor.box.enabled = false;
-    PaintConfig.of.character.actor.bbox.enabled = false;
-    PaintConfig.of.character.name.enabled = false;
-    PaintConfig.of.character.box.enabled = false;
-    PaintConfig.of.character.bbox.enabled = false;
-
-    PaintConfig.of.panel.grid.enabled = false;
+export const enum PaintConfigMode {
+    Final, Edit, YellowPrint
 }
 
-export function setPaintConfigEdit() {
-    PaintConfig.of.character.actor.name.enabled = true;
-    PaintConfig.of.character.actor.box.enabled = true;
-    PaintConfig.of.character.actor.bbox.enabled = true;
-    PaintConfig.of.character.name.enabled = true;
-    PaintConfig.of.character.box.enabled = true;
-    PaintConfig.of.character.bbox.enabled = true;
-
-    PaintConfig.of.panel.grid.enabled = true;
+export function setPaintConfig(mode: PaintConfigMode){
+    switch (mode){
+        case PaintConfigMode.Final:
+            PaintConfig.of.character.actor.name.enabled = false;
+            PaintConfig.of.character.actor.box.enabled = false;
+            PaintConfig.of.character.actor.bbox.enabled = false;
+            PaintConfig.of.character.name.enabled = false;
+            PaintConfig.of.character.box.enabled = false;
+            PaintConfig.of.character.bbox.enabled = false;
+            PaintConfig.of.panel.grid.enabled = false;
+        case PaintConfigMode.Edit:
+            PaintConfig.of.character.actor.name.enabled = true;
+            PaintConfig.of.character.actor.box.enabled = true;
+            PaintConfig.of.character.actor.bbox.enabled = true;
+            PaintConfig.of.character.name.enabled = true;
+            PaintConfig.of.character.box.enabled = true;
+            PaintConfig.of.character.bbox.enabled = true;
+            PaintConfig.of.panel.grid.enabled = true;
+    }
 }

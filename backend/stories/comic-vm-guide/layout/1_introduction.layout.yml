@@ -1,0 +1,47 @@
+pages:
+  - # page 1
+    strips:
+      - # strip 1
+        panels:
+          - [ 1 ]
+          - [ 2 ]
+      - # strip 2
+        panels:
+          - [ 2 ]
+          - [ 2 ]
+      - # strip 3
+        panels:
+          - [ 3 ]
+          - [ 2 ]
+
+  - # page 2
+    strips:
+      - # strip 1
+        panels:
+          - [ 2 ]
+          - [ 2 ]
+      - # strip 2
+        panels:
+          - [ 2 ]
+          - [ 2 ]
+      - # strip 3
+        panels:
+          - [ 2 ]
+          - [ 2 ]
+
+  - # page 3
+    strips:
+      - # strip 1
+        panels:
+          - [ 2 ]
+          - [ 2 ]
+      - # strip 2
+        panels:
+          - [ 2 ]
+          - [ 2 ]
+      - # strip 3
+        panels:
+          - [ 2 ]
+          - [ 2 ]
+
+pan: {y: 0.4}

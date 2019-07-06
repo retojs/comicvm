@@ -1,0 +1,62 @@
+# Next Steps in Developing ComicVM
+
+
+## Publish & Distribute
+
+-> as Drupal Plugin -> https://h5p.org/library-development
+
+-> as custom element / web component
+
+-> as npm package
+
+-> separate dev tools from players
+
+
+
+## Improve Usage
+
+-> configurable backend root dir
+
+-> configuration file format for transitions and sound
+
+-> migrate editor features move & resize characters with mouse
+
+-> effects like snow, rain, dust flying around, reflections etc.
+
+
+
+## Improve Players
+
+-> Scrollable Player (time progresses as you scroll)
+  -> normalized scroller generating motion of equal tempo
+
+-> panel swipe transitions
+
+-> use shadow canvas for repaints
+
+-> Improve & standardise player controls
+
+
+
+## Sound Players
+
+-> define panel timeline according to audio
+   -> editor to define points in the audio
+      - editor with audio-visual feedback:
+         flicker when sound plays the defined point.
+         allow the user to adjust the point in time while the audio section around the defined point is replayed in a loop
+
+
+
+## Improve Dev Tools
+
+-> integrated editor
+
+-> yellow print
+
+-> solve mismatch between background images of different layers with animation properties (warn or adjust background position)
+
+
+
+## Improve Guide
+

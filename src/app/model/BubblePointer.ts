@@ -35,7 +35,8 @@ export class BubblePointer {
         const characterPos = this.character.getPosition();
 
         // The pointer is attached to the bubble at that point
-        // where the line from the character's the top center to the center of the bubble
+        // where the line from the character's top center
+        // to the center of the bubble
         // intersects the bubble border.
 
         this.characterEnd = new Point(characterPos.x + characterPos.size / 2, characterPos.y);

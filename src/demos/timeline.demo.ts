@@ -5,7 +5,7 @@ import { ComicVM } from "../app/ComicVM";
 import { Scene } from "../app/model/Scene";
 import { Div } from "../common/dom/Div";
 import { Heading } from "../common/dom/Heading";
-import { PaintConfig, setPaintConfigFinal } from "../app/paint/Paint.config";
+import { PaintConfig, PaintConfigMode, setPaintConfig } from "../app/paint/Paint.config";
 
 export class TimelineDemo implements Demo {
 
@@ -20,7 +20,7 @@ export class TimelineDemo implements Demo {
             .then(comicVM => {
                 console.log("comicVM created:", comicVM);
 
-                setPaintConfigFinal();
+                setPaintConfig(PaintConfigMode.Final);
 
                 const root = new Div(container, "timeline-demo",
                     new Heading(null, 2, "Timeline Editor")

@@ -4,7 +4,7 @@ import { DomElementContainer } from "../common/dom/DomElement";
 import { PanelPlayer } from "../app/play/PanelPlayer";
 import { ComicVM } from "../app/ComicVM";
 import { Button } from "../common/dom/Button";
-import { setPaintConfigFinal } from "../app/paint/Paint.config";
+import { PaintConfigMode, setPaintConfig } from "../app/paint/Paint.config";
 import { CoordinatesDisplay } from "./components/CoordinatesDisplay";
 
 export class AnimationDemo implements Demo {
@@ -38,7 +38,7 @@ export class AnimationDemo implements Demo {
 
                 this.setupMouseListeners(comicVM);
 
-                setPaintConfigFinal();
+                setPaintConfig(PaintConfigMode.Final);
 
                 this.panelPlayer = new PanelPlayer(comicVM);
                 this.panelPlayer.play();

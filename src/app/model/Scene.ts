@@ -31,6 +31,10 @@ export class Scene {
         }
     };
 
+    get pageCount(): number {
+        return LayoutParser.getPageCount(this);
+    }
+
     constructor(name: string, layoutYaml: string, plot: string) {
         this.name = name;
         this.layoutYaml = layoutYaml;
@@ -57,7 +61,6 @@ export class Scene {
         LayoutEngine.layoutScene(this, canvas);
         return this;
     }
-
 
     setupImages(images: Images): Scene {
         if (images) {

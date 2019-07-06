@@ -71,7 +71,7 @@ export class BackgroundImageSizeDemo implements Demo {
     }
 
     setupPanelSelection() {
-        const panelSelectionCanvas = new ComicVmCanvas(this.root);
+        const panelSelectionCanvas = new ComicVmCanvas(this.root, this.comicVM.currentScene);
         panelSelectionCanvas.class = "panel-selection-page";
         panelSelectionCanvas.setDimensions(
             this.comicWidth,

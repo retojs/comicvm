@@ -6,6 +6,7 @@ import { Margin } from "../../common/style/Margin";
 
 export type ParameterListener<T> = (value: T) => void;
 
+const LARGEST_SMALL_VALUE = 5;
 const INCREMENT_SMALL_VALUES = 0.01;
 const INCREMENT_SMALL_VALUES_CTRL_KEY = 0.05;
 const INCREMENT_LARGE_VALUES = 1;
@@ -72,6 +73,36 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
         return main.domElement;
     }
 
+    /**
+     * Feature:
+     *
+     *   * Keeping any of the arrow keys pressed should increase or decrease the parameter value in a regular speed.
+     *   * The increment should match the incremented value to get a smooth increase
+     *      i.e. the increment should be reasonably small relative to the current value
+     *   * Pressing the CTRL key should produce a faster increase.
+     *
+     * Concept of Implementation:
+     *
+     *   - the flag isRepeatingKeyDown indicates if a regular increment is in progress
+     *   - on keydown
+     *      - this flag is set to true
+     *      - the method startRepeatKeyDown starts a loop calling repeatKeyDown in each iteration
+     *   - on keyup
+     *      - this flag is set to false
+     *      - the method stopRepeatingKeyDown stops the loop
+     *
+     *   - In each step of the repeatKeyDown loop
+     *      - the incremented value is calculated in the method getIncrementedValue.
+     *      - the increment size depends on
+     *          - the arrow key (up/right = increase, down/left = decrease)
+     *          - the Ctrl key (larger increment if Ctrl is pressed)
+     *          - the current value (smaller increment if value is smaller than LARGEST_SMALL_VALUE)
+     *      - the incremented value is passed to the change listener
+     *      - the next iteration is initiated if looping has not been stopped through the flag mentioned above.
+     *
+     * @param onChange: the change listener to be notified of a new value
+     */
+
     setupKeyboardListeners(onChange: ParameterListener<string>) {
         this.input.onKeyDown = (event: KeyboardEvent) => {
             if (isArrowKeyPressed(event) && !this.isRepeatingKeyDown) {
@@ -81,7 +112,7 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
         this.input.onKeyUp = (event: KeyboardEvent) => {
             if (this.isRepeatingKeyDown) {
                 this.stopRepeatingKeyDown();
-                this.handleArrowKeys(event);
+                this.value = this.getIncrementedValue(event);
                 onChange(this.value);
             } else {
                 this.getDebounced(onChange)(event);
@@ -93,7 +124,7 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
         this.isRepeatingKeyDown = true;
         this.arrowKeyTimeoutId = setTimeout(
             () => this.repeatKeyDown(event, onChange),
-            event.ctrlKey ? KEY_DOWN_REPEAT_INTERVAL : KEY_DOWN_DEBOUNCE_INTERVAL);
+            KEY_DOWN_DEBOUNCE_INTERVAL);
     }
 
     stopRepeatingKeyDown() {
@@ -106,20 +137,20 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
         this.arrowKeyTimeoutId = null;
     }
 
-    repeatKeyDown(event: KeyboardEvent, onKeyUp: ParameterListener<string>) {
-        this.handleArrowKeys(event);
-        onKeyUp(this.value);
+    repeatKeyDown(event: KeyboardEvent, onChange: ParameterListener<string>) {
+        this.value = this.getIncrementedValue(event);
+        onChange(this.value);
 
         this.stopArrowKeyTimeout();
         if (this.isRepeatingKeyDown) {
             this.arrowKeyTimeoutId = setTimeout(
-                () => this.repeatKeyDown(event, onKeyUp),
+                () => this.repeatKeyDown(event, onChange),
                 KEY_DOWN_REPEAT_INTERVAL
             );
         }
     }
 
-    handleArrowKeys(event: KeyboardEvent): void {
+    getIncrementedValue(event: KeyboardEvent): string {
         if (!this.value || !isArrowKeyPressed(event)) {
             return;
         }
@@ -136,20 +167,23 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
             switch (event.code) {
                 case "ArrowUp":
                 case "ArrowRight":
-                    this.value = "" + (value + (event.ctrlKey ? incrementCtrlKey : increment)).toFixed(FRACTION_DIGITS);
-                    break;
+                    return "" + (value + (event.ctrlKey ? incrementCtrlKey : increment)).toFixed(FRACTION_DIGITS);
                 case "ArrowDown":
                 case "ArrowLeft":
-                    this.value = "" + (value - (event.ctrlKey ? incrementCtrlKey : increment)).toFixed(FRACTION_DIGITS);
-                    break;
+                    return "" + (value - (event.ctrlKey ? incrementCtrlKey : increment)).toFixed(FRACTION_DIGITS);
             }
         }
     }
 
     isSmallValue(value: number) {
-        return value < 5;
+        return value < LARGEST_SMALL_VALUE;
     }
 
+    /**
+     * Returns a debounced version of the specified change listener.
+     * The debounced version only calls the change listener after the user has stopped typing for a certain amount of time.
+     * @param onChange
+     */
     getDebounced(onChange: ParameterListener<string>) {
         return (event: KeyboardEvent) => {
             if (!isArrowKeyPressed(event)) {

@@ -55,7 +55,7 @@ export class ComicVM {
         if (container instanceof Canvas) {
             this.canvas = container as Canvas;
         } else {
-            this.canvas = new ComicVmCanvas(container);
+            this.canvas = new ComicVmCanvas(container, this.currentScene);
         }
         this.canvas.setFont(PaintConfig.canvas.font);
         this.currentScene.setup(this.canvas, this.images);

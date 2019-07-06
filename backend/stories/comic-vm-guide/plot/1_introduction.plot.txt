@@ -2,7 +2,7 @@ Title: What can ComicVM do for you?
 
 Characters: Stranger, Expert
 
-Place: ComicVM Site
+Place: Stage
 _____
 Plot:
 
@@ -60,3 +60,5 @@ Expert:
 (smiles)
     I'm glad you're asking.
     Let's go to the next scene to learn more!
+Stranger to Expert:
+    Yay!

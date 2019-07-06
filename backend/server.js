@@ -9,6 +9,8 @@ const port = process.env.PORT || '3000';
 
 const DEBUG = true;
 
+// TODO make root dir configurable via command line option
+
 /**
  * rootDir is the directory where all story files are written to.
  *

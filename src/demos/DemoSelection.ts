@@ -12,6 +12,7 @@ import { IntersectionDemo } from "./intersection.demo";
 import { AnimationDemo } from "./animation.demo";
 import { BackgroundImageSizeDemo } from "./background-image-size.demo";
 import { TimelineDemo } from "./timeline.demo";
+import { ComicVmGuideDemo } from "./comic-vm-guide-demo";
 
 const LOCAL_STORAGE_KEY = 'comic-vm--selected-demo';
 
@@ -25,6 +26,7 @@ const demos = [
     new BubbleDemo(),
     new CharacterPositionDemo(),
     new ComicVmDemo(),
+    new ComicVmGuideDemo(),
     new IntersectionDemo(),
 ];
 
