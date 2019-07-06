@@ -8,6 +8,7 @@ export class CoordinatesDisplay {
 
     currentMousePos: Point;
     referencePoint: Point;
+    canvasCoordinates: Point;
 
     // TODO extract base class "FixedDisplay" which can display any content
     content: string[];
@@ -17,7 +18,7 @@ export class CoordinatesDisplay {
 
         document.addEventListener("mousemove", (event: MouseEvent) => {
             this.currentMousePos = new Point(event.clientX, event.clientY);
-            this.updateContent();
+            this.displayContent();
         });
 
         document.addEventListener("click", (event: MouseEvent) => {
@@ -26,11 +27,11 @@ export class CoordinatesDisplay {
             } else {
                 this.referencePoint = new Point(event.clientX, event.clientY);
             }
-            this.updateContent();
+            this.displayContent();
         });
     }
 
-    updateContent(): void {
+    displayContent(): void {
         if (!this.currentMousePos) {
             return;
         }
@@ -38,6 +39,14 @@ export class CoordinatesDisplay {
         let content = `<div class="coordinates-display_section">
                          <div>mouse position: <span class="mouse-pos">[ ${this.currentMousePos.x}, ${this.currentMousePos.y} ]</span></div>
                        </div>`;
+
+        if (this.canvasCoordinates) {
+            const x = this.canvasCoordinates.x.toFixed(0);
+            const y = this.canvasCoordinates.y.toFixed(0);
+            content += `<div class="coordinates-display_section">
+                          <div>canvas coordinates: <span class="mouse-pos">[ ${x}, ${y} ]</span></div>
+                        </div>`;
+        }
 
         if (this.referencePoint) {
             const distance: Point = this.referencePoint.distanceTo(this.currentMousePos);
@@ -48,6 +57,7 @@ export class CoordinatesDisplay {
                           </div>
                         </div>`;
         }
+
         if (this.content) {
             this.content.forEach(item => content += item);
         }
@@ -57,10 +67,16 @@ export class CoordinatesDisplay {
 
     addContent(html: string) {
         (this.content = this.content || []).push(html);
+        this.displayContent();
     }
 
     setContent(html: string) {
         this.content = null;
         this.addContent(html);
+        this.displayContent();
+    }
+
+    resetContent() {
+        this.setContent('');
     }
 }

@@ -6,6 +6,7 @@ import { Scene } from "../app/model/Scene";
 import { Div } from "../common/dom/Div";
 import { Heading } from "../common/dom/Heading";
 import { PaintConfig, PaintConfigMode, setPaintConfig } from "../app/paint/Paint.config";
+import { DemoContext } from "./DemoContext";
 
 export class TimelineDemo implements Demo {
 
@@ -31,6 +32,8 @@ export class TimelineDemo implements Demo {
                 this.timelineEditor = new TimelineEditor(root, this.scene)
                     .setup(1000, PaintConfig.canvas.font, comicVM.images)
                     .paint();
+
+                DemoContext.setupCanvasPositionListeners(this.timelineEditor.timelinePlayer.canvas);
             })
     }
 }

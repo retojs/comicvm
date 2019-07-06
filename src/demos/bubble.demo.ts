@@ -6,6 +6,7 @@ import { Demo } from "./Demo";
 import { ParameterInput } from "./components/ParameterInput";
 import { Margin } from "../common/style/Margin";
 import { ComicVM } from "../app/ComicVM";
+import { DemoContext } from "./DemoContext";
 
 export class BubbleDemo implements Demo {
 
@@ -21,6 +22,8 @@ export class BubbleDemo implements Demo {
 
                 this.comicVM = comicVM;
                 this.comicVM.setupScene("bubble-demo", container);
+
+                DemoContext.setupCanvasPositionListeners(comicVM.canvas);
 
                 this.repaint();
             });

@@ -2,6 +2,7 @@ import * as LayoutConfigButtons from "./components/LayoutConfigButtons";
 import { DomElementContainer } from "../common/dom/DomElement";
 import { Demo } from "./Demo";
 import { ComicVM } from "../app/ComicVM";
+import { DemoContext } from "./DemoContext";
 
 export class CharacterPositionDemo implements Demo {
 
@@ -17,6 +18,8 @@ export class CharacterPositionDemo implements Demo {
 
                 this.comicVM = comicVM;
                 this.comicVM.setupScene("character-position-demo", container);
+
+                DemoContext.setupCanvasPositionListeners(comicVM.canvas);
 
                 LayoutConfigButtons.create(container, this.repaintScene.bind(this));
 

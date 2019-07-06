@@ -13,6 +13,7 @@ import { AnimationDemo } from "./animation.demo";
 import { BackgroundImageSizeDemo } from "./background-image-size.demo";
 import { TimelineDemo } from "./timeline.demo";
 import { ComicVmGuideDemo } from "./comic-vm-guide-demo";
+import { DemoContext } from "./DemoContext";
 
 const LOCAL_STORAGE_KEY = 'comic-vm--selected-demo';
 
@@ -46,10 +47,16 @@ export function create(container: DomElementContainer) {
     selection.onChange = () => {
         storeSelectedIntoStorage(selection.selectedOption);
         showDemo(getSelectedDemo());
+        setTimeout(() => {
+            DemoContext.coordinateDisplay.referencePoint = undefined;
+            DemoContext.coordinateDisplay.resetContent();
+        }, 10);
     };
 
     selection.selectedOption = loadSelectedFromStorage();
     showDemo(getSelectedDemo());
+
+    DemoContext.coordinateDisplay; // lazy create the coordinates display
 
     function getSelectedDemo() {
         return demosByName[selection.selectedOption];

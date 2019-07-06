@@ -37,7 +37,7 @@ export class BubblePointer {
         // The pointer is attached to the bubble at that point
         // where the line from the character's top center
         // to the center of the bubble
-        // intersects the bubble border.
+        // intersects the bubble's lower border.
 
         this.characterEnd = new Point(characterPos.x + characterPos.size / 2, characterPos.y);
         this.fromCharacterToBubbleCenter = new Line(this.characterEnd, this.bubble.shape.center);
@@ -46,6 +46,15 @@ export class BubblePointer {
         if (this.bubbleEnd == null) {
             return;
         }
+
+        // The pointer also has to stay connected to the bubble
+        // so if that line does not intersect the bubble's lower border
+        //  then the pointer's bubble end is moved closer to the bubble
+
+        this.bubbleEnd.constrainX(this.bubble.shape.clone()
+            .cutMargin(LayoutConfig.bubble.padding)
+            .cutMarginOf(LayoutConfig.bubble.pointer.bubbleEndsDistance / 2)
+        );
 
         // the actual end of the pointer near the character is a configured proportion of that line from the character to the bubble
 

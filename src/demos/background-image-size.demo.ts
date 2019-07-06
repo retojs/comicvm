@@ -3,13 +3,13 @@ import { Demo } from "./Demo";
 import { DomElementContainer } from "../common/dom/DomElement";
 import { Div } from "../common/dom/Div";
 import { PanelBoundingBoxViewer } from "./components/PanelBoundingBoxViewer";
-import { CoordinatesDisplay } from "./components/CoordinatesDisplay";
 import { ComicVmCanvas } from "../app/paint/ComicVmCanvas";
 import { Heading } from "../common/dom/Heading";
 import { PanelPropertiesEditor } from "./components/PanelPropertiesEditor";
 import { Panel } from "../app/model/Panel";
 import { PaintStyleConfig } from "../common/style/PaintStyle";
 import { PageConfig } from "../app/layout/Layout.config";
+import { DemoContext } from "./DemoContext";
 
 const SELECTED_PANEL_BORDER = PaintStyleConfig.stroke("teal", 16);
 
@@ -24,7 +24,6 @@ export class BackgroundImageSizeDemo implements Demo {
 
     root: Div;
     panelBBoxViewer: PanelBoundingBoxViewer;
-    coordsDisplay: CoordinatesDisplay;
     panelPropertiesEditor: PanelPropertiesEditor;
 
     comicWidth = 360;
@@ -51,6 +50,8 @@ export class BackgroundImageSizeDemo implements Demo {
                     Math.round(this.comicWidth * PageConfig.proportion)
                 );
 
+                DemoContext.setupCanvasPositionListeners(this.panelBBoxViewer.canvas);
+
                 this.panelPropertiesEditor = new PanelPropertiesEditor(this.panelBBoxViewer,
                     () => {
                         this.repaintPanelSelection();
@@ -59,8 +60,6 @@ export class BackgroundImageSizeDemo implements Demo {
                 );
 
                 this.selectPanel(this.comicVM.currentScene.panels[0]);
-
-                this.coordsDisplay = new CoordinatesDisplay(window.document.body);
             })
             .catch(showError);
 

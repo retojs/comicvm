@@ -3,8 +3,8 @@ import * as layoutConfigButtons from "./components/LayoutConfigButtons";
 import { Demo } from "./Demo";
 import { DomElementContainer } from "../common/dom/DomElement";
 import { Div } from "../common/dom/Div";
-import { CoordinatesDisplay } from "./components/CoordinatesDisplay";
 import { PaintConfigMode, setPaintConfig } from "../app/paint/Paint.config";
+import { DemoContext } from "./DemoContext";
 
 export class ComicVmGuideDemo implements Demo {
 
@@ -25,9 +25,9 @@ export class ComicVmGuideDemo implements Demo {
                 this.comicVM.setupScene("1_introduction", container);
                 this.repaint();
 
-                layoutConfigButtons.create(container, this.repaint.bind(this));
+                DemoContext.setupCanvasPositionListeners(comicVM.canvas);
 
-                new CoordinatesDisplay(window.document.body);
+                layoutConfigButtons.create(container, this.repaint.bind(this));
             })
             .catch(showError);
 

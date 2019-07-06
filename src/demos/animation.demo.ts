@@ -1,11 +1,11 @@
-import { Demo } from "./Demo";
+import { Demo, } from "./Demo";
 import { Div } from "../common/dom/Div";
 import { DomElementContainer } from "../common/dom/DomElement";
 import { PanelPlayer } from "../app/play/PanelPlayer";
 import { ComicVM } from "../app/ComicVM";
 import { Button } from "../common/dom/Button";
 import { PaintConfigMode, setPaintConfig } from "../app/paint/Paint.config";
-import { CoordinatesDisplay } from "./components/CoordinatesDisplay";
+import { DemoContext } from "./DemoContext";
 
 export class AnimationDemo implements Demo {
 
@@ -16,7 +16,6 @@ export class AnimationDemo implements Demo {
 
     private playButton: Button;
     private panelPlayer: PanelPlayer;
-    private coordinateDisplay: CoordinatesDisplay;
 
     create(container: DomElementContainer) {
 
@@ -32,11 +31,10 @@ export class AnimationDemo implements Demo {
                     () => this.panelPlayer.play(),
                     "button--posh"
                 );
-                this.coordinateDisplay = new CoordinatesDisplay(container);
 
                 comicVM.setupScene("animation-demo", container);
 
-                this.setupMouseListeners(comicVM);
+                DemoContext.setupCanvasPositionListeners(comicVM.canvas);
 
                 setPaintConfig(PaintConfigMode.Final);
 
@@ -45,17 +43,4 @@ export class AnimationDemo implements Demo {
             });
     }
 
-    setupMouseListeners(comicVM: ComicVM) {
-        comicVM.canvas.onMouseMove = (event: MouseEvent) => {
-            const canvasPosition = comicVM.canvas.getCanvasPositionFromMousePosition(event.clientX, event.clientY);
-            const x = canvasPosition.x.toFixed(0);
-            const y = canvasPosition.y.toFixed(0);
-            this.coordinateDisplay.setContent(`<div class="coordinates-display_section">
-                         <div>canvas coordinates: <span class="mouse-pos">[ ${x}, ${y} ]</span></div>
-                       </div>`);
-            this.coordinateDisplay.updateContent();
-        };
-
-        comicVM.canvas.onMouseLeave = () => this.coordinateDisplay.setContent("");
-    }
 }

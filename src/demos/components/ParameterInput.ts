@@ -152,7 +152,7 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
 
     getIncrementedValue(event: KeyboardEvent): string {
         if (!this.value || !isArrowKeyPressed(event)) {
-            return;
+            return this.value;
         }
         const value = parseFloat(this.value);
 
@@ -171,7 +171,11 @@ export class ParameterInput extends DomElement<HTMLDivElement> {
                 case "ArrowDown":
                 case "ArrowLeft":
                     return "" + (value - (event.ctrlKey ? incrementCtrlKey : increment)).toFixed(FRACTION_DIGITS);
+                default:
+                    return this.value;
             }
+        } else {
+            return this.value;
         }
     }
 
