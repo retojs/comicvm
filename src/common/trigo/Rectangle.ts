@@ -18,8 +18,8 @@ export class Rectangle {
             Math.abs(p1.y - p2.y));
     }
 
-    static fromDimensions(dimensions: Dimensions, x: number = 0, y: number = 0): Rectangle {
-        return new Rectangle(x, y, dimensions.width, dimensions.height);
+    static fromDimensions(dimensions: Dimensions, topLeft: Point = new Point(0, 0)): Rectangle {
+        return new Rectangle(topLeft.x, topLeft.y, dimensions.width, dimensions.height);
     }
 
     constructor(x?: number, y?: number, width?: number, height?: number) {
@@ -67,6 +67,11 @@ export class Rectangle {
 
     get topLeft(): Point {
         return new Point(this.x, this.y);
+    }
+
+    set topLeft(topLeft: Point) {
+        this.x = topLeft.x;
+        this.y = topLeft.y;
     }
 
     get topRight(): Point {
