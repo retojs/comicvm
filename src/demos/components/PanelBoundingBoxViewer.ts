@@ -37,8 +37,8 @@ export class PanelBoundingBoxViewer extends Div {
     paintArea: Rectangle;
 
     constructor(container: DomElementContainer,
-                private width: number,
-                private height: number
+        private width: number,
+        private height: number
     ) {
         super(container, "panel-bounding-box");
         this.canvas = new Canvas(this, width, height);
@@ -56,14 +56,14 @@ export class PanelBoundingBoxViewer extends Div {
             .translateToOrigin()
             .cutMarginOf(2);
 
+        let canvasShape: Rectangle;
         if (this.mode === Mode.PaintPanel) {
-            const canvasShape = Rectangle.fitIntoBounds(panel.shape.clone(), this.canvasShapeBounds);
-            this.canvas.setDimensions(canvasShape.width, canvasShape.height);
+            canvasShape = Rectangle.fitIntoBounds(panel.shape.clone(), this.canvasShapeBounds);
         }
         if (this.mode === Mode.PaintBackground) {
-            const canvasShape = Rectangle.fitIntoBounds(panel.backgroundImageShape.clone(), this.canvasShapeBounds);
-            this.canvas.setDimensions(canvasShape.width, canvasShape.height);
+            canvasShape = Rectangle.fitIntoBounds(panel.backgroundImageShape.clone(), this.canvasShapeBounds);
         }
+        this.canvas.setDimensions(canvasShape.width, canvasShape.height);
     }
 
     paint() {
