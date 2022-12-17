@@ -11,6 +11,11 @@ export class BubbleLayoutEngine {
 
     private canvas: Canvas;
 
+    constructor(
+        private layoutConfig: LayoutConfig = new LayoutConfig()
+    ) {
+    }
+
     layout(panels: Panel[], canvas: Canvas) {
         panels
             .filter(panel => !!panel.bubbles && panel.bubbles.length > 0)
@@ -31,30 +36,30 @@ export class BubbleLayoutEngine {
 
     private createBubbleShapes(panel: Panel): void {
         panel.bubbles.forEach(bubble => {
-            const availableLineWidth = panel.shape.width - LayoutConfig.panel.padding.horizontal - LayoutConfig.bubble.padding.horizontal;
+            const availableLineWidth = panel.shape.width - this.layoutConfig.panel.padding.horizontal - this.layoutConfig.bubble.padding.horizontal;
             bubble.textBox = this.layoutTextBox(
                 bubble.says,
                 availableLineWidth,
-                (bubble.isOffScreen ? 2 : 1) * LayoutConfig.bubble.maxWithPerHeight
+                (bubble.isOffScreen ? 2 : 1) * this.layoutConfig.bubble.maxWithPerHeight
             );
             bubble.shape = new Rectangle(
                 0,
                 0,
-                bubble.textBox.width + LayoutConfig.bubble.padding.horizontal,
-                bubble.textBox.height + LayoutConfig.bubble.padding.vertical);
+                bubble.textBox.width + this.layoutConfig.bubble.padding.horizontal,
+                bubble.textBox.height + this.layoutConfig.bubble.padding.vertical);
         });
     }
 
     private layoutOffscreenBubble(panel: Panel): void {
         if (panel.offScreenBubble) {
-            panel.offScreenBubble.shape.x = panel.shape.x + LayoutConfig.panel.padding.left;
-            panel.offScreenBubble.shape.y = panel.shape.y + LayoutConfig.panel.padding.top;
+            panel.offScreenBubble.shape.x = panel.shape.x + this.layoutConfig.panel.padding.left;
+            panel.offScreenBubble.shape.y = panel.shape.y + this.layoutConfig.panel.padding.top;
         }
     }
 
     layoutBubblesIntoLines(panel: Panel): Bubble[][] {
 
-        let availableWidth = panel.shape.width - LayoutConfig.panel.padding.horizontal;
+        let availableWidth = panel.shape.width - this.layoutConfig.panel.padding.horizontal;
         let nextLine: Bubble[] = [];
         let bubbleLines: Bubble[][] = [nextLine];
 
@@ -63,7 +68,7 @@ export class BubbleLayoutEngine {
             .forEach(bubble => {
                 if (availableWidth >= bubble.shape.width) {
                     nextLine.push(bubble);
-                    availableWidth -= bubble.shape.width + LayoutConfig.bubble.margin.right;
+                    availableWidth -= bubble.shape.width + this.layoutConfig.bubble.margin.right;
                 } else {
                     nextLine = [bubble];
                     bubbleLines.push(nextLine);
@@ -100,8 +105,11 @@ export class BubbleLayoutEngine {
             alignLeftRight = true;
         }
 
-        const panelBounds = panel.shape.clone().cutMargin(LayoutConfig.panel.padding);
-        let y = getInitialVerticalOffset();
+        const panelBounds = panel.shape.clone().cutMargin(this.layoutConfig.panel.padding);
+        let y = getInitialVerticalOffset(
+            this.layoutConfig.bubble.margin.top,
+            this.layoutConfig.panel.padding.top
+        );
         bubbleLines.forEach((bubbleLine, index) => {
             if (alignLeftRight) {
                 if (index % 2) {
@@ -118,23 +126,23 @@ export class BubbleLayoutEngine {
 
         return bubbleLines;
 
-        function getInitialVerticalOffset() {
-            let y = -LayoutConfig.bubble.margin.top; // no bubble margin between panel border and bubble
+        function getInitialVerticalOffset(marginTop, paddingTop) {
+            let y = -marginTop; // no bubble margin between panel border and bubble
             if (panel.offScreenBubble) {
-                y += panel.offScreenBubble.shape.height + LayoutConfig.panel.padding.top;
+                y += panel.offScreenBubble.shape.height + paddingTop;
             }
             return y;
         }
     }
 
     private allignBubblesLeft(bubbleLine: Bubble[], container: Rectangle, verticalOffset: number) {
-        let x = container.x - LayoutConfig.bubble.margin.left,
+        let x = container.x - this.layoutConfig.bubble.margin.left,
             y = container.y + verticalOffset;
         this.setBubbleLinePosition(bubbleLine, x, y);
     }
 
     private allignBubblesRight(bubbleLine: Bubble[], container: Rectangle, verticalOffset: number) {
-        let x = container.x + LayoutConfig.bubble.margin.left + (container.width - this.getBubbleLineWidth(bubbleLine)),
+        let x = container.x + this.layoutConfig.bubble.margin.left + (container.width - this.getBubbleLineWidth(bubbleLine)),
             y = container.y + verticalOffset;
         this.setBubbleLinePosition(bubbleLine, x, y);
     }
@@ -150,31 +158,31 @@ export class BubbleLayoutEngine {
         let x = container.x + gapWidth;
         let y = container.y + verticalOffset;
         bubbleLine.forEach(bubble => {
-            bubble.shape.x = x + LayoutConfig.bubble.margin.left;
-            bubble.shape.y = y + LayoutConfig.bubble.margin.top;
-            x += bubble.shape.width + LayoutConfig.bubble.margin.right + Math.max(0, gapWidth);
+            bubble.shape.x = x + this.layoutConfig.bubble.margin.left;
+            bubble.shape.y = y + this.layoutConfig.bubble.margin.top;
+            x += bubble.shape.width + this.layoutConfig.bubble.margin.right + Math.max(0, gapWidth);
         });
     }
 
     private setBubbleLinePosition(bubbleLine: Bubble[], x: number, y: number) {
         bubbleLine.forEach(bubble => {
-            bubble.shape.x = x + LayoutConfig.bubble.margin.left;
-            bubble.shape.y = y + LayoutConfig.bubble.margin.top;
-            x += bubble.shape.width + LayoutConfig.bubble.margin.right;
+            bubble.shape.x = x + this.layoutConfig.bubble.margin.left;
+            bubble.shape.y = y + this.layoutConfig.bubble.margin.top;
+            x += bubble.shape.width + this.layoutConfig.bubble.margin.right;
         });
     }
 
     private getBubbleLineWidth(bubbles: Bubble[]): number {
         return bubbles.reduce((width, bubble) => {
-            return width + bubble.shape.width + LayoutConfig.bubble.margin.right;
-        }, LayoutConfig.bubble.margin.left);
+            return width + bubble.shape.width + this.layoutConfig.bubble.margin.right;
+        }, this.layoutConfig.bubble.margin.left);
     }
 
     private getBubbleLineHeight(bubbles: Bubble[]): number {
         return bubbles.reduce((height, bubble) => {
-            const h = bubble.shape.height + LayoutConfig.bubble.margin.bottom;
+            const h = bubble.shape.height + this.layoutConfig.bubble.margin.bottom;
             return height > h ? height : h;
-        }, LayoutConfig.bubble.margin.top);
+        }, this.layoutConfig.bubble.margin.top);
     }
 
     /**

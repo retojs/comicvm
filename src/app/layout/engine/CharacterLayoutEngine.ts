@@ -8,7 +8,9 @@ import { validatePanelShape } from "./validation";
 
 export class CharacterLayoutEngine {
 
-    constructor() {}
+    constructor(
+        private layoutConfig: LayoutConfig = new LayoutConfig()
+    ) {}
 
     layout(panels: Panel[]) {
         panels.forEach(panel => this.layoutCharacters(panel));
@@ -59,13 +61,13 @@ export class CharacterLayoutEngine {
             character.backgroundPositionEnd = character.defaultPosition.clone();
         });
 
-        if (LayoutLevel.DEFAULT === LayoutConfig.layoutLevel) { return; }
+        if (LayoutLevel.DEFAULT === this.layoutConfig.layoutLevel) { return; }
 
-        if (LayoutLevel.DEFAULT < LayoutConfig.layoutLevel
+        if (LayoutLevel.DEFAULT < this.layoutConfig.layoutLevel
             && panel.scene.layout) {
             this.adjustCharacterBackgroundPositions(panel, panel.scene.layout.characterLayouts);
         }
-        if (LayoutLevel.BACKGROUND <= LayoutConfig.layoutLevel
+        if (LayoutLevel.BACKGROUND <= this.layoutConfig.layoutLevel
             && panel.background.layout) {
             this.adjustCharacterBackgroundPositions(panel, panel.background.layout.characterLayouts);
         }
@@ -93,7 +95,7 @@ export class CharacterLayoutEngine {
 
     setCharacterPanelPositions(panel: Panel) {
 
-        if (LayoutLevel.PANEL !== LayoutConfig.layoutLevel) { return; }
+        if (LayoutLevel.PANEL !== this.layoutConfig.layoutLevel) { return; }
 
         // Character's positions can be configured for each panel
         panel.characters.forEach(character => character.panelPosition = character.backgroundPosition.clone());
@@ -143,7 +145,7 @@ export class CharacterLayoutEngine {
 
     applyZoom(panel: Panel) {
 
-        if (!LayoutConfig.applyZoom) { return; }
+        if (!this.layoutConfig.applyZoom) { return; }
 
         panel.characters.forEach(ch => {
             if (ch.defaultPosition) {
@@ -162,7 +164,7 @@ export class CharacterLayoutEngine {
 
     applyPanning(panel: Panel) {
 
-        if (!LayoutConfig.applyPanning) { return; }
+        if (!this.layoutConfig.applyPanning) { return; }
 
         const characterSize = panel.characters[0].defaultPosition.size;
         const panning = panel.pan.map(comp => comp * characterSize);

@@ -21,7 +21,8 @@ export class BubblePointer {
 
     constructor(
         public bubble: Bubble,
-        public character: Character
+        public character: Character,
+        public layoutConfig: LayoutConfig = new LayoutConfig()
     ) {
         this.calculate();
     }
@@ -52,8 +53,8 @@ export class BubblePointer {
         //  then the pointer's bubble end is moved closer to the bubble
 
         this.bubbleEnd.constrainX(this.bubble.shape.clone()
-            .cutMargin(LayoutConfig.bubble.padding)
-            .cutMarginOf(LayoutConfig.bubble.pointer.bubbleEndsDistance / 2)
+            .cutMargin(this.layoutConfig.bubble.padding)
+            .cutMarginOf(this.layoutConfig.bubble.pointer.bubbleEndsDistance / 2)
         );
 
         // the actual end of the pointer near the character is a configured proportion of that line from the character to the bubble
@@ -65,13 +66,13 @@ export class BubblePointer {
             return null; // don't paint a pointer if bubble overlaps character
         }
 
-        this.configuredDistance = this.distance.clone().scale(LayoutConfig.bubble.pointer.characterEndDistance);
+        this.configuredDistance = this.distance.clone().scale(this.layoutConfig.bubble.pointer.characterEndDistance);
         this.characterEnd.translateBy(this.configuredDistance.clone().invert());
 
         // move the bubble ends to have the configured distance
 
-        this.bubbleEndLeft = this.bubbleEnd.clone().translate(-LayoutConfig.bubble.pointer.bubbleEndsDistance / 2);
-        this.bubbleEndRight = this.bubbleEnd.clone().translate(LayoutConfig.bubble.pointer.bubbleEndsDistance / 2);
+        this.bubbleEndLeft = this.bubbleEnd.clone().translate(-this.layoutConfig.bubble.pointer.bubbleEndsDistance / 2);
+        this.bubbleEndRight = this.bubbleEnd.clone().translate(this.layoutConfig.bubble.pointer.bubbleEndsDistance / 2);
     }
 
     calculateControlPoints() {
@@ -79,9 +80,9 @@ export class BubblePointer {
             return;
         }
 
-        const horizontalOffset = this.distance.x * LayoutConfig.bubble.pointer.controlPoint.horizontalOffset;
-        const verticalOffset = this.distance.y * LayoutConfig.bubble.pointer.controlPoint.verticalOffset;
-        const deltaWidth = LayoutConfig.bubble.pointer.bubbleEndsDistance - LayoutConfig.bubble.pointer.controlPoint.width;
+        const horizontalOffset = this.distance.x * this.layoutConfig.bubble.pointer.controlPoint.horizontalOffset;
+        const verticalOffset = this.distance.y * this.layoutConfig.bubble.pointer.controlPoint.verticalOffset;
+        const deltaWidth = this.layoutConfig.bubble.pointer.bubbleEndsDistance - this.layoutConfig.bubble.pointer.controlPoint.width;
 
         this.cpLeft = this.bubbleEndLeft.clone().translate(horizontalOffset + deltaWidth / 2, verticalOffset);
         this.cpRight = this.bubbleEndRight.clone().translate(horizontalOffset - deltaWidth / 2, verticalOffset);

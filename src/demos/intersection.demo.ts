@@ -15,10 +15,11 @@ export class IntersectionDemo implements Demo {
     desc = "Look! I can calculate intersections :D (Click the mouse to change positions)";
 
     create(container: DomElementContainer) {
+        const layoutConfig = new LayoutConfig();
         const myCanvas = new Canvas(container, DEMO_DEFAULT_WIDTH, DEMO_DEFAULT_WIDTH);
 
         let origin = new Point(300, 400);
-        let crossingLine = new Line().setFrom(0, 320).setTo(LayoutConfig.page.width, 140);
+        let crossingLine = new Line().setFrom(0, 320).setTo(layoutConfig.page.width, 140);
 
         let isDrawing = false;
 

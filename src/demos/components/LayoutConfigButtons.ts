@@ -3,7 +3,7 @@ import { Button } from "../../common/dom/Button";
 import { DomElementContainer } from "../../common/dom/DomElement";
 import { Div } from "../../common/dom/Div";
 
-export function create(container: DomElementContainer, repaintFn: () => void) {
+export function create(container: DomElementContainer, repaintFn: () => void, layoutConfig: LayoutConfig = new LayoutConfig()) {
 
     const buttonContainer = new Div(container, "buttons");
 
@@ -12,13 +12,13 @@ export function create(container: DomElementContainer, repaintFn: () => void) {
         toggleZoomButton.onClick = toggleZoom;
 
         function toggleZoom() {
-            LayoutConfig.applyZoom = !LayoutConfig.applyZoom;
+            layoutConfig.applyZoom = !layoutConfig.applyZoom;
             repaintFn();
             toggleZoomButton.label = getToggleZoomButtonLabel();
         }
 
         function getToggleZoomButtonLabel() {
-            return "Apply Zoom (" + (LayoutConfig.applyZoom ? "On" : "Off") + ")";
+            return "Apply Zoom (" + (layoutConfig.applyZoom ? "On" : "Off") + ")";
         }
     })();
 
@@ -27,13 +27,13 @@ export function create(container: DomElementContainer, repaintFn: () => void) {
         togglePanningButton.onClick = togglePanning;
 
         function togglePanning() {
-            LayoutConfig.applyPanning = !LayoutConfig.applyPanning;
+            layoutConfig.applyPanning = !layoutConfig.applyPanning;
             repaintFn();
             togglePanningButton.label = getTogglePanningButtonLabel();
         }
 
         function getTogglePanningButtonLabel() {
-            return "Apply Panning (" + (LayoutConfig.applyPanning ? "On" : "Off") + ")";
+            return "Apply Panning (" + (layoutConfig.applyPanning ? "On" : "Off") + ")";
         }
     })();
 
@@ -49,7 +49,7 @@ export function create(container: DomElementContainer, repaintFn: () => void) {
         layoutLevelButton.onClick = setLayoutLevel;
 
         function setLayoutLevel() {
-            LayoutConfig.layoutLevel = level;
+            layoutConfig.layoutLevel = level;
             repaintFn();
             layoutLevelButton.label = getLayoutLevelButtonLabel();
         }

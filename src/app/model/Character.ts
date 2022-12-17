@@ -9,6 +9,7 @@ export class Character {
 
     name: string;
     how: string[] = [];
+    layoutConfig: LayoutConfig;
 
     defaultPosition?: Square;
     backgroundPosition?: Square;
@@ -19,11 +20,12 @@ export class Character {
     image: Img;
     imageShape: Rectangle;
 
-    constructor(name: string, how?: string[]) {
+    constructor(name: string, how?: string[], layoutConfig: LayoutConfig = new LayoutConfig()) {
         this.name = name;
         if (how && how.length > 0) {
             how.forEach(q => this.addQualifier(q));
         }
+        this.layoutConfig = layoutConfig;
     }
 
     addQualifier(how: string) {
@@ -38,13 +40,13 @@ export class Character {
 
     getPosition(): Square {
         let position: Square;
-        if (LayoutLevel.DEFAULT === LayoutConfig.layoutLevel && this.defaultPosition) {
+        if (LayoutLevel.DEFAULT === this.layoutConfig.layoutLevel && this.defaultPosition) {
             position = this.defaultPosition;
         }
-        if (LayoutLevel.DEFAULT < LayoutConfig.layoutLevel && this.backgroundPosition) {
+        if (LayoutLevel.DEFAULT < this.layoutConfig.layoutLevel && this.backgroundPosition) {
             position = this.backgroundPosition;
         }
-        if (LayoutLevel.PANEL === LayoutConfig.layoutLevel && this.panelPosition) {
+        if (LayoutLevel.PANEL === this.layoutConfig.layoutLevel && this.panelPosition) {
             position = this.panelPosition;
         }
         return position;

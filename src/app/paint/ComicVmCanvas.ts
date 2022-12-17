@@ -9,11 +9,11 @@ export class ComicVmCanvas extends Canvas {
 
     font: Font = PaintConfig.canvas.font;
 
-    constructor(container: DomElementContainer, scene: Scene) {
+    constructor(container: DomElementContainer, scene: Scene, layoutConfig: LayoutConfig = new LayoutConfig()) {
         super(container,
             PaintConfig.canvas.width,
             PaintConfig.canvas.height * scene.pageCount,
-            PaintConfig.canvas.width / LayoutConfig.page.width
+            PaintConfig.canvas.width / layoutConfig.page.width
         );
     }
 }

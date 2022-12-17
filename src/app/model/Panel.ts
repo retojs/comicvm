@@ -38,6 +38,7 @@ export class Panel {
     plotItems: PlotItem[] = [];
 
     layout: PanelLayout;
+    layoutConfig: LayoutConfig = new LayoutConfig();
 
     shape: Rectangle;
     backgroundImageShape: Rectangle;
@@ -330,13 +331,13 @@ export class Panel {
     get staticZoom(): number {
         let zoom = 1.0;
 
-        if (LayoutLevel.DEFAULT < LayoutConfig.layoutLevel && this.scene.layout) {
+        if (LayoutLevel.DEFAULT < this.layoutConfig.layoutLevel && this.scene.layout) {
             zoom *= this.scene.layout.camera.zoom || 1;
         }
-        if (LayoutLevel.BACKGROUND <= LayoutConfig.layoutLevel && this.background.layout) {
+        if (LayoutLevel.BACKGROUND <= this.layoutConfig.layoutLevel && this.background.layout) {
             zoom *= this.background.layout.camera.zoom || 1;
         }
-        if (LayoutLevel.PANEL === LayoutConfig.layoutLevel && this.layout) {
+        if (LayoutLevel.PANEL === this.layoutConfig.layoutLevel && this.layout) {
             zoom *= this.layout.camera.zoom || 1;
         }
 
@@ -377,15 +378,15 @@ export class Panel {
 
         let pan = {x: 0, y: 0};
 
-        if (LayoutLevel.DEFAULT < LayoutConfig.layoutLevel && hasPan(this.scene.layout)) {
+        if (LayoutLevel.DEFAULT < this.layoutConfig.layoutLevel && hasPan(this.scene.layout)) {
             pan.x += this.scene.layout.camera.pan.x || 0;
             pan.y += this.scene.layout.camera.pan.y || 0;
         }
-        if (LayoutLevel.BACKGROUND <= LayoutConfig.layoutLevel && hasPan(this.background.layout)) {
+        if (LayoutLevel.BACKGROUND <= this.layoutConfig.layoutLevel && hasPan(this.background.layout)) {
             pan.x += this.background.layout.camera.pan.x || 0;
             pan.y += this.background.layout.camera.pan.y || 0;
         }
-        if (LayoutLevel.PANEL === LayoutConfig.layoutLevel && hasPan(this.layout)) {
+        if (LayoutLevel.PANEL === this.layoutConfig.layoutLevel && hasPan(this.layout)) {
             pan.x += this.layout.camera.pan.x || 0;
             pan.y += this.layout.camera.pan.y || 0;
         }

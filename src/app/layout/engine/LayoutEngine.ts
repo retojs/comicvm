@@ -13,14 +13,15 @@ import { validatePageShape, validatePanelShape, validateStripShape } from "./val
 export class LayoutEngine {
 
     scene: Scene;
-
+    layoutConfig: LayoutConfig;
     bubbleLayoutEngine: BubbleLayoutEngine;
     characterLayoutEngine: CharacterLayoutEngine;
 
-    constructor(scene: Scene) {
+    constructor(scene: Scene, layoutConfig: LayoutConfig = new LayoutConfig()) {
         this.scene = scene;
-        this.bubbleLayoutEngine = new BubbleLayoutEngine();
-        this.characterLayoutEngine = new CharacterLayoutEngine();
+        this.layoutConfig = layoutConfig;
+        this.bubbleLayoutEngine = new BubbleLayoutEngine(layoutConfig);
+        this.characterLayoutEngine = new CharacterLayoutEngine(layoutConfig);
     }
 
     static layoutScene(scene: Scene, canvas: Canvas): LayoutEngine {
@@ -55,9 +56,9 @@ export class LayoutEngine {
 
         page.shape = new Rectangle(
             0,
-            page.index * LayoutConfig.page.height,
-            LayoutConfig.page.width,
-            LayoutConfig.page.height
+            page.index * this.layoutConfig.page.height,
+            this.layoutConfig.page.width,
+            this.layoutConfig.page.height
         );
 
         validatePageShape(page);
@@ -69,10 +70,10 @@ export class LayoutEngine {
     }
 
     layoutStrip(strip: Strip, stripConfig: StripHeightsConfig) {
-        let x: number = LayoutConfig.page.padding.left,
-            y: number = strip.page.shape.y + LayoutConfig.page.padding.top + LayoutConfig.page.innerHeight * stripConfig.getSum(strip.index),
-            width: number = LayoutConfig.page.innerWidth,
-            height: number = LayoutConfig.page.innerHeight * stripConfig.proportions[strip.index];
+        let x: number = this.layoutConfig.page.padding.left,
+            y: number = strip.page.shape.y + this.layoutConfig.page.padding.top + this.layoutConfig.page.innerHeight * stripConfig.getSum(strip.index),
+            width: number = this.layoutConfig.page.innerWidth,
+            height: number = this.layoutConfig.page.innerHeight * stripConfig.proportions[strip.index];
 
         strip.shape = new Rectangle(x, y, width, height);
 
@@ -93,10 +94,10 @@ export class LayoutEngine {
             width: number = panel.strip.shape.width * proportionThisPanel,
             height: number = panel.strip.shape.height;
 
-        x += LayoutConfig.panel.margin.left;
-        y += LayoutConfig.panel.margin.top;
-        width -= LayoutConfig.panel.margin.horizontal;
-        height -= LayoutConfig.panel.margin.vertical;
+        x += this.layoutConfig.panel.margin.left;
+        y += this.layoutConfig.panel.margin.top;
+        width -= this.layoutConfig.panel.margin.horizontal;
+        height -= this.layoutConfig.panel.margin.vertical;
 
         panel.shape = new Rectangle(x, y, width, height);
 

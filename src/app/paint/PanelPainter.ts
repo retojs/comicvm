@@ -23,7 +23,7 @@ export class PanelPainter {
 
     animateBubbles = false;
 
-    constructor(canvas: Canvas) {
+    constructor(canvas: Canvas, public layoutConfig: LayoutConfig = new LayoutConfig()) {
         this.canvas = canvas;
         this.bubblePainter = new BubblePainter(canvas);
     }
@@ -134,7 +134,7 @@ export class PanelPainter {
 
     getZoomedPanelShape(panel: Panel): Rectangle {
         let zoom = 1;
-        if (LayoutConfig.applyZoom) {
+        if (this.layoutConfig.applyZoom) {
             zoom = panel.zoom;
         }
         return this.getZoomedShape(panel.shape, zoom);

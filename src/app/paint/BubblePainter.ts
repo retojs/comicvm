@@ -8,10 +8,9 @@ import { BubblePointer } from "../model/BubblePointer";
 
 export class BubblePainter {
 
-    canvas: Canvas;
-
-    constructor(canvas: Canvas) {
-        this.canvas = canvas;
+    constructor(
+        public canvas: Canvas,
+        public layoutConfig: LayoutConfig = new LayoutConfig()) {
     }
 
     paintBubbles(panel: Panel, animateBubbles: boolean = false) {
@@ -25,7 +24,7 @@ export class BubblePainter {
                     this.canvas.rect(bubble.shape, PaintConfig.of.bubble.textBox);
                     this.paintTextLeftAligned(bubble);
                 } else {
-                    this.canvas.roundRect(bubble.shape, LayoutConfig.bubble.radius, PaintConfig.of.bubble.textBox);
+                    this.canvas.roundRect(bubble.shape, this.layoutConfig.bubble.radius, PaintConfig.of.bubble.textBox);
                     bubble.pointers.forEach(this.paintBubblePointer.bind(this));
                     this.paintTextCentered(bubble);
                 }
@@ -35,7 +34,7 @@ export class BubblePainter {
     paintTextCentered(bubble: Bubble) {
         let linePos = new Point(
             bubble.shape.center.x,
-            bubble.shape.y + LayoutConfig.bubble.padding.top + bubble.textBox.lineHeight * LayoutConfig.bubble.verticalAlign
+            bubble.shape.y + this.layoutConfig.bubble.padding.top + bubble.textBox.lineHeight * this.layoutConfig.bubble.verticalAlign
         );
         bubble.textBox.lines.forEach(line => {
             this.canvas.text(line, linePos, PaintConfig.of.bubble.text);
@@ -45,8 +44,8 @@ export class BubblePainter {
 
     paintTextLeftAligned(bubble: Bubble) {
         let linePos = new Point(
-            bubble.shape.x + LayoutConfig.bubble.offScreen.padding.left,
-            bubble.shape.y + LayoutConfig.bubble.offScreen.padding.top + bubble.textBox.lineHeight * LayoutConfig.bubble.verticalAlign
+            bubble.shape.x + this.layoutConfig.bubble.offScreen.padding.left,
+            bubble.shape.y + this.layoutConfig.bubble.offScreen.padding.top + bubble.textBox.lineHeight * this.layoutConfig.bubble.verticalAlign
         );
         bubble.textBox.lines.forEach(line => {
             this.canvas.text(line, linePos, PaintConfig.of.bubble.offScreen.text);

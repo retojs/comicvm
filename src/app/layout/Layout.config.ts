@@ -109,12 +109,12 @@ export class BubbleConfig {
 
 export class LayoutConfig {
 
-    static page = new PageConfig();
-    static panel = new PanelConfig();
-    static bubble = new BubbleConfig();
+    page = new PageConfig();
+    panel = new PanelConfig();
+    bubble = new BubbleConfig();
 
-    static layoutLevel = LayoutLevel.PANEL;
+    layoutLevel = LayoutLevel.PANEL;
 
-    static applyZoom = true;
-    static applyPanning = true;
+    applyZoom = true;
+    applyPanning = true;
 }

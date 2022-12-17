@@ -5,6 +5,7 @@ import { LayoutConfig } from "../app/layout/Layout.config";
 import { Rectangle } from "../common/trigo/Rectangle";
 import { Demo, DEMO_DEFAULT_WIDTH } from "./Demo";
 import { PaintStyleConfig } from "../common/style/PaintStyle";
+import { DemoContext } from "./DemoContext";
 
 
 // TODO
@@ -18,19 +19,22 @@ export class BezierBubblePointerDemo implements Demo {
     desc = "This tool helps with the calculation of the bubble pointer bezier curves. (double click to set pointer)";
 
     create(container: DomElementContainer) {
-        const myCanvas = new Canvas(container, DEMO_DEFAULT_WIDTH, 400, DEMO_DEFAULT_WIDTH / LayoutConfig.page.width);
+        const layoutConfig = new LayoutConfig();
+        const myCanvas = new Canvas(container, DEMO_DEFAULT_WIDTH, 400, DEMO_DEFAULT_WIDTH / layoutConfig.page.width);
+
+        DemoContext.setupCanvasPositionListeners(myCanvas);
 
         const distanceLeftRight = 100;
-
-        let from = new Point(LayoutConfig.page.width * 0.4, 1000); // the tip of the pointer
-        let to = new Point(LayoutConfig.page.width * 0.5, 250); // where the pointer lines touch the bottom border of the bubble
+        
+        let from = new Point(layoutConfig.page.width * 0.4, 1000); // the tip of the pointer
+        let to = new Point(layoutConfig.page.width * 0.5, 250); // where the pointer lines touch the bottom border of the bubble
         let toLeft = to.clone().translate(-distanceLeftRight / 2);
         let toRight = to.clone().translate(distanceLeftRight / 2);
         let mouseBounds = Rectangle.fromPoints(from, to);
 
         const initialMousePos = myCanvas.getDomPositionFromCanvasPosition(
-            to.x + (from.x - to.x) * LayoutConfig.bubble.pointer.controlPoint.verticalOffset,
-            to.y + (from.y - to.y) * LayoutConfig.bubble.pointer.controlPoint.verticalOffset
+            to.x + (from.x - to.x) * layoutConfig.bubble.pointer.controlPoint.verticalOffset,
+            to.y + (from.y - to.y) * layoutConfig.bubble.pointer.controlPoint.verticalOffset
         );
         drawBubblePointer(initialMousePos.x, initialMousePos.y);
 
@@ -76,7 +80,7 @@ export class BezierBubblePointerDemo implements Demo {
             myCanvas.clear();
             myCanvas.lineXY(
                 0, fixedRangeTop.y,
-                LayoutConfig.page.width, fixedRangeTop.y,
+                layoutConfig.page.width, fixedRangeTop.y,
                 PaintStyleConfig.stroke("lightgrey", 2)
             );
             myCanvas.lineFromTo(toLeft, cpLeft, PaintStyleConfig.stroke("lightgrey", 2));
@@ -98,10 +102,10 @@ export class BezierBubblePointerDemo implements Demo {
          * @param to Point where the pointer touches the bottom border of the bubble (upper point)
          */
         function calcFixedRangeTop(from: Point, to: Point): number {
-            const w1 = LayoutConfig.bubble.pointer.bubbleEndsDistance;
-            const w2 = LayoutConfig.bubble.pointer.controlPoint.width;
+            const w1 = layoutConfig.bubble.pointer.bubbleEndsDistance;
+            const w2 = layoutConfig.bubble.pointer.controlPoint.width;
             const h1 = from.y - to.y;
-            const h2 = h1 * (1 - LayoutConfig.bubble.pointer.controlPoint.verticalOffset);
+            const h2 = h1 * (1 - layoutConfig.bubble.pointer.controlPoint.verticalOffset);
             return (1 - (h2 / w2 * w1) / h1);
         }
     }

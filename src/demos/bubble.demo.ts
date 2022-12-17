@@ -39,61 +39,62 @@ export class BubbleDemo implements Demo {
     }
 
     createInputs(container: DomElementContainer) {
+        const layoutConfig = new LayoutConfig();
         const layoutConfigPanel = new Div(container, "layout-config-panel")
             .appendDiv("title", "LayoutConfig");
         const paintConfigPanel = new Div(container, "paint-config-panel")
             .appendDiv("title", "PaintConfig");
 
-        ParameterInput.createMarginConfigInput(layoutConfigPanel, "page.padding", LayoutConfig.page.padding, (value: Margin) => {
-            LayoutConfig.page.padding = value;
+        ParameterInput.createMarginConfigInput(layoutConfigPanel, "page.padding", layoutConfig.page.padding, (value: Margin) => {
+            layoutConfig.page.padding = value;
             this.repaint();
         });
-        ParameterInput.createMarginConfigInput(layoutConfigPanel, "panel.margin", LayoutConfig.panel.margin, (value: Margin) => {
-            LayoutConfig.panel.margin = value;
+        ParameterInput.createMarginConfigInput(layoutConfigPanel, "panel.margin", layoutConfig.panel.margin, (value: Margin) => {
+            layoutConfig.panel.margin = value;
             this.repaint();
         });
-        ParameterInput.createMarginConfigInput(layoutConfigPanel, "panel.padding", LayoutConfig.panel.padding, (value: Margin) => {
-            LayoutConfig.panel.padding = value;
+        ParameterInput.createMarginConfigInput(layoutConfigPanel, "panel.padding", layoutConfig.panel.padding, (value: Margin) => {
+            layoutConfig.panel.padding = value;
             this.repaint();
         });
-        ParameterInput.createMarginConfigInput(layoutConfigPanel, "bubble.margin", LayoutConfig.bubble.margin, (value: Margin) => {
-            LayoutConfig.bubble.margin = value;
+        ParameterInput.createMarginConfigInput(layoutConfigPanel, "bubble.margin", layoutConfig.bubble.margin, (value: Margin) => {
+            layoutConfig.bubble.margin = value;
             this.repaint();
         });
-        ParameterInput.createMarginConfigInput(layoutConfigPanel, "bubble.padding", LayoutConfig.bubble.padding, (value: Margin) => {
-            LayoutConfig.bubble.padding = value;
+        ParameterInput.createMarginConfigInput(layoutConfigPanel, "bubble.padding", layoutConfig.bubble.padding, (value: Margin) => {
+            layoutConfig.bubble.padding = value;
             this.repaint();
         });
-        ParameterInput.createMarginConfigInput(layoutConfigPanel, "bubble.radius", LayoutConfig.bubble.radius, (value: Margin) => {
-            LayoutConfig.bubble.radius = value;
+        ParameterInput.createMarginConfigInput(layoutConfigPanel, "bubble.radius", layoutConfig.bubble.radius, (value: Margin) => {
+            layoutConfig.bubble.radius = value;
             this.repaint();
         });
-        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.maxWithPerHeight", LayoutConfig.bubble.maxWithPerHeight, (value: number) => {
-            LayoutConfig.bubble.maxWithPerHeight = value;
+        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.maxWithPerHeight", layoutConfig.bubble.maxWithPerHeight, (value: number) => {
+            layoutConfig.bubble.maxWithPerHeight = value;
             this.repaint();
         });
-        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.verticalAlign", LayoutConfig.bubble.verticalAlign, (value: number) => {
-            LayoutConfig.bubble.verticalAlign = value;
+        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.verticalAlign", layoutConfig.bubble.verticalAlign, (value: number) => {
+            layoutConfig.bubble.verticalAlign = value;
             this.repaint();
         });
-        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.bubbleEndsDistance", LayoutConfig.bubble.pointer.bubbleEndsDistance, (value: number) => {
-            LayoutConfig.bubble.pointer.bubbleEndsDistance = value;
+        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.bubbleEndsDistance", layoutConfig.bubble.pointer.bubbleEndsDistance, (value: number) => {
+            layoutConfig.bubble.pointer.bubbleEndsDistance = value;
             this.repaint();
         });
-        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.characterEndDistance", LayoutConfig.bubble.pointer.characterEndDistance, (value: number) => {
-            LayoutConfig.bubble.pointer.characterEndDistance = value;
+        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.characterEndDistance", layoutConfig.bubble.pointer.characterEndDistance, (value: number) => {
+            layoutConfig.bubble.pointer.characterEndDistance = value;
             this.repaint();
         });
-        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.controlPoint.width", LayoutConfig.bubble.pointer.controlPoint.width, (value: number) => {
-            LayoutConfig.bubble.pointer.controlPoint.width = value;
+        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.controlPoint.width", layoutConfig.bubble.pointer.controlPoint.width, (value: number) => {
+            layoutConfig.bubble.pointer.controlPoint.width = value;
             this.repaint();
         });
-        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.controlPoint.horizontalOffset", LayoutConfig.bubble.pointer.controlPoint.horizontalOffset, (value: number) => {
-            LayoutConfig.bubble.pointer.controlPoint.horizontalOffset = value;
+        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.controlPoint.horizontalOffset", layoutConfig.bubble.pointer.controlPoint.horizontalOffset, (value: number) => {
+            layoutConfig.bubble.pointer.controlPoint.horizontalOffset = value;
             this.repaint();
         });
-        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.controlPoint.verticalOffset", LayoutConfig.bubble.pointer.controlPoint.verticalOffset, (value: number) => {
-            LayoutConfig.bubble.pointer.controlPoint.verticalOffset = value;
+        ParameterInput.createNumberInput(layoutConfigPanel, "bubble.pointer.controlPoint.verticalOffset", layoutConfig.bubble.pointer.controlPoint.verticalOffset, (value: number) => {
+            layoutConfig.bubble.pointer.controlPoint.verticalOffset = value;
             this.repaint();
         });
 
