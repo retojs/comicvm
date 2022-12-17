@@ -1,6 +1,6 @@
 Title: What can ComicVM do for you?
 
-Characters: Stranger, Expert
+Characters: Expert, Stranger
 
 Place: Stage
 _____
